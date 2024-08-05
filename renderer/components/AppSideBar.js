@@ -17,7 +17,7 @@ const AppSideBar = () => {
   const [menu, setMenu] = useState(false);
 
   const openExcelFile = async () => {
-    window.ipc.send("open-excel-file", "../../Planilhas/SALAS.xlsx");
+    window.ipc.send("open-excel-file", "../../BB_Py_Automation/Planilhas/SALAS.xlsx");
   };
 
   const [result, setResult] = useState('');
