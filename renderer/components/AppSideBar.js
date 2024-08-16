@@ -150,7 +150,7 @@ const AppSideBar = () => {
             height={20}
             width={20}
           />
-          Surtos
+          Avulsos
           {dropdown.Data ? (
             <FaChevronUp className={styles.icon} />
           ) : (
