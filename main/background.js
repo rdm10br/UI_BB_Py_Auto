@@ -84,12 +84,14 @@ ipcMain.on('open-excel-file', (event, filePath) => {
 });
 
 ipcMain.on('run-python', (event, arg) => {
-  const workingDirectory = path.resolve(__dirname, '../src');
+  const workingDirectory = path.resolve(__dirname, '../../BB_Py_Automation');
   const pythonPath = path.resolve(__dirname, '../../BB_Py_Automation/venv/Scripts/python.exe');
   const scriptPath = path.resolve(__dirname, `../../BB_Py_Automation/src/${arg}`);
   // exec(`python '${arg}'`, (error, stdout, stderr) => {
     // console.log(`${path.resolve(__dirname, "../../venv/Scripts/python.exe")} ${path.resolve(__dirname, arg)}`)
-  exec(`start ${pythonPath} ${scriptPath}`, { cwd: workingDirectory }, (error, stdout, stderr) => {
+  // exec(`start ${pythonPath} ${scriptPath}`, { cwd: workingDirectory }, (error, stdout, stderr) => {
+  // exec(`start ${pythonPath} ${scriptPath}`, (error, stdout, stderr) => {
+  exec(`cd ${workingDirectory} && start ${pythonPath} ${scriptPath}`, (error, stdout, stderr) => {
     if (error) {
       event.reply('python-error', stderr);
       return;
