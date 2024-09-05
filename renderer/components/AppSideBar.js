@@ -50,7 +50,7 @@ const AppSideBar = () => {
             height={20}
             width={20}
           />
-          <p>BB Py Automation</p>
+          <p>BlackBot</p>
         </li>
         <li className={styles.menu} onClick={() => setMenu(!menu)}>
           {menu ? (

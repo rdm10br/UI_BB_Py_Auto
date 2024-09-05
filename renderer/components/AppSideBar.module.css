@@ -39,6 +39,7 @@
   position: fixed;
   background-color: var(--muted);
   overflow: auto;
+  user-select: none;
   /* transition: ease-in 0.5s translateX(-45%);
   transform: ease-in 0.5s translateX(-45%);
   -webkit-transition: ease-in 1s;

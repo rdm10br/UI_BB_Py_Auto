@@ -21,11 +21,12 @@ if (isProd) {
   const mainWindow = createWindow('main', {
     width: 1000,
     height: 600,
+    icon: 'renderer/public/icon/1bad.png',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
   })
-  
+  await mainWindow.setMenuBarVisibility(false)
   if (isProd) {
     await mainWindow.loadURL('app://./home')
   } else {
