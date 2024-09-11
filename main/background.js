@@ -1,5 +1,5 @@
 import path from 'path'
-import { app, ipcMain } from 'electron'
+import { app, ipcMain, Tray } from 'electron'
 import serve from 'electron-serve'
 import { createWindow } from './helpers'
 // import ExcelJS from 'exceljs'
@@ -17,16 +17,21 @@ if (isProd) {
   // app.setActivationPolicy(policy='prohibited')
   await app.whenReady()
   
+  const iconPath = 'renderer/public/icon/1bad.png'
+
+  process.icon = iconPath
 
   const mainWindow = createWindow('main', {
     width: 1000,
     height: 600,
-    icon: 'renderer/public/icon/1bad.png',
+    icon: iconPath,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
   })
+
   await mainWindow.setMenuBarVisibility(false)
+  
   if (isProd) {
     await mainWindow.loadURL('app://./home')
   } else {
@@ -35,6 +40,10 @@ if (isProd) {
     // await mainWindow.loadURL('https://sereduc.blackboard.com/ultra/admin')
     // mainWindow.webContents.openDevTools()
   }
+
+  tray = new Tray(iconPath);  // Set the system tray icon using the same icon
+  tray.setToolTip('My Electron App');
+
 })()
 
 app.on('window-all-closed', () => {
