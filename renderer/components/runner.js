@@ -9,9 +9,9 @@ const Runner = () => {
     <div>
       <div className="card">
         <button
-        //   onClick={() => {
-        //     window.ipc.send("message", "Batata");
-        //   }}
+          // onClick={() => {
+          //   window.ipc.send("message", "Batata");
+          // }}
         className={styles.runner}
         >
           <Image
@@ -48,7 +48,7 @@ const Runner = () => {
           />
         </button>
         <p>Terminal: </p>
-        <div className="message_recieved">
+        <div className="terminal">
           {/* <p>{message}</p> */}
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do

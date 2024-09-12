@@ -79,6 +79,7 @@ button{
     background-color: var(--ring-muted);
     color: var(--foreground);
     padding: 0.6%;
+    margin-bottom: 0.8%;
     margin-right: 1.5%;
     border-radius: 12px;
     cursor: pointer;
@@ -88,6 +89,12 @@ button.destructive{
     background-color: var(--destructive);
     color: var(--destructive-foreground);
 }
+button:hover{
+    background-color: var(--ring);
+}
+button.destructive:hover{
+    background-color: var(--destructive-ring);
+}
 
 div.card{
     position: relative;
@@ -95,7 +102,7 @@ div.card{
     padding: 2%;
     /* border: none; */
 }
-div.message_recieved{
+div.terminal{
     max-height: 70vh;
     overflow: auto;
     background-color: var(--background);

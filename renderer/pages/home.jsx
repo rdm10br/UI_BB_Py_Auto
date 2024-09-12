@@ -72,17 +72,17 @@ export default function HomePage() {
             window.ipc.send("message", "Destructive");
           }}
           className="destructive"
-        >
+        >terminal
           Test Destructive Button
         </button>
         <p>Message: </p>
-        <div className="message_recieved">
+        <div className="terminal">
           <p>{message}</p>
         </div>
       </div>
       <div className="card">
         Message:
-        <div className="message_recieved">
+        <div className="terminal">
           <p>Message: [{message}]</p>
         </div>
       </div>

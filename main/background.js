@@ -3,7 +3,7 @@ import { app, ipcMain, Tray } from 'electron'
 import serve from 'electron-serve'
 import { createWindow } from './helpers'
 // import ExcelJS from 'exceljs'
-import { exec } from 'child_process'
+import { spawn, exec } from 'child_process'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -41,8 +41,8 @@ if (isProd) {
     // mainWindow.webContents.openDevTools()
   }
 
-  tray = new Tray(iconPath);  // Set the system tray icon using the same icon
-  tray.setToolTip('My Electron App');
+  // tray = new Tray(iconPath);  // Set the system tray icon using the same icon
+  // tray.setToolTip('My Electron App');
 
 })()
 
@@ -93,19 +93,42 @@ ipcMain.on('open-excel-file', (event, filePath) => {
   });
 });
 
+// ipcMain.on('run-python', (event, arg) => {
+//   const workingDirectory = path.resolve(__dirname, '../../BB_Py_Automation');
+//   const pythonPath = path.resolve(__dirname, '../../BB_Py_Automation/venv/Scripts/python.exe');
+//   const scriptPath = path.resolve(__dirname, `../../BB_Py_Automation/src/${arg}`);
+//   // exec(`python '${arg}'`, (error, stdout, stderr) => {
+//     // console.log(`${path.resolve(__dirname, "../../venv/Scripts/python.exe")} ${path.resolve(__dirname, arg)}`)
+//   // exec(`start ${pythonPath} ${scriptPath}`, { cwd: workingDirectory }, (error, stdout, stderr) => {
+//   // exec(`start ${pythonPath} ${scriptPath}`, (error, stdout, stderr) => {
+//   exec(`cd ${workingDirectory} && start ${pythonPath} ${scriptPath}`, (error, stdout, stderr) => {
+//     if (error) {
+//       event.reply('python-error', stderr);
+//       return;
+//     }
+//     event.reply('python-result', stdout);
+//   });
+// });
+
 ipcMain.on('run-python', (event, arg) => {
   const workingDirectory = path.resolve(__dirname, '../../BB_Py_Automation');
   const pythonPath = path.resolve(__dirname, '../../BB_Py_Automation/venv/Scripts/python.exe');
   const scriptPath = path.resolve(__dirname, `../../BB_Py_Automation/src/${arg}`);
-  // exec(`python '${arg}'`, (error, stdout, stderr) => {
-    // console.log(`${path.resolve(__dirname, "../../venv/Scripts/python.exe")} ${path.resolve(__dirname, arg)}`)
-  // exec(`start ${pythonPath} ${scriptPath}`, { cwd: workingDirectory }, (error, stdout, stderr) => {
-  // exec(`start ${pythonPath} ${scriptPath}`, (error, stdout, stderr) => {
-  exec(`cd ${workingDirectory} && start ${pythonPath} ${scriptPath}`, (error, stdout, stderr) => {
-    if (error) {
-      event.reply('python-error', stderr);
-      return;
-    }
-    event.reply('python-result', stdout);
+
+  const pythonProcess = spawn(pythonPath, [scriptPath], {
+    cwd: workingDirectory,
+    windowsHide: true, // This will hide the Python prompt
+  });
+
+  pythonProcess.stdout.on('data', (data) => {
+    event.reply('python-result', data.toString()); // Send stdout to the renderer process
+  });
+
+  pythonProcess.stderr.on('data', (data) => {
+    event.reply('python-error', data.toString()); // Send stderr to the renderer process
+  });
+
+  pythonProcess.on('close', (code) => {
+    console.log(`Python script exited with code ${code}`);
   });
 });
