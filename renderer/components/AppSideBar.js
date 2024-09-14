@@ -68,7 +68,7 @@ const AppSideBar = () => {
           ) : (
             <Image
               className={styles.icon_menu}
-              src="/icon/x.png"
+              src="/icon/menu-bar.png"
               height={20}
               width={20}
             />
