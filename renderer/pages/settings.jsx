@@ -1,29 +1,74 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
-import Link from "next/link";
 import versionData from "../../../BB_Py_Automation/release.json";
 import path from 'path'
-
-import accountsaved from "../../../BB_Py_Automation/src/Metodos/Login/__pycache__/login.json";
-import cookie from "../../../BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json";
+// import Link from "next/link";
 
 export default function NextPage() {
   const [version] = useState(versionData.CURRENT_VERSION);
-  const [account] = useState(accountsaved.username);
-  const [session] = useState(cookie.timestamp);
-  const date = new Date(session);
-  const offset = -3; // GMT-3
-  const gmt3Date = new Date(date.getTime() + offset * 60 * 60 * 1000);
-  // const formattedDate = gmt3Date.toISOString().replace("Z", "");
-  const day = String(gmt3Date.getDate()).padStart(2, "0");
-  const month = String(gmt3Date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
-  const year = gmt3Date.getFullYear();
-  const hours = String(gmt3Date.getHours()).padStart(2, "0");
-  const minutes = String(gmt3Date.getMinutes()).padStart(2, "0");
-  const seconds = String(gmt3Date.getSeconds()).padStart(2, "0");
+  // const [version, setVersion] = useState(null);
+  const [account, setAccount] = useState(null);
+  const [session, setSession] = useState(null);
+  const [loginFileExists, setLoginFileExists] = useState(false);
+  const [cookieFileExists, setCookieFileExists] = useState(false);
+  const loginFilePath =
+    "../BB_Py_Automation/src/Metodos/Login/__pycache__/login.json";
+  const cookieFilePath =
+    "../BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json";
 
-  // Combine into the desired format: dd/mm/yyyy hh:mm:ss
-  const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds} GMT ${offset}`;
+  useEffect(() => {
+    const fetchFileStatus = async () => {
+      const query = `?files=${encodeURIComponent(
+        loginFilePath
+      )}&files=${encodeURIComponent(cookieFilePath)}`;
+
+      try {
+        const response = await fetch(`/api/check-files${query}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        // console.log(`${loginFilePath}: ${data[loginFilePath]}`);
+        // console.log(`${cookieFilePath}: ${data[cookieFilePath]}`);
+        setLoginFileExists(data[loginFilePath]);
+        setCookieFileExists(data[cookieFilePath]);
+      } catch (error) {
+        console.error("Error fetching file status:", error);
+      }
+    };
+
+    fetchFileStatus();
+  }, []);
+  
+  useEffect(() => {
+    // Update state based on file existence
+    if (loginFileExists) {
+      const filePath = path.join(process.cwd(), loginFilePath);
+      const login = fetch(filePath);
+      console.log(login)
+      setAccount(login.username);
+    }
+    if (cookieFileExists) {
+      const filePath = path.join(process.cwd(), loginFilePath);
+      const cookie = fetch(filePath);
+      console.log(cookie)
+      setSession(cookie.timestamp);
+    }
+  }, [loginFileExists, cookieFileExists]);
+
+  const formattedDate = session ? (() => {
+    const date = new Date(session);
+    const offset = -3; // GMT-3
+    const gmt3Date = new Date(date.getTime() + offset * 60 * 60 * 1000);
+    const day = String(gmt3Date.getDate()).padStart(2, "0");
+    const month = String(gmt3Date.getMonth() + 1).padStart(2, "0");
+    const year = gmt3Date.getFullYear();
+    const hours = String(gmt3Date.getHours()).padStart(2, "0");
+    const minutes = String(gmt3Date.getMinutes()).padStart(2, "0");
+    const seconds = String(gmt3Date.getSeconds()).padStart(2, "0");
+
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds} GMT ${offset}`;
+  })() : null;
   return (
     <React.Fragment>
       <Head>
@@ -34,87 +79,31 @@ export default function NextPage() {
       </div>
       <div className="card">
         <h3>Credential & Cookies :</h3>
-        {/* <p>Save your AVA Credentials :</p> */}
-        <p>Account saved : {account}</p>
-        <p>Last Session cookies : {formattedDate}</p>
+        {account ? <p>Account saved : {account}</p> : null}
+        {session ? <p>Last Session cookies : {formattedDate}</p> : null}
+        {!account && !session && (
+          <p>Save your AVA Credentials and run the Test:</p>
+        )}
         <br />
-        <button
-        // onClick={() => {
-        //   window.ipc.send("message", "Batata");
-        // }}
-        >
-          Save Credentials
-        </button>
-        <button
-          // onClick={() => {
-          //   window.ipc.send("message", "Destructive");
-          // }}
-          className="destructive"
-        >
-          Delete Cookies
-        </button>
-        <button
-          // onClick={() => {
-          //   window.ipc.send("message", "Destructive");
-          // }}
-          className="destructive"
-        >
-          Delete Cretendials & Cookies
-        </button>
+        <button>Save Credentials</button>
+        <button className="destructive">Delete Cookies</button>
+        <button className="destructive">Delete Cretendials & Cookies</button>
       </div>
       <div className="card">
         <h3>Updates</h3>
         <p>Version : {version}</p>
         <br />
-        <button
-        // onClick={() => {
-        //   window.ipc.send("message", "Batata");
-        // }}
-        >
-          Check for Update
-        </button>
-        <button
-        // onClick={() => {
-        //   window.ipc.send("message", "Batata");
-        // }}
-        >
-          Rollback
-        </button>
-        <button
-        // onClick={() => {
-        //   window.ipc.send("message", "Batata");
-        // }}
-        >
-          View Logs
-        </button>
-        <button
-          // onClick={() => {
-          //   window.ipc.send("message", "Destructive");
-          // }}
-          className="destructive"
-        >
-          Delete Logs
-        </button>
+        <button>Check for Update</button>
+        <button>Rollback</button>
+        <button>View Logs</button>
+        <button className="destructive">Delete Logs</button>
       </div>
       <div className="card">
         <h3>Bot Logs :</h3>
         <p>Logs from all bots runs</p>
         <br />
-        <button
-        // onClick={() => {
-        //   window.ipc.send("message", "Batata");
-        // }}
-        >
-          View Logs
-        </button>
-        <button
-          // onClick={() => {
-          //   window.ipc.send("message", "Destructive");
-          // }}
-          className="destructive"
-        >
-          Delete Logs
-        </button>
+        <button>View Logs</button>
+        <button className="destructive">Delete Logs</button>
       </div>
     </React.Fragment>
   );
