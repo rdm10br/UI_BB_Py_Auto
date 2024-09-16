@@ -1,0 +1,86 @@
+{
+    "settings": "Settings",
+    "credentialAndCookies": {
+        "title": "Credential & Cookies:",
+        "accountSaved": "Account saved:",
+        "lastSessionCookies": "Last Session cookies:",
+        "saveCredentialsPrompt": "Save your AVA Credentials and run the Test:",
+        "buttons": {
+            "saveCredentials": "Save Credentials",
+            "deleteCookies": "Delete Cookies",
+            "deleteCredentialsAndCookies": "Delete Credentials & Cookies"
+        }
+    },
+    "updates": {
+        "title": "Updates",
+        "updateAvailable": {
+            "message": "There is an Update Available:",
+            "yourVersion": "Your Version:",
+            "buttons": {
+                "update": "Update"
+            }
+        },
+        "noUpdateAvailable": {
+            "message": "Version:",
+            "buttons": {
+                "checkForUpdate": "Check for Update"
+            }
+        },
+        "buttons": {
+            "rollback": "Rollback",
+            "viewLogs": "View Logs",
+            "deleteLogs": "Delete Logs"
+        }
+    },
+    "botLogs": {
+        "title": "Bot Logs:",
+        "description": "Logs from all bot runs",
+        "buttons": {
+            "viewLogs": "View Logs",
+            "deleteLogs": "Delete Logs"
+        }
+    },
+    "sidebar": {
+        "blackBot": "BlackBot",
+        "home": "Home",
+        "doubleCheck": "Double Check",
+        "copy": "Copy",
+        "avulsos": "Avulsos",
+        "datas": "Dates",
+        "ajusteAV1": "Adjust AV1",
+        "ajusteAV2": "Adjust AV2",
+        "removeSM": "Remove S.M.",
+        "linkEBook": "E-Book's Link",
+        "openMescla": "Open Mescla",
+        "bq": "BQ",
+        "x9": "X9",
+        "test": "Test",
+        "spreadsheet": "Spreadsheet",
+        "settings": "Settings"
+    },
+    "dropdown": {
+        "doubleCheck": {
+            "items": [
+                "Master",
+                "Veterans",
+                "Digital"
+            ]
+        },
+        "copy": {
+            "items": [
+                "Copy Material",
+                "New Classroom"
+            ]
+        },
+        "date": {
+            "items": [
+                "Dates",
+                "Adjust AV1",
+                "Adjust AV2",
+                "Remove S.M.",
+                "E-Book's Link",
+                "Open Mescla"
+            ]
+        }
+    }
+}

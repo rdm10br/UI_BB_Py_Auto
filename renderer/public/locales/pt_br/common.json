@@ -1,0 +1,86 @@
+{
+    "settings": "Configurações",
+    "credentialAndCookies": {
+        "title": "Credenciais & Cookies:",
+        "accountSaved": "Conta salva:",
+        "lastSessionCookies": "Últimos cookies da sessão:",
+        "saveCredentialsPrompt": "Salve suas credenciais AVA e execute o Teste:",
+        "buttons": {
+            "saveCredentials": "Salvar Credenciais",
+            "deleteCookies": "Excluir Cookies",
+            "deleteCredentialsAndCookies": "Excluir Credenciais & Cookies"
+        }
+    },
+    "updates": {
+        "title": "Atualizações",
+        "updateAvailable": {
+            "message": "Há uma atualização disponível:",
+            "yourVersion": "Sua Versão:",
+            "buttons": {
+                "update": "Atualizar"
+            }
+        },
+        "noUpdateAvailable": {
+            "message": "Versão:",
+            "buttons": {
+                "checkForUpdate": "Verificar Atualização"
+            }
+        },
+        "buttons": {
+            "rollback": "Reverter",
+            "viewLogs": "Ver Logs",
+            "deleteLogs": "Excluir Logs"
+        }
+    },
+    "botLogs": {
+        "title": "Logs dos Bots:",
+        "description": "Logs de todas as execuções dos bots",
+        "buttons": {
+            "viewLogs": "Ver Logs",
+            "deleteLogs": "Excluir Logs"
+        }
+    },
+    "sidebar": {
+        "blackBot": "BlackBot",
+        "home": "Início",
+        "doubleCheck": "Verificação Dupla",
+        "copy": "Cópia",
+        "avulsos": "Avulsos",
+        "datas": "Datas",
+        "ajusteAV1": "Ajuste AV1",
+        "ajusteAV2": "Ajuste AV2",
+        "removeSM": "Remove S.M.",
+        "linkEBook": "Link E-Book",
+        "openMescla": "Abrir Mescla",
+        "bq": "BQ",
+        "x9": "X9",
+        "test": "Teste",
+        "spreadsheet": "Planilha",
+        "settings": "Configuração"
+    },
+    "dropdown": {
+        "doubleCheck": {
+            "items": [
+                "Mestre",
+                "Veteranos",
+                "Digital"
+            ]
+        },
+        "copy": {
+            "items": [
+                "Material",
+                "Sala Nova"
+            ]
+        },
+        "date": {
+            "items": [
+                "Datas",
+                "Ajuste AV1",
+                "Ajuste AV2",
+                "Remove S.M.",
+                "Link E-Book",
+                "Abrir Mescla"
+            ]
+        }
+    }
+}

@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
+import { useTranslation } from 'react-i18next';
+import { withTranslation } from '../lib/withTranslation.js';
 import versionData from "../../../BB_Py_Automation/release.json";
 // import Link from "next/link";
 
+export const getServerSideProps = withTranslation('common');
+
 export default function NextPage() {
+  const { t } = useTranslation('common');
+  // console.log(t);
   const [version] = useState(versionData.CURRENT_VERSION);
   // const [version, setVersion] = useState(null);
   const [account, setAccount] = useState(null);
@@ -112,51 +118,51 @@ export default function NextPage() {
   return (
     <React.Fragment>
       <Head>
-        <title>Settings</title>
+        <title>{t('settings')}</title>
       </Head>
       <div>
-        <h2>Settings</h2>
+        <h2>{t('settings')}</h2>
       </div>
       <div className="card">
-        <h3>Credential & Cookies :</h3>
-        {account ? <p>Account saved : {account}</p> : null}
-        {session ? <p>Last Session cookies : {formattedDate}</p> : null}
+        <h3>{t('credentialAndCookies.title')}</h3>
+        {account ? <p>{t('credentialAndCookies.accountSaved')} : {account}</p> : null}
+        {session ? <p>{t('credentialAndCookies.lastSessionCookies')} : {formattedDate}</p> : null}
         {!account && !session && (
-          <p>Save your AVA Credentials and run the Test:</p>
+          <p>{t('credentialAndCookies.saveCredentialsPrompt')}</p>
         )}
         <br />
-        <button>Save Credentials</button>
-        <button className="destructive">Delete Cookies</button>
-        <button className="destructive">Delete Cretendials & Cookies</button>
+        <button>{t('credentialAndCookies.buttons.saveCredentials')}</button>
+        <button className="destructive">{t('credentialAndCookies.buttons.deleteCookies')}</button>
+        <button className="destructive">{t('credentialAndCookies.buttons.deleteCredentialsAndCookies')}</button>
       </div>
       <div className="card">
-        <h3>Updates</h3>
+        <h3>{t('updates.title')}</h3>
         {updateAvailable && (
           <>
-            <p>There is an Update Available: {latestVersion}</p>
-            <p>Your Version: {version}</p>
+            <p>{t('updates.updateAvailable.message')} : {latestVersion}</p>
+            <p>{t('updates.updateAvailable.yourVersion')} : {version}</p>
             <br />
-            <button>Update</button>
+            <button>{t('updates.updateAvailable.buttons.update')}</button>
           </>
         )}
 
         {!updateAvailable && (
           <>
-          <p>Version : {version}</p>
-          <br />
-          <button>Check for Update</button>
+            <p>{t('updates.noUpdateAvailable.message')} : {version}</p>
+            <br />
+            <button>{t('updates.noUpdateAvailable.buttons.checkForUpdate')}</button>
           </>
-          )}
-        <button>Rollback</button>
-        <button>View Logs</button>
-        <button className="destructive">Delete Logs</button>
+        )}
+        <button>{t('updates.buttons.rollback')}</button>
+        <button>{t('updates.buttons.viewLogs')}</button>
+        <button className="destructive">{t('updates.buttons.deleteLogs')}</button>
       </div>
       <div className="card">
-        <h3>Bot Logs :</h3>
-        <p>Logs from all bots runs</p>
+        <h3>{t('botLogs.title')}</h3>
+        <p>{t('botLogs.description')}</p>
         <br />
-        <button>View Logs</button>
-        <button className="destructive">Delete Logs</button>
+        <button>{t('botLogs.buttons.viewLogs')}</button>
+        <button className="destructive">{t('botLogs.buttons.deleteLogs')}</button>
       </div>
     </React.Fragment>
   );

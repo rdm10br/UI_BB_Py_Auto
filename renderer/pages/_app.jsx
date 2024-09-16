@@ -1,6 +1,7 @@
 import React from "react";
 import AppSideBar from '../components/AppSideBar';
 import '../styles/global.css'
+import { appWithTranslation } from 'next-i18next';
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -13,4 +14,4 @@ function MyApp({ Component, pageProps }) {
   );
 }
 
-export default MyApp;
+export default appWithTranslation(MyApp);

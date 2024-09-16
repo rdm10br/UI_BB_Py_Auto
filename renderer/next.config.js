@@ -1,3 +1,5 @@
+const { i18n } = require('./next-i18next.config');
+
 /** @type {import('next').NextConfig} */
 module.exports = {
   // Comment out or remove the output export setting
@@ -14,4 +16,5 @@ module.exports = {
   webpack: (config) => {
     return config
   },
+  i18n
 }
