@@ -10,7 +10,9 @@ export default function NextPage() {
   const [session, setSession] = useState(null);
   const [loginFileExists, setLoginFileExists] = useState(false);
   const [cookieFileExists, setCookieFileExists] = useState(false);
-  
+  const [latestVersion, setLatestVersion] = useState(null);
+  const [updateAvailable, setUpdateAvailable] = useState(false);
+
   useEffect(() => {
     const loginFilePath =
       "../BB_Py_Automation/src/Metodos/Login/__pycache__/login.json";
@@ -38,47 +40,75 @@ export default function NextPage() {
 
     fetchFileStatus();
   }, []);
-  
+
   useEffect(() => {
     const loadLoginData = async () => {
       if (loginFileExists) {
         try {
-          const loginData = await import(`../../../BB_Py_Automation/src/Metodos/Login/__pycache__/login.json`);
+          const loginData = await import(
+            `../../../BB_Py_Automation/src/Metodos/Login/__pycache__/login.json`
+          );
           setAccount(loginData.username);
         } catch (error) {
-          console.error('Error loading login file:', error);
+          console.error("Error loading login file:", error);
         }
       }
     };
-  
+
     const loadCookieData = async () => {
       if (cookieFileExists) {
         try {
-          const cookieData = await import(`../../../BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json`);
+          const cookieData = await import(
+            `../../../BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json`
+          );
           setSession(cookieData.timestamp);
         } catch (error) {
-          console.error('Error loading cookie file:', error);
+          console.error("Error loading cookie file:", error);
         }
       }
     };
-  
+
     loadLoginData();
     loadCookieData();
   }, [loginFileExists, cookieFileExists]);
 
-  const formattedDate = session ? (() => {
-    const date = new Date(session);
-    const offset = -3; // GMT-3
-    const gmt3Date = new Date(date.getTime() + offset * 60 * 60 * 1000);
-    const day = String(gmt3Date.getDate()).padStart(2, "0");
-    const month = String(gmt3Date.getMonth() + 1).padStart(2, "0");
-    const year = gmt3Date.getFullYear();
-    const hours = String(gmt3Date.getHours()).padStart(2, "0");
-    const minutes = String(gmt3Date.getMinutes()).padStart(2, "0");
-    const seconds = String(gmt3Date.getSeconds()).padStart(2, "0");
+  useEffect(() => {
+    const checkForUpdates = async () => {
+      try {
+        const response = await fetch("/api/api-github");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const release = await response.json();
+        const latestVersion = release.tag_name;
+        setLatestVersion(latestVersion);
+        if (version !== latestVersion) {
+          setUpdateAvailable(true);
+        }
+      } catch (error) {
+        console.error("Error checking for updates:", error);
+      }
+    };
 
-    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds} GMT ${offset}`;
-  })() : null;
+    checkForUpdates();
+  }, [version]);
+
+  const formattedDate = session
+    ? (() => {
+        const date = new Date(session);
+        const offset = -3; // GMT-3
+        const gmt3Date = new Date(date.getTime() + offset * 60 * 60 * 1000);
+        const day = String(gmt3Date.getDate()).padStart(2, "0");
+        const month = String(gmt3Date.getMonth() + 1).padStart(2, "0");
+        const year = gmt3Date.getFullYear();
+        const hours = String(gmt3Date.getHours()).padStart(2, "0");
+        const minutes = String(gmt3Date.getMinutes()).padStart(2, "0");
+        const seconds = String(gmt3Date.getSeconds()).padStart(2, "0");
+
+        return `${day}/${month}/${year} ${hours}:${minutes}:${seconds} GMT ${offset}`;
+      })()
+    : null;
+
   return (
     <React.Fragment>
       <Head>
@@ -101,9 +131,22 @@ export default function NextPage() {
       </div>
       <div className="card">
         <h3>Updates</h3>
-        <p>Version : {version}</p>
-        <br />
-        <button>Check for Update</button>
+        {updateAvailable && (
+          <>
+            <p>There is an Update Available: {latestVersion}</p>
+            <p>Your Version: {version}</p>
+            <br />
+            <button>Update</button>
+          </>
+        )}
+
+        {!updateAvailable && (
+          <>
+          <p>Version : {version}</p>
+          <br />
+          <button>Check for Update</button>
+          </>
+          )}
         <button>Rollback</button>
         <button>View Logs</button>
         <button className="destructive">Delete Logs</button>

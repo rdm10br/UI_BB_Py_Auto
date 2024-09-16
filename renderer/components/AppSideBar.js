@@ -12,7 +12,6 @@ const AppSideBar = () => {
     Data: false,
   });
 
-  const [menu, setMenu] = useState(false); // State to handle collapse/expand
   const [collapsed, setCollapsed] = useState(false); // Sidebar collapse state
   const [result, setResult] = useState('');
 
@@ -94,6 +93,7 @@ const AppSideBar = () => {
               width={20}
             />
             {!collapsed && <span>Home</span>}
+            {collapsed && <span className={styles.tooltiptext}>Home</span>}
           </Link>
         </li>
         <li onClick={() => toggleDropdown("DoubleCheck")}>
@@ -104,6 +104,7 @@ const AppSideBar = () => {
             width={20}
           />
           {!collapsed && <span>Double Check</span>}
+          {collapsed && <span className={styles.tooltiptext}>Double Check</span>}
           {dropdown.DoubleCheck ? (
             <FaChevronUp className={styles.icon} />
           ) : (
@@ -137,6 +138,7 @@ const AppSideBar = () => {
             width={20}
           />
           {!collapsed && <span>Cópia</span>}
+          {collapsed && <span className={styles.tooltiptext}>Cópia</span>}
           {dropdown.Cópia ? (
             <FaChevronUp className={styles.icon} />
           ) : (
@@ -165,6 +167,7 @@ const AppSideBar = () => {
             width={20}
           />
           {!collapsed && <span>Avulsos</span>}
+          {collapsed && <span className={styles.tooltiptext}>Avulsos</span>}
           {dropdown.Data ? (
             <FaChevronUp className={styles.icon} />
           ) : (
@@ -214,6 +217,7 @@ const AppSideBar = () => {
               width={20}
             />
             {!collapsed && <span>BQ</span>}
+            {collapsed && <span className={styles.tooltiptext}>BQ</span>}
           </Link>
         </li>
         <li>
@@ -225,6 +229,7 @@ const AppSideBar = () => {
               width={20}
             />
             {!collapsed && <span>X9</span>}
+            {collapsed && <span className={styles.tooltiptext}>X9</span>}
           </Link>
         </li>
         <li>
@@ -236,6 +241,7 @@ const AppSideBar = () => {
               width={20}
             />
             {!collapsed && <span>Teste</span>}
+            {collapsed && <span className={styles.tooltiptext}>Teste</span>}
           </Link>
         </li>
         <li className={styles.plan}>
@@ -247,6 +253,7 @@ const AppSideBar = () => {
               width={20}
             />
             {!collapsed && <span>Planilha</span>}
+            {collapsed && <span className={styles.tooltiptext}>Planilha</span>}
           </Link>
         </li>
       </ul>
@@ -260,6 +267,7 @@ const AppSideBar = () => {
               width={20}
             />
             {!collapsed && <span>Configuração</span>}
+            {collapsed && <span className={styles.tooltiptext}>Configuração</span>}
           </Link>
         </li>
       </div>
