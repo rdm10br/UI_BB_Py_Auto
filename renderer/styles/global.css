@@ -47,6 +47,12 @@ body{
     margin-left: 10rem;
     /* height: 94vh; */
     border-radius: 12px;
+    transition: 0.3s ease-out;
+    
+}
+body.collapsedBody {
+    margin-left: 3.3rem;
+    transition: 0.3s ease-in;
 }
 
 div{

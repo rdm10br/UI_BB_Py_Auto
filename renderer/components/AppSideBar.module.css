@@ -331,11 +331,29 @@
   transition: 0.3s ease-out;
   /* Add other styles */
 }
-
+/* Text transition */
+.sideMenu span {
+  opacity: 1;
+  /* white-space: nowrap; */
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
 .sideMenu.collapsed {
-  width: 3.3rem; /* Collapsed width for icons only */
+  width: 3.3rem;
   overflow: hidden;
   transition: 0.3s ease-in;
+}
+
+.collapsed span {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+.link {
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease-out;
+}
+.collapsed .link span {
+  display: none;
 }
 
 .sideMenu.collapsed ul li{

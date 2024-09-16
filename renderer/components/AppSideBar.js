@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./AppSideBar.module.css";
@@ -44,6 +44,15 @@ const AppSideBar = () => {
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
   };
+
+  useEffect(() => {
+    const body = document.querySelector('body');
+    if (collapsed) {
+      body.classList.add('collapsedBody');
+    } else {
+      body.classList.remove('collapsedBody');
+    }
+  }, [collapsed]);
 
   return (
     <div className={`${styles.sideMenu} ${collapsed ? styles.collapsed : ""}`}>

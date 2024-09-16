@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import versionData from "../../../BB_Py_Automation/release.json";
-import path from 'path'
 // import Link from "next/link";
 
 export default function NextPage() {
@@ -11,12 +10,12 @@ export default function NextPage() {
   const [session, setSession] = useState(null);
   const [loginFileExists, setLoginFileExists] = useState(false);
   const [cookieFileExists, setCookieFileExists] = useState(false);
-  const loginFilePath =
-    "../BB_Py_Automation/src/Metodos/Login/__pycache__/login.json";
-  const cookieFilePath =
-    "../BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json";
-
+  
   useEffect(() => {
+    const loginFilePath =
+      "../BB_Py_Automation/src/Metodos/Login/__pycache__/login.json";
+    const cookieFilePath =
+      "../BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json";
     const fetchFileStatus = async () => {
       const query = `?files=${encodeURIComponent(
         loginFilePath
@@ -41,19 +40,30 @@ export default function NextPage() {
   }, []);
   
   useEffect(() => {
-    // Update state based on file existence
-    if (loginFileExists) {
-      const filePath = path.join(process.cwd(), loginFilePath);
-      const login = fetch(filePath);
-      console.log(login)
-      setAccount(login.username);
-    }
-    if (cookieFileExists) {
-      const filePath = path.join(process.cwd(), loginFilePath);
-      const cookie = fetch(filePath);
-      console.log(cookie)
-      setSession(cookie.timestamp);
-    }
+    const loadLoginData = async () => {
+      if (loginFileExists) {
+        try {
+          const loginData = await import(`../../../BB_Py_Automation/src/Metodos/Login/__pycache__/login.json`);
+          setAccount(loginData.username);
+        } catch (error) {
+          console.error('Error loading login file:', error);
+        }
+      }
+    };
+  
+    const loadCookieData = async () => {
+      if (cookieFileExists) {
+        try {
+          const cookieData = await import(`../../../BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json`);
+          setSession(cookieData.timestamp);
+        } catch (error) {
+          console.error('Error loading cookie file:', error);
+        }
+      }
+    };
+  
+    loadLoginData();
+    loadCookieData();
   }, [loginFileExists, cookieFileExists]);
 
   const formattedDate = session ? (() => {
