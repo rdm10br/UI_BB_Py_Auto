@@ -1,5 +1,12 @@
 {
     "settings": "Configurações",
+    "userPreferences": {
+        "title": "Preferências do Usuário",
+        "language": "Idioma :",
+        "buttons": {
+            "defaultPreferences": "Restaurar Configurações"
+        }
+    },
     "credentialAndCookies": {
         "title": "Credenciais & Cookies:",
         "accountSaved": "Conta salva:",

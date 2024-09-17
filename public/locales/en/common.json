@@ -1,5 +1,12 @@
 {
     "settings": "Settings",
+    "userPreferences":{
+        "title":"User Preferences",
+        "language":"Language",
+        "buttons": {
+            "defaultPreferences": "Reset Preferences"
+        }
+    },
     "credentialAndCookies": {
         "title": "Credential & Cookies:",
         "accountSaved": "Account saved:",

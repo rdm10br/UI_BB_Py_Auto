@@ -1,20 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./AppSideBar.module.css";
 
 const Runner = ({ script }) => {
-  const runPython = () => {
-    window.ipc.send('run-python', script);
+  const [result, setResult] = useState(null);
+  useEffect(() => {
+    // Set up IPC listeners when the component mounts
     window.ipc.on('python-result', (event, data) => {
-      setResult(data);
+      setResult((prevResult) => prevResult + data); // Append new data to the result
     });
     window.ipc.on('python-error', (event, error) => {
       console.error(error);
     });
+
+    // Cleanup listeners when the component unmounts
+    return () => {
+      window.ipc.removeAllListeners('python-result');
+      window.ipc.removeAllListeners('python-error');
+    };
+  }, []);
+  const runPython = () => {
+    setResult(""); // Clear the previous result
+    window.ipc.send('run-python', script);
   };
   return (
-    // <div className={styles}>
     <div>
       <div className="card">
         <button
@@ -29,9 +39,6 @@ const Runner = ({ script }) => {
           />
         </button>
         <button
-        //   onClick={() => {
-        //     window.ipc.send("message", "Batata");
-        //   }}
         className={styles.runner}
         >
           <Image
@@ -42,9 +49,6 @@ const Runner = ({ script }) => {
           />
         </button>
         <button
-          //   onClick={() => {
-          //     window.ipc.send("message", "Destructive");
-          //   }}
           className={styles.runner_destructive}
         >
           <Image
@@ -54,54 +58,14 @@ const Runner = ({ script }) => {
           width={20}
           />
         </button>
+        {!setResult && (
+        <>
         <p>Terminal: </p>
         <div className="terminal">
-          {/* <p>{message}</p> */}
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-            </p>
+          <p>{result}</p>
         </div>
+        </>)
+        }
       </div>
     </div>
   );

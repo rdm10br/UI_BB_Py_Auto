@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useTranslation } from 'react-i18next';
 import { withTranslation } from '../lib/withTranslation.js';
 import versionData from "../../../BB_Py_Automation/release.json";
+import LanguageSwitcher from "../components/LanguageSwitcher.js";
 // import Link from "next/link";
 
 export const getServerSideProps = withTranslation('common');
@@ -122,6 +123,11 @@ export default function NextPage() {
       </Head>
       <div>
         <h2>{t('settings')}</h2>
+      </div>
+      <div className="card">
+        <h3>{t('userPreferences.title')}</h3>
+        <p>{t('userPreferences.language')} <LanguageSwitcher/></p>
+        <button className="destructive">{t('userPreferences.buttons.defaultPreferences')}</button>
       </div>
       <div className="card">
         <h3>{t('credentialAndCookies.title')}</h3>

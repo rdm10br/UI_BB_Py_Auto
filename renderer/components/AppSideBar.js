@@ -284,14 +284,10 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./AppSideBar.module.css";
-// import { withTranslation } from '../lib/withTranslation.js';
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 // import { ipcRenderer } from 'electron';
 
-// export const getServerSideProps = withTranslation('common');
-
 const AppSideBar = () => {
-  // const { t } = useTranslation('common');
   const [dropdown, setDropdown] = useState({
     DoubleCheck: false,
     Cópia: false,
@@ -304,17 +300,6 @@ const AppSideBar = () => {
   const openExcelFile = async () => {
     window.ipc.send("open-excel-file", "../../BB_Py_Automation/Planilhas/SALAS.xlsx");
   };
-
-  // Function to run Python script
-  // const runPython = () => {
-  //   window.ipc.send('run-python', 'Main_Test.py');
-  //   window.ipc.on('python-result', (event, data) => {
-  //     setResult(data);
-  //   });
-  //   window.ipc.on('python-error', (event, error) => {
-  //     console.error(error);
-  //   });
-  // };
 
   // Toggle dropdown menus
   const toggleDropdown = (menu) => {

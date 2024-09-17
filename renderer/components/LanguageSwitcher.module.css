@@ -1,0 +1,11 @@
+.dropdown {
+  background-color: var(--accent-muted);
+  overflow-x: auto;
+  transition: ease-in 0.5s translateX(-45%);
+  z-index: 1;
+}
+.icon {
+  block-size: 10px;
+  margin-left: auto;
+  padding-left: 0.5rem;
+}

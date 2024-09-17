@@ -4,6 +4,7 @@ import serve from 'electron-serve'
 import { createWindow } from './helpers'
 // import ExcelJS from 'exceljs'
 import { spawn, exec } from 'child_process'
+const Store = require('electron-store');
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -43,6 +44,11 @@ if (isProd) {
 
   // tray = new Tray(iconPath);  // Set the system tray icon using the same icon
   // tray.setToolTip('My Electron App');
+  
+  ipcMain.on('set-title', (event, title) => {
+    // console.log(`BBAutoPy - ${title}`);
+    mainWindow.webContents.executeJavaScript(`document.title = "BlacBot - ${title}"`);
+  });
 
 })()
 
@@ -55,19 +61,6 @@ ipcMain.on('message', async (event, arg) => {
   // console.log(`${arg} World!`)
 })
 
-// ipcMain.on('title', async (event, arg) => {
-//   event.reply('title', `BBAutoPy - ${arg}`)
-//   console.log(`BBAutoPy - ${arg}`)
-//   // event.sender()
-//   // event.returnValue()
-//   // event.processId()
-//   // event.frameId()
-// })
-
-ipcMain.on('set-title', (event, title) => {
-  console.log(`BBAutoPy - ${title}`)
-  mainWindow.webContents.executeJavaScript(`document.title = "BBAutoPy - ${title}"`);
-});
 
 // ipcMain.handle('read-excel-file', async () => {
 //   const filePath = path.join(__dirname, 'path', 'to', 'your', 'file.xlsx'); // Replace with the fixed path to your Excel file
@@ -119,9 +112,11 @@ ipcMain.on('run-python', (event, arg) => {
     cwd: workingDirectory,
     windowsHide: true, // This will hide the Python prompt
   });
-
+  let stdoutBuffer = '';
   pythonProcess.stdout.on('data', (data) => {
-    event.reply('python-result', data.toString()); // Send stdout to the renderer process
+    console.log(`${data}`);
+    // stdoutBuffer += data.toString();
+    event.reply('python-result', data);
   });
 
   pythonProcess.stderr.on('data', (data) => {
@@ -130,5 +125,20 @@ ipcMain.on('run-python', (event, arg) => {
 
   pythonProcess.on('close', (code) => {
     console.log(`Python script exited with code ${code}`);
+    event.reply('python-close', `Python script exited with code ${code}`);
   });
+});
+
+// Handle saving language preference
+ipcMain.on('save-language-preference', (event, language) => {
+  const store = new Store();
+  store.set('languagePreference', language);
+  event.returnValue = 'Language preference saved';
+});
+
+// Handle retrieving language preference
+ipcMain.on('get-language-preference', (event) => {
+  const store = new Store();
+  const languagePreference = store.get('languagePreference');
+  event.returnValue = languagePreference || null;
 });
