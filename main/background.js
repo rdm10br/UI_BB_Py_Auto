@@ -2,12 +2,12 @@ import path from 'path'
 import { app, ipcMain, Tray } from 'electron'
 import serve from 'electron-serve'
 import { createWindow } from './helpers'
-// import ExcelJS from 'exceljs'
 import { spawn, exec } from 'child_process'
+// import ExcelJS from 'exceljs'
 const Store = require('electron-store');
 
 const isProd = process.env.NODE_ENV === 'production'
-
+let pythonProcess = null;
 if (isProd) {
   serve({ directory: 'app' })
 } else {
@@ -61,22 +61,6 @@ ipcMain.on('message', async (event, arg) => {
   // console.log(`${arg} World!`)
 })
 
-
-// ipcMain.handle('read-excel-file', async () => {
-//   const filePath = path.join(__dirname, 'path', 'to', 'your', 'file.xlsx'); // Replace with the fixed path to your Excel file
-
-//   const workbook = new ExcelJS.Workbook();
-//   await workbook.xlsx.readFile(filePath);
-
-//   const sheet = workbook.worksheets[0];
-//   const data = [];
-//   sheet.eachRow({ includeEmpty: true }, (row, rowNumber) => {
-//     data.push({ rowNumber, values: row.values });
-//   });
-
-//   return data;
-// });
-
 ipcMain.on('open-excel-file', (event, filePath) => {
   const fullPath = path.resolve(__dirname, filePath);
   exec(`start "" "${fullPath}"`, (error) => {
@@ -86,37 +70,26 @@ ipcMain.on('open-excel-file', (event, filePath) => {
   });
 });
 
-// ipcMain.on('run-python', (event, arg) => {
-//   const workingDirectory = path.resolve(__dirname, '../../BB_Py_Automation');
-//   const pythonPath = path.resolve(__dirname, '../../BB_Py_Automation/venv/Scripts/python.exe');
-//   const scriptPath = path.resolve(__dirname, `../../BB_Py_Automation/src/${arg}`);
-//   // exec(`python '${arg}'`, (error, stdout, stderr) => {
-//     // console.log(`${path.resolve(__dirname, "../../venv/Scripts/python.exe")} ${path.resolve(__dirname, arg)}`)
-//   // exec(`start ${pythonPath} ${scriptPath}`, { cwd: workingDirectory }, (error, stdout, stderr) => {
-//   // exec(`start ${pythonPath} ${scriptPath}`, (error, stdout, stderr) => {
-//   exec(`cd ${workingDirectory} && start ${pythonPath} ${scriptPath}`, (error, stdout, stderr) => {
-//     if (error) {
-//       event.reply('python-error', stderr);
-//       return;
-//     }
-//     event.reply('python-result', stdout);
-//   });
-// });
-
 ipcMain.on('run-python', (event, arg) => {
   const workingDirectory = path.resolve(__dirname, '../../BB_Py_Automation');
   const pythonPath = path.resolve(__dirname, '../../BB_Py_Automation/venv/Scripts/python.exe');
   const scriptPath = path.resolve(__dirname, `../../BB_Py_Automation/src/${arg}`);
 
-  const pythonProcess = spawn(pythonPath, [scriptPath], {
+  pythonProcess = spawn(pythonPath, [scriptPath], {
     cwd: workingDirectory,
     windowsHide: true, // This will hide the Python prompt
   });
+  pythonProcess.on('spawn', () => {
+    console.log(`Starting Python process with PID ${pythonProcess.pid}`);
+    event.reply('python-start', `Starting Python process ${arg}`)
+  });
+
   let stdoutBuffer = '';
   pythonProcess.stdout.on('data', (data) => {
     console.log(`${data}`);
-    // stdoutBuffer += data.toString();
-    event.reply('python-result', data);
+    stdoutBuffer += data.toString();
+    // event.reply('python-result', data);
+    event.sender.send('python-result', data.toString());
   });
 
   pythonProcess.stderr.on('data', (data) => {
@@ -126,8 +99,53 @@ ipcMain.on('run-python', (event, arg) => {
   pythonProcess.on('close', (code) => {
     console.log(`Python script exited with code ${code}`);
     event.reply('python-close', `Python script exited with code ${code}`);
+    pythonProcess = null;
   });
 });
+
+
+ipcMain.on('stop-python', () => {
+  if (pythonProcess) {
+    console.log(`Attempting to kill Python process with PID: ${pythonProcess.pid}`);
+
+    // Check if the process is still running
+    exec(`tasklist /FI "PID eq ${pythonProcess.pid}" /FO CSV`, (err, stdout, stderr) => {
+      if (err) {
+        console.error(`Failed to list processes: ${err.message}`);
+      } else {
+        if (stdout.includes(pythonProcess.pid)) {
+          // Process is running, attempt to kill it
+          if (process.platform === 'win32') {
+            exec(`taskkill /pid ${pythonProcess.pid} /f /t`, (err, stdout, stderr) => {
+              if (err) {
+                console.error(`Failed to kill process: ${err.message}`);
+                console.error(`stderr: ${stderr}`);
+              } else {
+                console.log(`Python process with PID ${pythonProcess.pid} killed.`);
+                pythonProcess = null;
+              }
+            });
+          } else {
+            // Unix-based systems
+            try {
+              pythonProcess.kill('SIGKILL');
+              console.log(`Python process with PID ${pythonProcess.pid} killed.`);
+              pythonProcess = null;
+            } catch (err) {
+              console.error(`Failed to kill process: ${err.message}`);
+            }
+          }
+        } else {
+          console.log(`Python process with PID ${pythonProcess.pid} is not running.`);
+          pythonProcess = null;
+        }
+      }
+    });
+  } else {
+    console.log('No Python process is running');
+  }
+});
+
 
 // Handle saving language preference
 ipcMain.on('save-language-preference', (event, language) => {

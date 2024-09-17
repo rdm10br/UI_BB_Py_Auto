@@ -2,14 +2,15 @@ import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import styles from "./LanguageSwitcher.module.css";
-// const { ipcRenderer } = require('electron');
+// import { ipcRenderer } from 'electron';
 
 const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
   const [languages, setLanguages] = useState([]);
   const [dropdown, setDropdown] = useState(false);
-
+  
+  
   // Fetch available languages from the locales.json file
   useEffect(() => {
     fetch('./locales/locales.json')
@@ -18,15 +19,16 @@ const LanguageSwitcher = () => {
         setLanguages(data.languages);
       })
       .catch((error) => console.error("Error fetching languages:", error));
-
+  
     // Retrieve saved language preference from the persistent store
-    // const savedLanguage = ipcRenderer.sendSync('get-language-preference');
-//     if (savedLanguage) {
-//       i18n.changeLanguage(savedLanguage);
-//       setCurrentLanguage(savedLanguage);
-//     }
+    // const savedLanguage = window.ipcRenderer.sendSync('get-language-preference');
+    const savedLanguage = 'pt_br'
+    if (savedLanguage) {
+      i18n.changeLanguage(savedLanguage);
+      setCurrentLanguage(savedLanguage);
+    }
   }, []);
-
+  
   const toggleDropdown = () => {
     setDropdown((prevState) => !prevState);
   };
@@ -37,7 +39,7 @@ const LanguageSwitcher = () => {
     setDropdown(false);
     // ipcRenderer.send('save-language-preference', lng);
   };
-
+  
   return (
     <React.Fragment className={styles.langchang}>
       <button onClick={toggleDropdown}>
