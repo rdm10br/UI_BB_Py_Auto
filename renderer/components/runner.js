@@ -3,15 +3,22 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from "./AppSideBar.module.css";
 
-const Runner = () => {
+const Runner = ({ script }) => {
+  const runPython = () => {
+    window.ipc.send('run-python', script);
+    window.ipc.on('python-result', (event, data) => {
+      setResult(data);
+    });
+    window.ipc.on('python-error', (event, error) => {
+      console.error(error);
+    });
+  };
   return (
     // <div className={styles}>
     <div>
       <div className="card">
         <button
-          // onClick={() => {
-          //   window.ipc.send("message", "Batata");
-          // }}
+          onClick={runPython}
         className={styles.runner}
         >
           <Image

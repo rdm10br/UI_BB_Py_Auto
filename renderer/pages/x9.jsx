@@ -26,7 +26,7 @@ export default function NextPage() {
             culpa qui officia deserunt mollit anim id est laborum.
           </p>
         </div>
-        <Runner></Runner>
+        <Runner script='Main_config_doublecheck.py'></Runner>
       </div>
     </React.Fragment>
   )

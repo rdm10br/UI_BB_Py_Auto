@@ -306,15 +306,15 @@ const AppSideBar = () => {
   };
 
   // Function to run Python script
-  const runPython = () => {
-    window.ipc.send('run-python', 'Main_Test.py');
-    window.ipc.on('python-result', (event, data) => {
-      setResult(data);
-    });
-    window.ipc.on('python-error', (event, error) => {
-      console.error(error);
-    });
-  };
+  // const runPython = () => {
+  //   window.ipc.send('run-python', 'Main_Test.py');
+  //   window.ipc.on('python-result', (event, data) => {
+  //     setResult(data);
+  //   });
+  //   window.ipc.on('python-error', (event, error) => {
+  //     console.error(error);
+  //   });
+  // };
 
   // Toggle dropdown menus
   const toggleDropdown = (menu) => {
@@ -518,7 +518,7 @@ const AppSideBar = () => {
           </Link>
         </li>
         <li>
-          <Link href="/teste" className={styles.link} onClick={runPython}>
+          <Link href="/teste" className={styles.link} >
             <Image
               className={styles.icon_menus}
               src="/icon/experiment.png"
