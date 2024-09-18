@@ -7,7 +7,9 @@ import { spawn, exec } from 'child_process'
 const Store = require('electron-store');
 
 const isProd = process.env.NODE_ENV === 'production'
+const isWindows = process.platform === 'win32';
 let pythonProcess = null;
+
 if (isProd) {
   serve({ directory: 'app' })
 } else {
@@ -84,12 +86,11 @@ ipcMain.on('run-python', (event, arg) => {
     event.reply('python-start', `Starting Python process ${arg}`)
   });
 
-  let stdoutBuffer = '';
+  
   pythonProcess.stdout.on('data', (data) => {
     console.log(`${data}`);
-    stdoutBuffer += data.toString();
-    // event.reply('python-result', data);
-    event.sender.send('python-result', data.toString());
+    event.reply('python-result', data);
+    // event.sender.send('python-result', data.toString());
   });
 
   pythonProcess.stderr.on('data', (data) => {
@@ -108,44 +109,67 @@ ipcMain.on('stop-python', () => {
   if (pythonProcess) {
     console.log(`Attempting to kill Python process with PID: ${pythonProcess.pid}`);
 
-    // Check if the process is still running
-    exec(`tasklist /FI "PID eq ${pythonProcess.pid}" /FO CSV`, (err, stdout, stderr) => {
-      if (err) {
-        console.error(`Failed to list processes: ${err.message}`);
-      } else {
-        if (stdout.includes(pythonProcess.pid)) {
-          // Process is running, attempt to kill it
-          if (process.platform === 'win32') {
-            exec(`taskkill /pid ${pythonProcess.pid} /f /t`, (err, stdout, stderr) => {
-              if (err) {
-                console.error(`Failed to kill process: ${err.message}`);
-                console.error(`stderr: ${stderr}`);
-              } else {
-                console.log(`Python process with PID ${pythonProcess.pid} killed.`);
-                pythonProcess = null;
-              }
-            });
-          } else {
-            // Unix-based systems
-            try {
-              pythonProcess.kill('SIGKILL');
-              console.log(`Python process with PID ${pythonProcess.pid} killed.`);
-              pythonProcess = null;
-            } catch (err) {
-              console.error(`Failed to kill process: ${err.message}`);
-            }
-          }
-        } else {
-          console.log(`Python process with PID ${pythonProcess.pid} is not running.`);
-          pythonProcess = null;
-        }
-      }
-    });
+    try {
+      // Kill the process (SIGKILL is safe for both Unix and Windows)
+      process.kill(pythonProcess.pid, 'SIGKILL');
+      console.log(`Python process with PID ${pythonProcess.pid} killed.`);
+      pythonProcess = null;
+    } catch (err) {
+      console.error(`Failed to kill process: ${err.message}`);
+    }
   } else {
     console.log('No Python process is running');
   }
 });
+// Pausing the Python process
+ipcMain.on('pause-python', () => {
+  if (pythonProcess) {
+    console.log(`Attempting to pause Python process with PID: ${pythonProcess.pid}`);
 
+    if (isWindows) {
+      // Windows workaround: create the pause.flag file
+      if (!fs.existsSync(pauseFlagPath)) {
+        fs.writeFileSync(pauseFlagPath, ''); // Create the flag file
+        console.log('Python process paused (pause.flag created).');
+      }
+    } else {
+      // Unix-based systems: send SIGSTOP to pause the process
+      try {
+        process.kill(pythonProcess.pid, 'SIGSTOP');
+        console.log(`Python process with PID ${pythonProcess.pid} paused.`);
+      } catch (err) {
+        console.error(`Failed to pause process: ${err.message}`);
+      }
+    }
+  } else {
+    console.log('No Python process is running to pause.');
+  }
+});
+
+// Resuming the Python process
+ipcMain.on('resume-python', () => {
+  if (pythonProcess) {
+    console.log(`Attempting to resume Python process with PID: ${pythonProcess.pid}`);
+
+    if (isWindows) {
+      // Windows workaround: remove the pause.flag file
+      if (fs.existsSync(pauseFlagPath)) {
+        fs.unlinkSync(pauseFlagPath); // Remove the flag file
+        console.log('Python process resumed (pause.flag removed).');
+      }
+    } else {
+      // Unix-based systems: send SIGCONT to resume the process
+      try {
+        process.kill(pythonProcess.pid, 'SIGCONT');
+        console.log(`Python process with PID ${pythonProcess.pid} resumed.`);
+      } catch (err) {
+        console.error(`Failed to resume process: ${err.message}`);
+      }
+    }
+  } else {
+    console.log('No Python process is running to resume.');
+  }
+});
 
 // Handle saving language preference
 ipcMain.on('save-language-preference', (event, language) => {

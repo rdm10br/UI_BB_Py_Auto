@@ -14,7 +14,7 @@ export default function NextPage() {
           Datas - <Link href="/home">Go to home page</Link>
         </p> */}
         <h2>Avulso - Datas</h2>
-        <div className="card">
+        <div className="card-tutorial">
           <h3>Tutorial</h3>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
