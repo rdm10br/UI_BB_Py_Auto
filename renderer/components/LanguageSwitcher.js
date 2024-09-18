@@ -1,12 +1,12 @@
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import styles from "./LanguageSwitcher.module.css";
 // import { ipcRenderer } from 'electron';
 
 const LanguageSwitcher = () => {
-  const { i18n } = useTranslation();
-  const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
+  // const { i18n } = useTranslation();
+  // const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
   const [languages, setLanguages] = useState([]);
   const [dropdown, setDropdown] = useState(false);
   
@@ -24,8 +24,8 @@ const LanguageSwitcher = () => {
     // const savedLanguage = window.ipcRenderer.sendSync('get-language-preference');
     const savedLanguage = 'pt_br'
     if (savedLanguage) {
-      i18n.changeLanguage(savedLanguage);
-      setCurrentLanguage(savedLanguage);
+      // i18n.changeLanguage(savedLanguage);
+      // setCurrentLanguage(savedLanguage);
     }
   }, []);
   
@@ -34,8 +34,8 @@ const LanguageSwitcher = () => {
   };
 
   const handleChangeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-    setCurrentLanguage(lng);
+    // i18n.changeLanguage(lng);
+    // setCurrentLanguage(lng);
     setDropdown(false);
     // ipcRenderer.send('save-language-preference', lng);
   };
@@ -43,7 +43,7 @@ const LanguageSwitcher = () => {
   return (
     <React.Fragment className={styles.langchang}>
       <button onClick={toggleDropdown}>
-        {currentLanguage}
+        {/* {currentLanguage} */}
         {dropdown ? (
           <FaChevronUp className={styles.icon} />
         ) : (

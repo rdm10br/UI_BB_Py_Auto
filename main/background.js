@@ -25,11 +25,19 @@ if (isProd) {
   process.icon = iconPath
 
   const mainWindow = createWindow('main', {
-    width: 1000,
+    width: 900,
     height: 600,
     icon: iconPath,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      enableRemoteModule: false,
+      nodeIntegration: false,
+      sandbox: true,
+      additionalArguments: [
+        '--disable-autofill',
+        '--disable-features=Autofill'
+      ]
     },
   })
 
@@ -49,7 +57,7 @@ if (isProd) {
   
   ipcMain.on('set-title', (event, title) => {
     // console.log(`BBAutoPy - ${title}`);
-    mainWindow.webContents.executeJavaScript(`document.title = "BlacBot - ${title}"`);
+    mainWindow.webContents.executeJavaScript(`document.title = "BlackBot - ${title}"`);
   });
 
 })()
@@ -85,11 +93,11 @@ ipcMain.on('run-python', (event, arg) => {
     console.log(`Starting Python process with PID ${pythonProcess.pid}`);
     event.reply('python-start', `Starting Python process ${arg}`)
   });
-
+  // pythonProcess.stdout.setEncoding('utf8');
   
   pythonProcess.stdout.on('data', (data) => {
     console.log(`${data}`);
-    event.reply('python-result', data);
+    event.reply('python-result', `${data.toString()}`);
     // event.sender.send('python-result', data.toString());
   });
 

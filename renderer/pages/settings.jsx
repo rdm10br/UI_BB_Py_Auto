@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
-import { useTranslation } from 'react-i18next';
-import { withTranslation } from '../lib/withTranslation.js';
+// import { useTranslation } from 'react-i18next';
+// import { withTranslation } from '../lib/withTranslation.js';
 import versionData from "../../../BB_Py_Automation/release.json";
-import LanguageSwitcher from "../components/LanguageSwitcher.js";
-// import Link from "next/link";
+// import LanguageSwitcher from "../components/LanguageSwitcher.js";
 
-export const getServerSideProps = withTranslation('common');
+// export const getServerSideProps = withTranslation('common');
 
 export default function NextPage() {
-  const { t } = useTranslation('common');
-  // console.log(t);
+  // const { t } = useTranslation('common');
   const [version] = useState(versionData.CURRENT_VERSION);
-  // const [version, setVersion] = useState(null);
   const [account, setAccount] = useState(null);
   const [session, setSession] = useState(null);
   const [loginFileExists, setLoginFileExists] = useState(false);
@@ -36,8 +33,8 @@ export default function NextPage() {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
-        // console.log(`${loginFilePath}: ${data[loginFilePath]}`);
-        // console.log(`${cookieFilePath}: ${data[cookieFilePath]}`);
+        console.log(`${loginFilePath}: ${data[loginFilePath]}`);
+        console.log(`${cookieFilePath}: ${data[cookieFilePath]}`);
         setLoginFileExists(data[loginFilePath]);
         setCookieFileExists(data[cookieFilePath]);
       } catch (error) {
@@ -119,56 +116,58 @@ export default function NextPage() {
   return (
     <React.Fragment>
       <Head>
-        <title>{t('settings')}</title>
+        <title>Configurações</title>
       </Head>
       <div>
-        <h2>{t('settings')}</h2>
+        <h2>Configurações</h2>
       </div>
       <div className="card">
-        <h3>{t('userPreferences.title')}</h3>
-        <p>{t('userPreferences.language')} <LanguageSwitcher/></p>
-        <button className="destructive">{t('userPreferences.buttons.defaultPreferences')}</button>
+        <h3>Preferências do Usuário</h3>
+        <p>
+          {/* Idioma : <LanguageSwitcher /> */}
+        </p>
+        <button className="destructive">Restaurar Configurações</button>
       </div>
       <div className="card">
-        <h3>{t('credentialAndCookies.title')}</h3>
-        {account ? <p>{t('credentialAndCookies.accountSaved')} : {account}</p> : null}
-        {session ? <p>{t('credentialAndCookies.lastSessionCookies')} : {formattedDate}</p> : null}
+        <h3>Credenciais & Cookies:</h3>
+        {account ? <p>Conta salva: {account}</p> : null}
+        {session ? <p>Últimos cookies da sessão: {formattedDate}</p> : null}
         {!account && !session && (
-          <p>{t('credentialAndCookies.saveCredentialsPrompt')}</p>
+          <p>Salve suas credenciais AVA e execute o Teste:</p>
         )}
         <br />
-        <button>{t('credentialAndCookies.buttons.saveCredentials')}</button>
-        <button className="destructive">{t('credentialAndCookies.buttons.deleteCookies')}</button>
-        <button className="destructive">{t('credentialAndCookies.buttons.deleteCredentialsAndCookies')}</button>
+        <button>Salvar Credenciais</button>
+        <button className="destructive">Excluir Cookies</button>
+        <button className="destructive">Excluir Credenciais & Cookies</button>
       </div>
       <div className="card">
-        <h3>{t('updates.title')}</h3>
+        <h3>Atualizações</h3>
         {updateAvailable && (
           <>
-            <p>{t('updates.updateAvailable.message')} : {latestVersion}</p>
-            <p>{t('updates.updateAvailable.yourVersion')} : {version}</p>
+            <p>Há uma atualização disponível: {latestVersion}</p>
+            <p>Sua Versão: {version}</p>
             <br />
-            <button>{t('updates.updateAvailable.buttons.update')}</button>
+            <button>Atualizar</button>
           </>
         )}
 
         {!updateAvailable && (
           <>
-            <p>{t('updates.noUpdateAvailable.message')} : {version}</p>
+            <p>Versão: {version}</p>
             <br />
-            <button>{t('updates.noUpdateAvailable.buttons.checkForUpdate')}</button>
+            <button>Verificar Atualização</button>
           </>
         )}
-        <button>{t('updates.buttons.rollback')}</button>
-        <button>{t('updates.buttons.viewLogs')}</button>
-        <button className="destructive">{t('updates.buttons.deleteLogs')}</button>
+        <button>Reverter</button>
+        <button>Ver Logs</button>
+        <button className="destructive">Excluir Logs</button>
       </div>
       <div className="card">
-        <h3>{t('botLogs.title')}</h3>
-        <p>{t('botLogs.description')}</p>
+        <h3>Logs dos Bots:</h3>
+        <p>Logs de todas as execuções dos bots</p>
         <br />
-        <button>{t('botLogs.buttons.viewLogs')}</button>
-        <button className="destructive">{t('botLogs.buttons.deleteLogs')}</button>
+        <button>Ver Logs</button>
+        <button className="destructive">Excluir Logs</button>
       </div>
     </React.Fragment>
   );

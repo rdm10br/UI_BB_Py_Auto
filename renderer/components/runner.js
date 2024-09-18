@@ -3,7 +3,7 @@ import Image from "next/image";
 import styles from "./AppSideBar.module.css";
 
 const Runner = ({ script }) => {
-  const [result, setResult] = useState(""); // Initialize result as an empty string
+  const [result, setResult] = useState("");
   const [terminal, setTerminal] = useState(false);
   const [play, setPlay] = useState(false);
 
@@ -13,7 +13,7 @@ const Runner = ({ script }) => {
     });
     // Set up IPC listeners when the component mounts
     window.ipc.on("python-result", (event, data) => {
-      console.log("Received data:", data);
+      console.warn("Received data:", data);
       setResult((prevResult) => prevResult + (data ? data.toString() : ""));
       // setPlay(false); // Stop playing once the result is received
     });
@@ -61,6 +61,7 @@ const Runner = ({ script }) => {
             src="/icon/play-button-arrowhead.png"
             height={20}
             width={20}
+            alt="Description of the image"
           />
         </button>
       ) : (
@@ -70,6 +71,7 @@ const Runner = ({ script }) => {
             src="/icon/pause.png"
             height={20}
             width={20}
+            alt="Description of the image"
           />
         </button>
       )}
@@ -80,6 +82,7 @@ const Runner = ({ script }) => {
             src="/icon/stop-button.png"
             height={20}
             width={20}
+            alt="Description of the image"
           />
         </button>
       )}
