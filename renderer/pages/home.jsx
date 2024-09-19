@@ -21,7 +21,7 @@ export default function HomePage() {
         <title onChange={changeTitle}>Home</title>
       </Head>
       <div className="title">
-        <h2>Home - Teste</h2>
+        <h2>BlackBot - Home</h2>
       </div>
       <div className="card">
         <button

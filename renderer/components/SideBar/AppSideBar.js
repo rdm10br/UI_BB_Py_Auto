@@ -43,6 +43,32 @@ const AppSideBar = () => {
     }
   }, [collapsed]);
 
+  useEffect(() => {
+    document.querySelectorAll(".icon-container").forEach((container) => {
+      const tooltipText = container.getAttribute("data-tooltip");
+
+      // Criar o elemento tooltip
+      const tooltip = document.createElement("div");
+      tooltip.className = "tooltip";
+      tooltip.textContent = tooltipText;
+
+      // Adicionar a tooltip ao container
+      container.appendChild(tooltip);
+
+      // Mostrar a tooltip ao passar o mouse
+      container.addEventListener("mouseenter", () => {
+        tooltip.style.visibility = "visible";
+        tooltip.style.opacity = "1";
+      });
+
+      // Esconder a tooltip ao sair do mouse
+      container.addEventListener("mouseleave", () => {
+        tooltip.style.visibility = "hidden";
+        tooltip.style.opacity = "0";
+      });
+    });
+  }, []); //NOVO ATE AQUI
+
   return (
     <div className={`${styles.sideMenu} ${collapsed ? styles.collapsed : ""}`}>
       <ul className={styles.header}>
@@ -78,8 +104,8 @@ const AppSideBar = () => {
       </ul>
       <ul>
         <li className={styles.home}>
-          <Link href="/home" className={styles.link}>
-            {/* <div className={styles.tooltip}> */}
+          {/* <div className="icon-container" data-tooltip='home'> */}
+            <Link href="/home" className={styles.link}>
               <Image
                 className={styles.icon_menus}
                 src="/icon/home.png"
@@ -87,10 +113,9 @@ const AppSideBar = () => {
                 width={20}
                 alt="Description of the image"
               />
-              {!collapsed && <span>Home</span>}
-              {collapsed && <span className={styles.tooltiptext}>Home</span>}
-            {/* </div> */}
-          </Link>
+              {!collapsed && <span className="home">Home</span>}
+            </Link>
+          {/* </div> */}
         </li>
         <li onClick={() => toggleDropdown("DoubleCheck")}>
           <Image
