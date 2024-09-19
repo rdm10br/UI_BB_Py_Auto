@@ -1,19 +1,19 @@
-import React from 'react'
-import Head from 'next/head'
-import Link from 'next/link'
-import Runner from "../components/runner.js";
+import React from "react";
+import Head from "next/head";
+import Link from "next/link";
+import Runner from "../../components/Runner/runner";
 
 export default function NextPage() {
   return (
     <React.Fragment>
       <Head>
-        <title>Datas</title>
+        <title>Test</title>
       </Head>
       <div>
         {/* <p>
-          Datas - <Link href="/home">Go to home page</Link>
+          Teste - <Link href="/home">Go to home page</Link>
         </p> */}
-        <h2>Avulso - Datas</h2>
+        <h2>Teste</h2>
         <div className="card-tutorial">
           <h3>Tutorial</h3>
           <p>
@@ -26,8 +26,8 @@ export default function NextPage() {
             culpa qui officia deserunt mollit anim id est laborum.
           </p>
         </div>
-        <Runner script='Main_ajusteData.py'></Runner>
+        <Runner script="Main_Test.py"></Runner>
       </div>
     </React.Fragment>
-  )
+  );
 }

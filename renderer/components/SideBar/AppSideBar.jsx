@@ -15,7 +15,10 @@ const AppSideBar = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   const openExcelFile = async () => {
-    window.ipc.send("open-excel-file", "../../BB_Py_Automation/Planilhas/SALAS.xlsx");
+    window.ipc.send(
+      "open-excel-file",
+      "../../BB_Py_Automation/Planilhas/SALAS.xlsx"
+    );
   };
 
   // Toggle dropdown menus
@@ -32,11 +35,11 @@ const AppSideBar = () => {
   };
 
   useEffect(() => {
-    const body = document.querySelector('body');
+    const body = document.querySelector("body");
     if (collapsed) {
-      body.classList.add('collapsedBody');
+      body.classList.add("collapsedBody");
     } else {
-      body.classList.remove('collapsedBody');
+      body.classList.remove("collapsedBody");
     }
   }, [collapsed]);
 
@@ -76,15 +79,17 @@ const AppSideBar = () => {
       <ul>
         <li className={styles.home}>
           <Link href="/home" className={styles.link}>
-            <Image
-              className={styles.icon_menus}
-              src="/icon/home.png"
-              height={20}
-              width={20}
-              alt="Description of the image"
-            />
-            {!collapsed && <span>Home</span>}
-            {collapsed && <span className={styles.tooltiptext}>Home</span>}
+            {/* <div className={styles.tooltip}> */}
+              <Image
+                className={styles.icon_menus}
+                src="/icon/home.png"
+                height={20}
+                width={20}
+                alt="Description of the image"
+              />
+              {!collapsed && <span>Home</span>}
+              {collapsed && <span className={styles.tooltiptext}>Home</span>}
+            {/* </div> */}
           </Link>
         </li>
         <li onClick={() => toggleDropdown("DoubleCheck")}>
@@ -96,7 +101,9 @@ const AppSideBar = () => {
             alt="Description of the image"
           />
           {!collapsed && <span>Double Check</span>}
-          {collapsed && <span className={styles.tooltiptext}>Double Check</span>}
+          {collapsed && (
+            <span className={styles.tooltiptext}>Double Check</span>
+          )}
           {dropdown.DoubleCheck ? (
             <FaChevronUp className={styles.icon} />
           ) : (
@@ -106,17 +113,17 @@ const AppSideBar = () => {
         {dropdown.DoubleCheck && !collapsed && (
           <ul className={styles.dropdown}>
             <li>
-              <Link href="/master" className={styles.link}>
+              <Link href="/bot/double_check/master" className={styles.link}>
                 Master
               </Link>
             </li>
             <li>
-              <Link href="/veteranos" className={styles.link}>
+              <Link href="/bot/double_check/veteranos" className={styles.link}>
                 Veteranos
               </Link>
             </li>
             <li>
-              <Link href="/digital" className={styles.link}>
+              <Link href="/bot/double_check/digital" className={styles.link}>
                 Digital
               </Link>
             </li>
@@ -141,12 +148,12 @@ const AppSideBar = () => {
         {dropdown.Cópia && !collapsed && (
           <ul className={styles.dropdown}>
             <li>
-              <Link href="/material" className={styles.link}>
+              <Link href="/bot/copy/material" className={styles.link}>
                 Material
               </Link>
             </li>
             <li>
-              <Link href="/sala" className={styles.link}>
+              <Link href="/bot/copy/sala" className={styles.link}>
                 Sala Nova
               </Link>
             </li>
@@ -171,39 +178,39 @@ const AppSideBar = () => {
         {dropdown.Data && !collapsed && (
           <ul className={styles.dropdown}>
             <li>
-              <Link href="/datas" className={styles.link}>
+              <Link href="/bot/loose/datas" className={styles.link}>
                 Datas
               </Link>
             </li>
             <li>
-              <Link href="/teste" className={styles.link}>
+              <Link href="/bot/teste" className={styles.link}>
                 Ajuste AV1
               </Link>
             </li>
             <li>
-              <Link href="/teste" className={styles.link}>
+              <Link href="/bot/teste" className={styles.link}>
                 Ajuste AV2
               </Link>
             </li>
             <li>
-              <Link href="/teste" className={styles.link}>
+              <Link href="/bot/teste" className={styles.link}>
                 Remove S.M.
               </Link>
             </li>
             <li>
-              <Link href="/teste" className={styles.link}>
+              <Link href="/bot/teste" className={styles.link}>
                 Link E-Book
               </Link>
             </li>
             <li>
-              <Link href="/teste" className={styles.link}>
+              <Link href="/bot/teste" className={styles.link}>
                 Open Mescla
               </Link>
             </li>
           </ul>
         )}
         <li>
-          <Link href="/bq" className={styles.link}>
+          <Link href="/bot/bq" className={styles.link}>
             <Image
               className={styles.icon_menus}
               src="/icon/fill.png"
@@ -216,7 +223,7 @@ const AppSideBar = () => {
           </Link>
         </li>
         <li>
-          <Link href="/x9" className={styles.link}>
+          <Link href="/bot/x9" className={styles.link}>
             <Image
               className={styles.icon_menus}
               src="/icon/detective.png"
@@ -229,7 +236,7 @@ const AppSideBar = () => {
           </Link>
         </li>
         <li>
-          <Link href="/teste" className={styles.link} >
+          <Link href="/bot/teste" className={styles.link}>
             <Image
               className={styles.icon_menus}
               src="/icon/experiment.png"
@@ -266,7 +273,9 @@ const AppSideBar = () => {
               alt="Description of the image"
             />
             {!collapsed && <span>Configuração</span>}
-            {collapsed && <span className={styles.tooltiptext}>Configuração</span>}
+            {collapsed && (
+              <span className={styles.tooltiptext}>Configuração</span>
+            )}
           </Link>
         </li>
       </div>

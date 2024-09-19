@@ -438,40 +438,15 @@
   padding-top: 0.2rem;
 }
 
-/* .tooltip {
-  position: relative;
-  display: inline-block;
-}
-
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: #555;
-  color: #fff;
-  text-align: center;
-  border-radius: 5px;
-  padding: 5px 0;
-  position: absolute;
-  z-index: 1;
-  bottom: 125%;
-  left: 50%;
-  margin-left: -60px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-} */
-
+/* Tooltip Container */
 .tooltip {
   position: relative;
   display: inline-block;
-  border-bottom: 1px dotted black;
+  cursor: pointer;
 }
 
-.tooltip .tooltiptext {
+/* Tooltip Text */
+.tooltiptext {
   visibility: hidden;
   width: 120px;
   background-color: black;
@@ -479,12 +454,29 @@
   text-align: center;
   border-radius: 6px;
   padding: 5px 0;
-
-  /* Position the tooltip */
   position: absolute;
   z-index: 1;
+  bottom: 125%; /* Adjust this depending on your layout */
+  left: 50%;
+  margin-left: -60px; /* Half of the width for centering */
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
+/* Tooltip Arrow */
+.tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%; /* Positioned at the bottom of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+/* Tooltip on hover */
 .tooltip:hover .tooltiptext {
   visibility: visible;
+  opacity: 1;
 }

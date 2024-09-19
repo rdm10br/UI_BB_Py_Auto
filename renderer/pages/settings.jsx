@@ -3,7 +3,7 @@ import Head from "next/head";
 // import { useTranslation } from 'react-i18next';
 // import { withTranslation } from '../lib/withTranslation.js';
 import versionData from "../../../BB_Py_Automation/release.json";
-// import LanguageSwitcher from "../components/LanguageSwitcher.js";
+// import LanguageSwitcher from "../components/LanguageSwitcher/LanguageSwitcher.js";
 
 // export const getServerSideProps = withTranslation('common');
 

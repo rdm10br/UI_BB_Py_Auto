@@ -1,5 +1,5 @@
 import React from "react";
-import AppSideBar from '../components/AppSideBar';
+import AppSideBar from '../components/SideBar/AppSideBar';
 import '../styles/global.css'
 
 function MyApp({ Component, pageProps }) {

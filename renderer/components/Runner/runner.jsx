@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import styles from "./AppSideBar.module.css";
+import styles from "../SideBar/AppSideBar.module.css";
 
 const Runner = ({ script }) => {
   const [result, setResult] = useState("");

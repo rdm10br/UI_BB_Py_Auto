@@ -1,19 +1,19 @@
 import React from "react";
 import Head from "next/head";
 import Link from "next/link";
-import Runner from "../components/runner.js";
+import Runner from "../../../components/Runner/runner";
 
 export default function NextPage() {
   return (
     <React.Fragment>
       <Head>
-        <title>Digital</title>
+        <title>Veteranos</title>
       </Head>
       <div>
         {/* <p>
           Master - <Link href="/home">Go to home page</Link>
         </p> */}
-        <h2>Double Check - Digital</h2>
+        <h2>Double Check - Veteranos</h2>
         <div className="card-tutorial">
           <h3>Tutorial</h3>
           <p>
@@ -26,7 +26,7 @@ export default function NextPage() {
             culpa qui officia deserunt mollit anim id est laborum.
           </p>
         </div>
-        <Runner script='Main_doubleCheck_Mescla_DIG.py'></Runner>
+        <Runner script='Main_doublecheck_Mescla_VET.py'></Runner>
       </div>
     </React.Fragment>
   );

@@ -1,7 +1,7 @@
 import React from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
-import Runner from "../components/runner.js";
+import Runner from "../../components/Runner/runner";
 
 export default function NextPage() {
   return (
