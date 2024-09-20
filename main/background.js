@@ -95,10 +95,24 @@ ipcMain.on('run-python', (event, arg) => {
   });
   // pythonProcess.stdout.setEncoding('utf8');
   
+  // pythonProcess.stdout.on('data', (data) => {
+  //   console.log(`${data}`);
+  //   event.reply('python-result', `${data.toString()}`);
+  //   // event.sender.send('python-result', data.toString());
+  // });
+  // pythonProcess.stdout.on('data-teste', (data) => {
+  //   // console.log(`${data}`);
+  //   event.sender.send('python-result-test2', data);
+  //   event.sender.send('python-output', data.toString());
+  //   event.reply('python-result-test1', `${data}`);
+  //   // event.sender.send('python-result', data.toString());
+  // });
+  // Capture stdout
   pythonProcess.stdout.on('data', (data) => {
+    // Send stdout to the renderer process via IPC
     console.log(`${data}`);
-    event.reply('python-result', `${data.toString()}`);
-    // event.sender.send('python-result', data.toString());
+    // event.sender.send('python-output', data.toString());
+    event.sender.send('python-output', `\n${data.toString()}`);
   });
 
   pythonProcess.stderr.on('data', (data) => {

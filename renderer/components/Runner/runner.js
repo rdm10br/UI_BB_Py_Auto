@@ -4,22 +4,32 @@ import styles from "../SideBar/AppSideBar.module.css";
 
 const Runner = ({ script }) => {
   const [result, setResult] = useState("");
+  const [prev, setprev] = useState("");
   const [terminal, setTerminal] = useState(false);
   const [play, setPlay] = useState(false);
 
   useEffect(() => {
-    window.ipc.on("python-start", (event, data) => {
-      setResult(data);
-    });
+    // window.ipc.on("python-start", (event, data) => {
+    //   setResult(data);
+    // });
+
     // Set up IPC listeners when the component mounts
-    window.ipc.on("python-result", (event, data) => {
-      console.warn("Received data:", data);
-      setResult((prevResult) => prevResult + (data ? data.toString() : ""));
-      // setPlay(false); // Stop playing once the result is received
+    // window.ipc.on("python-result", (event, data) => {
+    //   console.warn("Received data:", data);
+    //   setResult((prevResult) => prevResult + (data ? data.toString() : ""));
+    //   // setPlay(false); // Stop playing once the result is received
+    // });
+
+    window.ipc.on('python-output', (event, data) => {
+      setResult((prev) => prev + `\n${data}`); // Append the new data to the existing output
     });
-    window.ipc.on("python-error", (event, error) => {
-      console.error(error);
-      // setPlay(false); // Stop playing in case of an error
+
+    window.ipc.on('python-error', (event, data) => {
+      setOutput((prev) => prev + `\nError: ${data}`);
+    });
+
+    window.ipc.on('python-closed', (event, data) => {
+      setResult((prev) => prev + `\n${data}`);
     });
 
     // Cleanup listeners when the component unmounts
@@ -30,7 +40,8 @@ const Runner = ({ script }) => {
   }, []);
 
   const runPython = () => {
-    setResult(""); // Clear the previous result
+    setprev("")
+    setResult(`Starting Python Script: ${script}`); // Clear the previous result
     setTerminal(true);
     setPlay(true);
     window.ipc.send("run-python", script); // Trigger Python script execution
