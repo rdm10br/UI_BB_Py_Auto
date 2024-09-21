@@ -6,7 +6,7 @@ const Runner = ({ script }) => {
   const [result, setResult] = useState("");
   const [prev, setprev] = useState("");
   const [terminal, setTerminal] = useState(false);
-  const [play, setPlay] = useState(true);
+  const [play, setPlay] = useState(false);
 
   useEffect(() => {
     // window.ipc.on("python-start", (event, data) => {
