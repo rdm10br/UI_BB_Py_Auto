@@ -264,6 +264,9 @@
   filter: brightness(128%) hue-rotate(0deg);
   padding: 4px;
 }
+.runner_destructive:hover{
+  background-color: var(--destructive);
+}
 
 .settings_container {
   position: fixed;

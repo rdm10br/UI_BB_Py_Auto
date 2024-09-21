@@ -12,10 +12,16 @@ const handler = {
       ipcRenderer.removeListener(channel, subscription);
     };
   },
-  async readExcelFile() {
-    const data = await ipcRenderer.invoke('read-excel-file');
-    return data;
-  }
 };
 
 contextBridge.exposeInMainWorld('ipc', handler);
+
+contextBridge.exposeInMainWorld('githubAPI', {
+  getRepo: (GITHUB_REPO) => ipcRenderer.invoke('get-github-repo', GITHUB_REPO),
+  showUpdatePopup: (isUpdateAvailable) => ipcRenderer.invoke('show-update-popup', isUpdateAvailable)
+});
+
+contextBridge.exposeInMainWorld('fileAPI', {
+  // fetchMyApi: (apiUrl) => ipcRenderer.invoke('fetch-my-api', apiUrl),
+  checkFilesExist: (filePaths) => ipcRenderer.invoke('check-files-exist', filePaths),
+});

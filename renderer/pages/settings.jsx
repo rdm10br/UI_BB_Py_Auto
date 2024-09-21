@@ -22,25 +22,69 @@ export default function NextPage() {
       "../BB_Py_Automation/src/Metodos/Login/__pycache__/login.json";
     const cookieFilePath =
       "../BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json";
+
+    // const fetchFileStatus = async () => {
+    //   const query = `?files=${encodeURIComponent(
+    //     loginFilePath
+    //   )}&files=${encodeURIComponent(cookieFilePath)}`;
+
+    //   try {
+    //     apiUrl = `/api/check-files${query}`
+    //     // const response = await fetch(`/api/check-files${query}`);
+    //     const response = await window.fileAPI.fetchMyApi(apiUrl);
+    //     if (!response.ok) {
+    //       throw new Error(`HTTP error! Status: ${response.status}`);
+    //     }
+    //     const data = await response.json();
+    //     console.log(`${loginFilePath}: ${data[loginFilePath]}`);
+    //     console.log(`${cookieFilePath}: ${data[cookieFilePath]}`);
+    //     setLoginFileExists(data[loginFilePath]);
+    //     setCookieFileExists(data[cookieFilePath]);
+    //   } catch (error) {
+    //     console.error("Error fetching file status:", error);
+    //   }
+    // };
+
     const fetchFileStatus = async () => {
-      const query = `?files=${encodeURIComponent(
-        loginFilePath
-      )}&files=${encodeURIComponent(cookieFilePath)}`;
+      const filePaths = [loginFilePath, cookieFilePath];
 
       try {
-        const response = await fetch(`/api/check-files${query}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log(`${loginFilePath}: ${data[loginFilePath]}`);
-        console.log(`${cookieFilePath}: ${data[cookieFilePath]}`);
-        setLoginFileExists(data[loginFilePath]);
-        setCookieFileExists(data[cookieFilePath]);
+        // Call the IPC method to check file existence
+        const fileStatuses = await window.fileAPI.checkFilesExist(filePaths);
+
+        // Process the results
+        fileStatuses.forEach((status) => {
+          console.log(`${status.path}: ${status.exists}`);
+          if (status.path === loginFilePath) {
+            setLoginFileExists(status.exists);
+          }
+          if (status.path === cookieFilePath) {
+            setCookieFileExists(status.exists);
+          }
+        });
       } catch (error) {
         console.error("Error fetching file status:", error);
       }
     };
+
+    // const fetchFileStatus = async () => {
+    //   const query = `?files=${encodeURIComponent(
+    //     loginFilePath
+    //   )}&files=${encodeURIComponent(cookieFilePath)}`;
+
+    //   try {
+    //     const apiUrl = `api/check-files${query}`;
+    //     const data = await window.fileAPI.fetchMyApi(apiUrl);
+
+    //     console.log(`${loginFilePath}: ${data[loginFilePath]}`);
+    //     console.log(`${cookieFilePath}: ${data[cookieFilePath]}`);
+
+    //     setLoginFileExists(data[loginFilePath]);
+    //     setCookieFileExists(data[cookieFilePath]);
+    //   } catch (error) {
+    //     console.error("Error fetching file status:", error);
+    //   }
+    // };
 
     fetchFileStatus();
   }, []);
@@ -76,25 +120,60 @@ export default function NextPage() {
     loadCookieData();
   }, [loginFileExists, cookieFileExists]);
 
-  useEffect(() => {
-    const checkForUpdates = async () => {
-      try {
-        const response = await fetch("/api/api-github");
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const release = await response.json();
-        const latestVersion = release.tag_name;
-        setLatestVersion(latestVersion);
-        if (version !== latestVersion) {
-          setUpdateAvailable(true);
-        }
-      } catch (error) {
-        console.error("Error checking for updates:", error);
-      }
-    };
+  const checkForUpdates = async () => {
+    // try {
+    //   const response = await fetch("/api/api-github");
+    //   if (!response.ok) {
+    //     throw new Error(`HTTP error! Status: ${response.status}`);
+    //   }
+    //   const release = await response.json();
+    //   const latestVersion = release.tag_name;
+    //   setLatestVersion(latestVersion);
+    //   if (version !== latestVersion) {
+    //     setUpdateAvailable(true);
+    //   }
+    // } catch (error) {
+    //   console.error("Error checking for updates:", error);
+    // }
 
-    checkForUpdates();
+    const GITHUB_REPO = "rdm10br/BB_Py_Automation";
+    try {
+      const data = await window.githubAPI.getRepo(GITHUB_REPO);
+
+      // Check if there's an error in the response
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      // GitHub API data should already be parsed, no need to call `data.json()`
+      const latestVersion = data.tag_name;
+      console.log(latestVersion);
+
+      // Update the state with the latest version
+      setLatestVersion(latestVersion);
+
+      // Check if there is an update available
+      if (version !== latestVersion) {
+        setUpdateAvailable(true);
+      }
+
+      const wantsToUpdate = await window.githubAPI.showUpdatePopup(
+        updateAvailable
+      );
+      console.log(wantsToUpdate);
+      if (wantsToUpdate) {
+        console.log("User chose to update the app.");
+        // You can add your update logic here, like downloading and installing the update
+      } else {
+        console.log("User choose not to update or is already up to date.");
+      }
+    } catch (err) {
+      console.error("Error checking for updates:", err);
+    }
+  };
+
+  useEffect(() => {
+    // checkForUpdates();
   }, [version]);
 
   const formattedDate = session
@@ -123,9 +202,7 @@ export default function NextPage() {
       </div>
       <div className="card">
         <h3>Preferências do Usuário</h3>
-        <p>
-          {/* Idioma : <LanguageSwitcher /> */}
-        </p>
+        <p>{/* Idioma : <LanguageSwitcher /> */}</p>
         <button className="destructive">Restaurar Configurações</button>
       </div>
       <div className="card">
@@ -155,7 +232,7 @@ export default function NextPage() {
           <>
             <p>Versão: {version}</p>
             <br />
-            <button>Verificar Atualização</button>
+            <button onClick={checkForUpdates}>Verificar Atualização</button>
           </>
         )}
         <button>Reverter</button>

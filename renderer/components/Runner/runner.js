@@ -6,7 +6,7 @@ const Runner = ({ script }) => {
   const [result, setResult] = useState("");
   const [prev, setprev] = useState("");
   const [terminal, setTerminal] = useState(false);
-  const [play, setPlay] = useState(false);
+  const [play, setPlay] = useState(true);
 
   useEffect(() => {
     // window.ipc.on("python-start", (event, data) => {
@@ -20,18 +20,26 @@ const Runner = ({ script }) => {
     //   // setPlay(false); // Stop playing once the result is received
     // });
 
-    window.ipc.on('python-output', (event, data) => {
-      setResult((prev) => prev + `\n${data}`); // Append the new data to the existing output
-    });
+    function scrollToBottom() {
+      const terminal = document.querySelector(".terminal");
+      terminal.scrollTop = terminal.scrollHeight;
+      window.scrollTo(0, document.body.scrollHeight);
+    }
 
-    window.ipc.on('python-error', (event, data) => {
-      setOutput((prev) => prev + `\nError: ${data}`);
-    });
-
-    window.ipc.on('python-closed', (event, data) => {
+    window.ipc.on("python-output", (data) => {
       setResult((prev) => prev + `\n${data}`);
+      scrollToBottom()
     });
 
+    window.ipc.on("python-error", (data) => {
+      setOutput((prev) => prev + `\nError: ${data}`);
+      scrollToBottom()
+    });
+
+    window.ipc.on("python-closed", (data) => {
+      setResult((prev) => prev + `\n${data}`);
+      scrollToBottom()
+    });
     // Cleanup listeners when the component unmounts
     return () => {
       // window.ipc.removeAllListeners("python-result");
@@ -40,7 +48,7 @@ const Runner = ({ script }) => {
   }, []);
 
   const runPython = () => {
-    setprev("")
+    setprev("");
     setResult(`Starting Python Script: ${script}`); // Clear the previous result
     setTerminal(true);
     setPlay(true);

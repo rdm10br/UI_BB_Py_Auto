@@ -1,10 +1,12 @@
 import path from 'path'
-import { app, ipcMain, Tray } from 'electron'
+import fs from 'fs';
+import { app, ipcMain, Tray, dialog } from 'electron'
 import serve from 'electron-serve'
 import { createWindow } from './helpers'
 import { spawn, exec } from 'child_process'
-// import ExcelJS from 'exceljs'
+import axios from 'axios'
 const Store = require('electron-store');
+// import ExcelJS from 'exceljs'
 
 const isProd = process.env.NODE_ENV === 'production'
 const isWindows = process.platform === 'win32';
@@ -22,7 +24,7 @@ if (isProd) {
   
   const iconPath = 'renderer/public/icon/1bad.png'
 
-  process.icon = iconPath
+  // process.icon = iconPath
 
   const mainWindow = createWindow('main', {
     width: 900,
@@ -205,4 +207,51 @@ ipcMain.on('get-language-preference', (event) => {
   const store = new Store();
   const languagePreference = store.get('languagePreference');
   event.returnValue = languagePreference || null;
+});
+
+ipcMain.handle('get-github-repo', async (event, GITHUB_REPO) => {
+  try {
+    const response = await axios.get(`https://api.github.com/repos/${GITHUB_REPO}/releases/latest`);
+    return response.data; // Return the response data to the renderer process
+  } catch (error) {
+    console.error('Error fetching latest release:', error);
+    return { error: 'Error fetching latest release' }; // Return the error to the renderer
+  }
+});
+
+ipcMain.handle('show-update-popup', async (event, isUpdateAvailable) => {
+  const message = isUpdateAvailable
+    ? 'A new update is available! Would you like to update now?'
+    : 'You are using the latest version.';
+
+  const buttons = isUpdateAvailable ? ['Update Now', 'Later'] : ['OK'];
+
+  // Display the message box as a popup
+  const response = await dialog.showMessageBox({
+    type: 'info',
+    title: 'Update Check',
+    message: message,
+    buttons: buttons
+  });
+
+  // If the user clicks "Update Now", return a positive response
+  return response.response === 0 && isUpdateAvailable;
+});
+
+// ipcMain.handle('fetch-my-api', async (event, apiUrl) => {
+//   try {
+//     const port = process.argv[2]
+//     const response = await axios.get(`http://localhost:${port}/${apiUrl}`);  // Fetch from your API
+//     return response.data;  // Return the data from the API
+//   } catch (error) {
+//     console.error('Error fetching API data:', error);
+//     throw new Error('Failed to fetch API data');  // Throw an error if fetch fails
+//   }
+// });
+
+ipcMain.handle('check-files-exist', async (event, filePaths) => {
+  return filePaths.map(filePath => ({
+    path: filePath,
+    exists: fs.existsSync(path.join(process.cwd(), filePath)),
+  }));
 });
