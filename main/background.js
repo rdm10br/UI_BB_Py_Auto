@@ -114,16 +114,18 @@ ipcMain.on('run-python', (event, arg) => {
     // Send stdout to the renderer process via IPC
     console.log(`${data}`);
     // event.sender.send('python-output', data.toString());
-    event.sender.send('python-output', `\n${data.toString()}`);
+    event.sender.send('python-output', `${data.toString()}`);
   });
 
   pythonProcess.stderr.on('data', (data) => {
     event.reply('python-error', data.toString()); // Send stderr to the renderer process
+    event.sender.send('python-error', data.toString());
   });
 
   pythonProcess.on('close', (code) => {
     console.log(`Python script exited with code ${code}`);
     event.reply('python-close', `Python script exited with code ${code}`);
+    event.sender.send('python-close', `Python script exited with code ${code}`);
     pythonProcess = null;
   });
 });

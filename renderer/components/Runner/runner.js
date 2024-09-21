@@ -27,29 +27,28 @@ const Runner = ({ script }) => {
     }
 
     window.ipc.on("python-output", (data) => {
-      setResult((prev) => prev + `\n${data}`);
+      setResult((prev) => prev + `${data}`);
       scrollToBottom()
     });
 
     window.ipc.on("python-error", (data) => {
-      setOutput((prev) => prev + `\nError: ${data}`);
+      setOutput((prev) => prev + `Error: ${data}`);
       scrollToBottom()
     });
 
-    window.ipc.on("python-closed", (data) => {
-      setResult((prev) => prev + `\n${data}`);
+    window.ipc.on("python-close", (data) => {
+      // setResult((prev) => prev + `${data}`);
       scrollToBottom()
+      setPlay(false)
     });
     // Cleanup listeners when the component unmounts
     return () => {
-      // window.ipc.removeAllListeners("python-result");
-      // window.ipc.removeAllListeners("python-error");
     };
   }, []);
 
   const runPython = () => {
     setprev("");
-    setResult(`Starting Python Script: ${script}`); // Clear the previous result
+    setResult(`Starting Python Script: ${script}\n`); // Clear the previous result
     setTerminal(true);
     setPlay(true);
     window.ipc.send("run-python", script); // Trigger Python script execution
