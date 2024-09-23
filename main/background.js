@@ -11,6 +11,7 @@ const Store = require('electron-store');
 const isProd = process.env.NODE_ENV === 'production'
 const isWindows = process.platform === 'win32';
 let pythonProcess = null;
+let pythonRootProcess = null;
 
 if (isProd) {
   serve({ directory: 'app' })
@@ -130,6 +131,35 @@ ipcMain.on('run-python', (event, arg) => {
   });
 });
 
+ipcMain.on('run-python-root', (event, arg) => {
+  const workingDirectory = path.resolve(__dirname, '../../BB_Py_Automation');
+  const pythonPath = path.resolve(__dirname, '../../BB_Py_Automation/venv/Scripts/python.exe');
+  const scriptPath = path.resolve(__dirname, `../../BB_Py_Automation/${arg}`);
+
+  pythonRootProcess = spawn(pythonPath, [scriptPath], {
+    cwd: workingDirectory,
+    windowsHide: true,
+  });
+
+  pythonRootProcess.on('spawn', () => {
+    console.log(`Starting Python-root process with PID ${pythonProcess.pid}`);
+    event.reply('python-root-start', `Starting Python process ${arg}`)
+  });
+
+  pythonRootProcess.stdout.on('data', (data) => {
+    console.log(`${data}`);
+    event.sender.send('python-root-output', `${data.toString()}`);
+  });
+
+  pythonRootProcess.stderr.on('data', (data) => {
+    event.sender.send('python-root-error', data.toString());
+  });
+
+  pythonRootProcess.on('close', (code) => {
+    event.sender.send('python-root-close', `Python script exited with code ${code}`);
+    pythonRootProcess = null;
+  });
+});
 
 ipcMain.on('stop-python', () => {
   if (pythonProcess) {

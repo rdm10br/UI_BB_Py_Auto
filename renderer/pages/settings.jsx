@@ -23,28 +23,6 @@ export default function NextPage() {
     const cookieFilePath =
       "../BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json";
 
-    // const fetchFileStatus = async () => {
-    //   const query = `?files=${encodeURIComponent(
-    //     loginFilePath
-    //   )}&files=${encodeURIComponent(cookieFilePath)}`;
-
-    //   try {
-    //     apiUrl = `/api/check-files${query}`
-    //     // const response = await fetch(`/api/check-files${query}`);
-    //     const response = await window.fileAPI.fetchMyApi(apiUrl);
-    //     if (!response.ok) {
-    //       throw new Error(`HTTP error! Status: ${response.status}`);
-    //     }
-    //     const data = await response.json();
-    //     console.log(`${loginFilePath}: ${data[loginFilePath]}`);
-    //     console.log(`${cookieFilePath}: ${data[cookieFilePath]}`);
-    //     setLoginFileExists(data[loginFilePath]);
-    //     setCookieFileExists(data[cookieFilePath]);
-    //   } catch (error) {
-    //     console.error("Error fetching file status:", error);
-    //   }
-    // };
-
     const fetchFileStatus = async () => {
       const filePaths = [loginFilePath, cookieFilePath];
 
@@ -66,25 +44,6 @@ export default function NextPage() {
         console.error("Error fetching file status:", error);
       }
     };
-
-    // const fetchFileStatus = async () => {
-    //   const query = `?files=${encodeURIComponent(
-    //     loginFilePath
-    //   )}&files=${encodeURIComponent(cookieFilePath)}`;
-
-    //   try {
-    //     const apiUrl = `api/check-files${query}`;
-    //     const data = await window.fileAPI.fetchMyApi(apiUrl);
-
-    //     console.log(`${loginFilePath}: ${data[loginFilePath]}`);
-    //     console.log(`${cookieFilePath}: ${data[cookieFilePath]}`);
-
-    //     setLoginFileExists(data[loginFilePath]);
-    //     setCookieFileExists(data[cookieFilePath]);
-    //   } catch (error) {
-    //     console.error("Error fetching file status:", error);
-    //   }
-    // };
 
     fetchFileStatus();
   }, []);
@@ -121,21 +80,6 @@ export default function NextPage() {
   }, [loginFileExists, cookieFileExists]);
 
   const checkForUpdates = async () => {
-    // try {
-    //   const response = await fetch("/api/api-github");
-    //   if (!response.ok) {
-    //     throw new Error(`HTTP error! Status: ${response.status}`);
-    //   }
-    //   const release = await response.json();
-    //   const latestVersion = release.tag_name;
-    //   setLatestVersion(latestVersion);
-    //   if (version !== latestVersion) {
-    //     setUpdateAvailable(true);
-    //   }
-    // } catch (error) {
-    //   console.error("Error checking for updates:", error);
-    // }
-
     const GITHUB_REPO = "rdm10br/BB_Py_Automation";
     try {
       const data = await window.githubAPI.getRepo(GITHUB_REPO);
@@ -155,18 +99,18 @@ export default function NextPage() {
       // Check if there is an update available
       if (version !== latestVersion) {
         setUpdateAvailable(true);
+        const wantsToUpdate = await window.githubAPI.showUpdatePopup(true);
+        console.log(wantsToUpdate);
+        if (wantsToUpdate) {
+          console.log("User chose to update the app.");
+          window.ipc.send("run-python-root", 'update_checker.py');
+        } else {
+          console.log("User choose not to update or is already up to date.");
+        }
+      } else {
+        await window.githubAPI.showUpdatePopup(false);
       }
 
-      const wantsToUpdate = await window.githubAPI.showUpdatePopup(
-        updateAvailable
-      );
-      console.log(wantsToUpdate);
-      if (wantsToUpdate) {
-        console.log("User chose to update the app.");
-        // You can add your update logic here, like downloading and installing the update
-      } else {
-        console.log("User choose not to update or is already up to date.");
-      }
     } catch (err) {
       console.error("Error checking for updates:", err);
     }
@@ -175,6 +119,10 @@ export default function NextPage() {
   useEffect(() => {
     // checkForUpdates();
   }, [version]);
+
+  const runPython = (script) => {
+    window.ipc.send("run-python-root", script);
+  };
 
   const formattedDate = session
     ? (() => {
@@ -213,7 +161,7 @@ export default function NextPage() {
           <p>Salve suas credenciais AVA e execute o Teste:</p>
         )}
         <br />
-        <button>Salvar Credenciais</button>
+        <button onClick={runPython('src/Main_Save_Login.py')}>Salvar Credenciais</button>
         <button className="destructive">Excluir Cookies</button>
         <button className="destructive">Excluir Credenciais & Cookies</button>
       </div>
@@ -224,7 +172,7 @@ export default function NextPage() {
             <p>Há uma atualização disponível: {latestVersion}</p>
             <p>Sua Versão: {version}</p>
             <br />
-            <button>Atualizar</button>
+            <button onClick={runPython('update_checker.py')}>Atualizar</button>
           </>
         )}
 
@@ -235,7 +183,7 @@ export default function NextPage() {
             <button onClick={checkForUpdates}>Verificar Atualização</button>
           </>
         )}
-        <button>Reverter</button>
+        <button onClick={runPython('updater_rollback.py')}>Reverter</button>
         <button>Ver Logs</button>
         <button className="destructive">Excluir Logs</button>
       </div>
