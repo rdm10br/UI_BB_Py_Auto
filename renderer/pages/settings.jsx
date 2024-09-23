@@ -154,6 +154,15 @@ export default function NextPage() {
         <button className="destructive">Restaurar Configurações</button>
       </div>
       <div className="card">
+        <h3>Requisitos para o Env</h3>
+        <input type="text" placeholder="BASE_URL"/>
+        <input type="text" placeholder="ID_REPOSITORIO_BQ"/>
+        <input type="text" placeholder="OWNER/GIT_REPO"/>
+        <input type="text" placeholder="GIT_BRANCH"/>
+        <br />
+        <button>Gerar novo env</button>
+      </div>
+      <div className="card">
         <h3>Credenciais & Cookies:</h3>
         {account ? <p>Conta salva: {account}</p> : null}
         {session ? <p>Últimos cookies da sessão: {formattedDate}</p> : null}
