@@ -11,7 +11,6 @@ const Store = require('electron-store');
 const isProd = process.env.NODE_ENV === 'production'
 const isWindows = process.platform === 'win32';
 let pythonProcess = null;
-let pythonRootProcess = null;
 
 if (isProd) {
   serve({ directory: 'app' })
@@ -86,7 +85,7 @@ ipcMain.on('open-excel-file', (event, filePath) => {
 ipcMain.on('run-python', (event, arg) => {
   const workingDirectory = path.resolve(__dirname, '../../BB_Py_Automation');
   const pythonPath = path.resolve(__dirname, '../../BB_Py_Automation/venv/Scripts/python.exe');
-  const scriptPath = path.resolve(__dirname, `../../BB_Py_Automation/src/${arg}`);
+  const scriptPath = path.resolve(__dirname, `../../BB_Py_Automation/${arg}`);
 
   pythonProcess = spawn(pythonPath, [scriptPath], {
     cwd: workingDirectory,
@@ -96,20 +95,6 @@ ipcMain.on('run-python', (event, arg) => {
     console.log(`Starting Python process with PID ${pythonProcess.pid}`);
     event.reply('python-start', `Starting Python process ${arg}`)
   });
-  // pythonProcess.stdout.setEncoding('utf8');
-  
-  // pythonProcess.stdout.on('data', (data) => {
-  //   console.log(`${data}`);
-  //   event.reply('python-result', `${data.toString()}`);
-  //   // event.sender.send('python-result', data.toString());
-  // });
-  // pythonProcess.stdout.on('data-teste', (data) => {
-  //   // console.log(`${data}`);
-  //   event.sender.send('python-result-test2', data);
-  //   event.sender.send('python-output', data.toString());
-  //   event.reply('python-result-test1', `${data}`);
-  //   // event.sender.send('python-result', data.toString());
-  // });
   // Capture stdout
   pythonProcess.stdout.on('data', (data) => {
     // Send stdout to the renderer process via IPC
@@ -128,36 +113,6 @@ ipcMain.on('run-python', (event, arg) => {
     event.reply('python-close', `Python script exited with code ${code}`);
     event.sender.send('python-close', `Python script exited with code ${code}`);
     pythonProcess = null;
-  });
-});
-
-ipcMain.on('run-python-root', (event, arg) => {
-  const workingDirectory = path.resolve(__dirname, '../../BB_Py_Automation');
-  const pythonPath = path.resolve(__dirname, '../../BB_Py_Automation/venv/Scripts/python.exe');
-  const scriptPath = path.resolve(__dirname, `../../BB_Py_Automation/${arg}`);
-
-  pythonRootProcess = spawn(pythonPath, [scriptPath], {
-    cwd: workingDirectory,
-    windowsHide: true,
-  });
-
-  pythonRootProcess.on('spawn', () => {
-    console.log(`Starting Python-root process with PID ${pythonProcess.pid}`);
-    event.reply('python-root-start', `Starting Python process ${arg}`)
-  });
-
-  pythonRootProcess.stdout.on('data', (data) => {
-    console.log(`${data}`);
-    event.sender.send('python-root-output', `${data.toString()}`);
-  });
-
-  pythonRootProcess.stderr.on('data', (data) => {
-    event.sender.send('python-root-error', data.toString());
-  });
-
-  pythonRootProcess.on('close', (code) => {
-    event.sender.send('python-root-close', `Python script exited with code ${code}`);
-    pythonRootProcess = null;
   });
 });
 
@@ -269,17 +224,6 @@ ipcMain.handle('show-update-popup', async (event, isUpdateAvailable) => {
   // If the user clicks "Update Now", return a positive response
   return response.response === 0 && isUpdateAvailable;
 });
-
-// ipcMain.handle('fetch-my-api', async (event, apiUrl) => {
-//   try {
-//     const port = process.argv[2]
-//     const response = await axios.get(`http://localhost:${port}/${apiUrl}`);  // Fetch from your API
-//     return response.data;  // Return the data from the API
-//   } catch (error) {
-//     console.error('Error fetching API data:', error);
-//     throw new Error('Failed to fetch API data');  // Throw an error if fetch fails
-//   }
-// });
 
 ipcMain.handle('check-files-exist', async (event, filePaths) => {
   return filePaths.map(filePath => ({

@@ -121,7 +121,7 @@ export default function NextPage() {
   }, [version]);
 
   const runPython = (script) => {
-    window.ipc.send("run-python-root", script);
+    window.ipc.send("run-python", script);
   };
 
   const formattedDate = session
@@ -161,7 +161,7 @@ export default function NextPage() {
           <p>Salve suas credenciais AVA e execute o Teste:</p>
         )}
         <br />
-        <button onClick={runPython('src/Main_Save_Login.py')}>Salvar Credenciais</button>
+        <button onClick={() => runPython('src/Main_Save_Login.py')}>Salvar Credenciais</button>
         <button className="destructive">Excluir Cookies</button>
         <button className="destructive">Excluir Credenciais & Cookies</button>
       </div>
@@ -172,7 +172,7 @@ export default function NextPage() {
             <p>Há uma atualização disponível: {latestVersion}</p>
             <p>Sua Versão: {version}</p>
             <br />
-            <button onClick={runPython('update_checker.py')}>Atualizar</button>
+            <button onClick={() => runPython('update_checker.py')}>Atualizar</button>
           </>
         )}
 
@@ -183,7 +183,7 @@ export default function NextPage() {
             <button onClick={checkForUpdates}>Verificar Atualização</button>
           </>
         )}
-        <button onClick={runPython('updater_rollback.py')}>Reverter</button>
+        <button onClick={() => runPython('updater_rollback.py')}>Reverter</button>
         <button>Ver Logs</button>
         <button className="destructive">Excluir Logs</button>
       </div>

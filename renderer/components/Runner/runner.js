@@ -51,7 +51,7 @@ const Runner = ({ script }) => {
     setResult(`Starting Python Script: ${script}\n`); // Clear the previous result
     setTerminal(true);
     setPlay(true);
-    window.ipc.send("run-python", script); // Trigger Python script execution
+    window.ipc.send("run-python", `src/${script}`); // Trigger Python script execution
   };
 
   const stopPython = () => {
