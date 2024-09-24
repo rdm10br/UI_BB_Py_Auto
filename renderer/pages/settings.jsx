@@ -16,15 +16,19 @@ export default function NextPage() {
   const [cookieFileExists, setCookieFileExists] = useState(false);
   const [latestVersion, setLatestVersion] = useState(null);
   const [updateAvailable, setUpdateAvailable] = useState(false);
+  const [envFile, setEnvFile] = useState(false);
+  const [envFileData, setEnvFileData] = useState("");
+  const envFilePath = "../BB_Py_Automation/.env";
 
   useEffect(() => {
     const loginFilePath =
       "../BB_Py_Automation/src/Metodos/Login/__pycache__/login.json";
     const cookieFilePath =
       "../BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json";
+    const envFilePath = "../BB_Py_Automation/.env";
 
     const fetchFileStatus = async () => {
-      const filePaths = [loginFilePath, cookieFilePath];
+      const filePaths = [loginFilePath, cookieFilePath, envFilePath];
 
       try {
         // Call the IPC method to check file existence
@@ -38,6 +42,9 @@ export default function NextPage() {
           }
           if (status.path === cookieFilePath) {
             setCookieFileExists(status.exists);
+          }
+          if (status.path === envFilePath) {
+            setEnvFile(status.exists);
           }
         });
       } catch (error) {
@@ -75,9 +82,24 @@ export default function NextPage() {
       }
     };
 
+    const envFileData = async () => {
+      if (loginFileExists) {
+        try {
+          const data = await window.ipc.on('get-env-variables', envFilePath);
+          if (data != null || data != ""){
+            console.log(`data : ${data}`)
+            setEnvFileData(data)
+          }
+        } catch (error) {
+          console.error("Error loading login file:", error);
+        }
+      }
+    };
+
     loadLoginData();
     loadCookieData();
-  }, [loginFileExists, cookieFileExists]);
+    envFileData();
+  }, [loginFileExists, cookieFileExists, envFile]);
 
   const checkForUpdates = async () => {
     const GITHUB_REPO = "rdm10br/BB_Py_Automation";
@@ -103,14 +125,13 @@ export default function NextPage() {
         console.log(wantsToUpdate);
         if (wantsToUpdate) {
           console.log("User chose to update the app.");
-          window.ipc.send("run-python-root", 'update_checker.py');
+          window.ipc.send("run-python-root", "update_checker.py");
         } else {
           console.log("User choose not to update or is already up to date.");
         }
       } else {
         await window.githubAPI.showUpdatePopup(false);
       }
-
     } catch (err) {
       console.error("Error checking for updates:", err);
     }
@@ -155,12 +176,30 @@ export default function NextPage() {
       </div>
       <div className="card">
         <h3>Requisitos para o Env</h3>
-        <input type="text" placeholder="BASE_URL"/>
-        <input type="text" placeholder="ID_REPOSITORIO_BQ"/>
-        <input type="text" placeholder="OWNER/GIT_REPO"/>
-        <input type="text" placeholder="GIT_BRANCH"/>
-        <br />
-        <button>Gerar novo env</button>
+        {!envFile && (
+          <>
+            <input type="text" placeholder="BASE_URL" />
+            <input type="text" placeholder="ID_REPOSITORIO_BQ" />
+            <input type="text" placeholder="OWNER/GIT_REPO" />
+            <input type="text" placeholder="GIT_BRANCH" />
+            <br />
+            <button>Gerar novo env</button>
+          </>
+        )}
+        {envFile && (
+          <>
+            <ul>
+                <li>Base URL : {envFileData}</li>
+                {/* {Object.entries(envFileData).map(([key, value]) => (
+                    <li key={key}>
+                        {key}: {value}
+                    </li>
+                ))} */}
+            </ul>
+            <br />
+            <button>Deletar .env</button>
+          </>
+        )}
       </div>
       <div className="card">
         <h3>Credenciais & Cookies:</h3>
@@ -170,7 +209,9 @@ export default function NextPage() {
           <p>Salve suas credenciais AVA e execute o Teste:</p>
         )}
         <br />
-        <button onClick={() => runPython('src/Main_Save_Login.py')}>Salvar Credenciais</button>
+        <button onClick={() => runPython("src/Main_Save_Login.py")}>
+          Salvar Credenciais
+        </button>
         <button className="destructive">Excluir Cookies</button>
         <button className="destructive">Excluir Credenciais & Cookies</button>
         <button className="destructive">Excluir cache</button>
@@ -182,7 +223,9 @@ export default function NextPage() {
             <p>Há uma atualização disponível: {latestVersion}</p>
             <p>Sua Versão: {version}</p>
             <br />
-            <button onClick={() => runPython('update_checker.py')}>Atualizar</button>
+            <button onClick={() => runPython("update_checker.py")}>
+              Atualizar
+            </button>
           </>
         )}
 
@@ -193,7 +236,9 @@ export default function NextPage() {
             <button onClick={checkForUpdates}>Verificar Atualização</button>
           </>
         )}
-        <button onClick={() => runPython('updater_rollback.py')}>Reverter</button>
+        <button onClick={() => runPython("updater_rollback.py")}>
+          Reverter
+        </button>
         <button>Ver Logs</button>
         <button className="destructive">Excluir Logs</button>
       </div>

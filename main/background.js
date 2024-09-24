@@ -237,3 +237,26 @@ ipcMain.handle('check-files-exist', async (event, filePaths) => {
     exists: fs.existsSync(path.join(process.cwd(), filePath)),
   }));
 });
+
+ipcMain.handle('get-env-variables', async (event, envFilePath) => {
+  return new Promise((resolve, reject) => {
+      fs.readFile(envFilePath, 'utf8', (err, data) => {
+          if (err) {
+              return reject('Error reading .env file');
+          }
+
+          const envVariables = {};
+          data.split('\n').forEach(line => {
+              // Skip empty lines and comments
+              if (line && !line.startsWith('#')) {
+                  const [key, value] = line.split('=').map(part => part.trim());
+                  if (key && value) {
+                      envVariables[key] = value;
+                  }
+              }
+          });
+          // console.warn(envVariables)
+          resolve(envVariables);
+      });
+  });
+});
