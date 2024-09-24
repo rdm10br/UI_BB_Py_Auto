@@ -91,6 +91,10 @@ ipcMain.on('run-python', (event, arg) => {
     cwd: workingDirectory,
     windowsHide: true, // This will hide the Python prompt
   });
+
+  pythonProcess.stdout.setEncoding('utf8');
+  pythonProcess.stderr.setEncoding('utf8');
+
   pythonProcess.on('spawn', () => {
     console.log(`Starting Python process with PID ${pythonProcess.pid}`);
     event.reply('python-start', `Starting Python process ${arg}`)
@@ -98,19 +102,21 @@ ipcMain.on('run-python', (event, arg) => {
   // Capture stdout
   pythonProcess.stdout.on('data', (data) => {
     // Send stdout to the renderer process via IPC
-    console.log(`${data}`);
-    // event.sender.send('python-output', data.toString());
-    event.sender.send('python-output', `${data.toString()}`);
+    // console.log(`${data.toString()}`);
+    event.sender.send('python-output', data.toString('utf8'));
+    // event.sender.send('python-output', `${data.toString()}`);
   });
 
   pythonProcess.stderr.on('data', (data) => {
-    event.reply('python-error', data.toString()); // Send stderr to the renderer process
+    // console.log(`${data.toString()}`);
+    // event.reply('python-error', data.toString());
+    // event.sender.send('python-error', `${data.toString()}`);
     event.sender.send('python-error', data.toString());
   });
 
   pythonProcess.on('close', (code) => {
     console.log(`Python script exited with code ${code}`);
-    event.reply('python-close', `Python script exited with code ${code}`);
+    // event.reply('python-close', `Python script exited with code ${code}`);
     event.sender.send('python-close', `Python script exited with code ${code}`);
     pythonProcess = null;
   });

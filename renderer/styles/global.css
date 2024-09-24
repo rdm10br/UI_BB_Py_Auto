@@ -142,3 +142,9 @@ div.terminal{
     background-color: var(--primary);
     width: 8px;
 }
+
+input{
+    border-radius: 8px;
+    padding: 0.3rem;
+    margin-bottom: 0.3rem;
+}

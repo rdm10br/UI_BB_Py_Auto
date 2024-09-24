@@ -173,6 +173,7 @@ export default function NextPage() {
         <button onClick={() => runPython('src/Main_Save_Login.py')}>Salvar Credenciais</button>
         <button className="destructive">Excluir Cookies</button>
         <button className="destructive">Excluir Credenciais & Cookies</button>
+        <button className="destructive">Excluir cache</button>
       </div>
       <div className="card">
         <h3>Atualizações</h3>

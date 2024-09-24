@@ -32,7 +32,7 @@ const Runner = ({ script }) => {
     });
 
     window.ipc.on("python-error", (data) => {
-      setOutput((prev) => prev + `Error: ${data}`);
+      setOutput((prev) => prev + `${data}`);
       scrollToBottom()
     });
 
