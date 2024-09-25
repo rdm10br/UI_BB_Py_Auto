@@ -19,13 +19,16 @@ export default function NextPage() {
   const [envFile, setEnvFile] = useState(false);
   const [envFileData, setEnvFileData] = useState("");
   const envFilePath = "../BB_Py_Automation/.env";
+  const [baseUrl, setBaseUrl] = useState("");
+  const [repoId, setRepoId] = useState("");
+  const [ownerRepo, setOwnerRepo] = useState("");
+  const [gitBranch, setGitBranch] = useState("");
 
   useEffect(() => {
     const loginFilePath =
       "../BB_Py_Automation/src/Metodos/Login/__pycache__/login.json";
     const cookieFilePath =
       "../BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json";
-    const envFilePath = "../BB_Py_Automation/.env";
 
     const fetchFileStatus = async () => {
       const filePaths = [loginFilePath, cookieFilePath, envFilePath];
@@ -85,10 +88,10 @@ export default function NextPage() {
     const envFileData = async () => {
       if (loginFileExists) {
         try {
-          const data = await window.ipc.on('get-env-variables', envFilePath);
-          if (data != null || data != ""){
-            console.log(`data : ${data}`)
-            setEnvFileData(data)
+          const data = await window.envAPI.getEnvVariables(`${envFilePath}`);
+          if (data != null && data != "") {
+            // console.log(`data : ${data}`)
+            setEnvFileData(data);
           }
         } catch (error) {
           console.error("Error loading login file:", error);
@@ -125,12 +128,13 @@ export default function NextPage() {
         console.log(wantsToUpdate);
         if (wantsToUpdate) {
           console.log("User chose to update the app.");
-          window.ipc.send("run-python-root", "update_checker.py");
+          window.ipc.send("run-python", "update_checker.py");
         } else {
-          console.log("User choose not to update or is already up to date.");
+          console.log("User choose not to update.");
         }
       } else {
         await window.githubAPI.showUpdatePopup(false);
+        console.log("User is already up to date.");
       }
     } catch (err) {
       console.error("Error checking for updates:", err);
@@ -141,8 +145,42 @@ export default function NextPage() {
     // checkForUpdates();
   }, [version]);
 
-  const runPython = (script) => {
-    window.ipc.send("run-python", script);
+  const runPython = (script) => window.ipc.send("run-python", script);
+
+  const handleGenerateEnv = async () => {
+    const envData = {
+      BASE_URL: baseUrl,
+      ID_REPOSITORIO_BQ: repoId,
+      OWNER_GIT_REPO: ownerRepo,
+      GIT_BRANCH: gitBranch,
+    };
+    if (!baseUrl || !repoId || !ownerRepo || !gitBranch) {
+      console.error("All fields are required!");
+      alert("Por favor, preencha todos os campos."); // You can show an alert or another UI message
+      return; // Stop execution if validation fails
+    }
+    try {
+      // Send the env data to the backend via IPC to create the .env file
+      await window.envAPI.createEnvFile(envData);
+      console.log("Env file created successfully!");
+      setEnvFile(true)
+    } catch (error) {
+      console.error("Error creating env file:", error);
+    }
+  };
+
+  const handleDeleteEnv = async () => {
+    try {
+      // Send IPC to delete the .env file
+      await window.envAPI.deleteEnvFile();
+      console.log(".env file deleted successfully!");
+  
+      // Optionally, you can reset the state if needed after deletion
+      setEnvFile(false);
+      setEnvFileData({});
+    } catch (error) {
+      console.error("Error deleting .env file:", error);
+    }
   };
 
   const formattedDate = session
@@ -175,29 +213,31 @@ export default function NextPage() {
         <button className="destructive">Restaurar Configurações</button>
       </div>
       <div className="card">
-        <h3>Requisitos para o Env</h3>
-        {!envFile && (
+        {!envFile ? (
           <>
-            <input type="text" placeholder="BASE_URL" />
-            <input type="text" placeholder="ID_REPOSITORIO_BQ" />
-            <input type="text" placeholder="OWNER/GIT_REPO" />
-            <input type="text" placeholder="GIT_BRANCH" />
+            <h3>Requisitos para o Env</h3>
+            <input type="text" placeholder="BASE_URL" value={baseUrl} onChange={(e) => setBaseUrl(e.target.value)}/>
+            <input type="text" placeholder="ID_REPOSITORIO_BQ" value={repoId} onChange={(e) => setRepoId(e.target.value)}/>
+            <input type="text" placeholder="OWNER/GIT_REPO" value={ownerRepo} onChange={(e) => setOwnerRepo(e.target.value)}/>
+            <input type="text" placeholder="GIT_BRANCH" value={gitBranch} onChange={(e) => setGitBranch(e.target.value)}/>
             <br />
-            <button>Gerar novo env</button>
+            <button onClick={handleGenerateEnv}>Gerar novo env</button>
           </>
-        )}
-        {envFile && (
+        ) : (
           <>
+            <h3>Variáveis de ambiente</h3>
             <ul>
-                <li>Base URL : {envFileData}</li>
-                {/* {Object.entries(envFileData).map(([key, value]) => (
-                    <li key={key}>
-                        {key}: {value}
-                    </li>
-                ))} */}
+              {Object.entries(envFileData).map(([key, value]) => (
+                <li key={key} className="styled-item">
+                  <span className="label">
+                    <strong>{key} : </strong>
+                  </span>
+                  <span className="value">{value}</span>
+                </li>
+              ))}
             </ul>
             <br />
-            <button>Deletar .env</button>
+            <button onClick={handleDeleteEnv}>Deletar .env</button>
           </>
         )}
       </div>
@@ -210,7 +250,11 @@ export default function NextPage() {
         )}
         <br />
         <button onClick={() => runPython("src/Main_Save_Login.py")}>
-          Salvar Credenciais
+          {account ? (
+            <span>Alterar Credenciais</span>
+          ) : (
+            <span>Salvar Credenciais</span>
+          )}
         </button>
         <button className="destructive">Excluir Cookies</button>
         <button className="destructive">Excluir Credenciais & Cookies</button>

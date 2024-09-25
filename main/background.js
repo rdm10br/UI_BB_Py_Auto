@@ -244,7 +244,7 @@ ipcMain.handle('get-env-variables', async (event, envFilePath) => {
           if (err) {
               return reject('Error reading .env file');
           }
-
+          // console.error('File content:', data);
           const envVariables = {};
           data.split('\n').forEach(line => {
               // Skip empty lines and comments
@@ -259,4 +259,31 @@ ipcMain.handle('get-env-variables', async (event, envFilePath) => {
           resolve(envVariables);
       });
   });
+});
+
+ipcMain.handle('create-env-file', async (event, envData) => {
+  const envFilePath = path.join(__dirname, '../../BB_Py_Automation/.env');
+  
+  const envContent = Object.entries(envData)
+    .map(([key, value]) => `${key}=${value}`)
+    .join('\n');
+
+  try {
+    fs.writeFileSync(envFilePath, envContent, 'utf8');
+    return { success: true };
+  } catch (error) {
+    console.error('Error creating .env file:', error);
+    throw new Error('Failed to create .env file');
+  }
+});
+
+ipcMain.handle('delete-env-file', async () => {
+  const envFilePath = path.join(__dirname, '../../BB_Py_Automation/.env');
+  try {
+    fs.unlinkSync(envFilePath);
+    console.log('.env file deleted');
+  } catch (error) {
+    console.error('Error deleting env file:', error);
+    throw error;
+  }
 });

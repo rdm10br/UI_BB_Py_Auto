@@ -25,3 +25,9 @@ contextBridge.exposeInMainWorld('fileAPI', {
   // fetchMyApi: (apiUrl) => ipcRenderer.invoke('fetch-my-api', apiUrl),
   checkFilesExist: (filePaths) => ipcRenderer.invoke('check-files-exist', filePaths),
 });
+
+contextBridge.exposeInMainWorld('envAPI', {
+  getEnvVariables: (envFilePath) => ipcRenderer.invoke('get-env-variables', envFilePath),
+  createEnvFile: (envData) => ipcRenderer.invoke('create-env-file', envData),
+  deleteEnvFile: () => ipcRenderer.invoke('delete-env-file'),
+});
