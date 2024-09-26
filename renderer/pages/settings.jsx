@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Head from "next/head";
 // import { useTranslation } from 'react-i18next';
 // import { withTranslation } from '../lib/withTranslation.js';
+import packageJson from '../../package.json'
 import versionData from "../../../BB_Py_Automation/release.json";
 // import LanguageSwitcher from "../components/LanguageSwitcher/LanguageSwitcher.js";
 
@@ -10,6 +11,7 @@ import versionData from "../../../BB_Py_Automation/release.json";
 export default function NextPage() {
   // const { t } = useTranslation('common');
   const [version] = useState(versionData.CURRENT_VERSION);
+  const [currentVersion] = useState(packageJson.version);
   const [account, setAccount] = useState(null);
   const [session, setSession] = useState(null);
   const [loginFileExists, setLoginFileExists] = useState(false);
@@ -104,8 +106,45 @@ export default function NextPage() {
     envFileData();
   }, [loginFileExists, cookieFileExists, envFile]);
 
-  const checkForUpdates = async () => {
+  const checkForUpdatesBot = async () => {
     const GITHUB_REPO = "rdm10br/BB_Py_Automation";
+    try {
+      const data = await window.githubAPI.getRepo(GITHUB_REPO);
+
+      // Check if there's an error in the response
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      // GitHub API data should already be parsed, no need to call `data.json()`
+      const latestVersion = data.tag_name;
+      console.log(latestVersion);
+
+      // Update the state with the latest version
+      setLatestVersion(latestVersion);
+
+      // Check if there is an update available
+      if (version !== latestVersion) {
+        setUpdateAvailable(true);
+        const wantsToUpdate = await window.githubAPI.showUpdatePopup(true);
+        console.log(wantsToUpdate);
+        if (wantsToUpdate) {
+          console.log("User chose to update the app.");
+          window.ipc.send("run-python", "update_checker.py");
+        } else {
+          console.log("User choose not to update.");
+        }
+      } else {
+        await window.githubAPI.showUpdatePopup(false);
+        console.log("User is already up to date.");
+      }
+    } catch (err) {
+      console.error("Error checking for updates:", err);
+    }
+  };
+
+  const checkForUpdatesApp = async () => {
+    const GITHUB_REPO = "rdm10br/UI_BB_Py_Auto";
     try {
       const data = await window.githubAPI.getRepo(GITHUB_REPO);
 
@@ -163,7 +202,7 @@ export default function NextPage() {
       // Send the env data to the backend via IPC to create the .env file
       await window.envAPI.createEnvFile(envData);
       console.log("Env file created successfully!");
-      setEnvFile(true)
+      setEnvFile(true);
     } catch (error) {
       console.error("Error creating env file:", error);
     }
@@ -174,7 +213,7 @@ export default function NextPage() {
       // Send IPC to delete the .env file
       await window.envAPI.deleteEnvFile();
       console.log(".env file deleted successfully!");
-  
+
       // Optionally, you can reset the state if needed after deletion
       setEnvFile(false);
       setEnvFileData({});
@@ -208,24 +247,44 @@ export default function NextPage() {
         <h2>Configurações</h2>
       </div>
       <div className="card">
-        <h3>Preferências do Usuário</h3>
+        <h3>Preferências do Usuário :</h3>
         <p>{/* Idioma : <LanguageSwitcher /> */}</p>
         <button className="destructive">Restaurar Configurações</button>
       </div>
       <div className="card">
         {!envFile ? (
           <>
-            <h3>Requisitos para o Env</h3>
-            <input type="text" placeholder="BASE_URL" value={baseUrl} onChange={(e) => setBaseUrl(e.target.value)}/>
-            <input type="text" placeholder="ID_REPOSITORIO_BQ" value={repoId} onChange={(e) => setRepoId(e.target.value)}/>
-            <input type="text" placeholder="OWNER/GIT_REPO" value={ownerRepo} onChange={(e) => setOwnerRepo(e.target.value)}/>
-            <input type="text" placeholder="GIT_BRANCH" value={gitBranch} onChange={(e) => setGitBranch(e.target.value)}/>
+            <h3>Requisitos para o Env :</h3>
+            <input
+              type="text"
+              placeholder="BASE_URL"
+              value={baseUrl}
+              onChange={(e) => setBaseUrl(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="ID_REPOSITORIO_BQ"
+              value={repoId}
+              onChange={(e) => setRepoId(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="OWNER/GIT_REPO"
+              value={ownerRepo}
+              onChange={(e) => setOwnerRepo(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="GIT_BRANCH"
+              value={gitBranch}
+              onChange={(e) => setGitBranch(e.target.value)}
+            />
             <br />
             <button onClick={handleGenerateEnv}>Gerar novo env</button>
           </>
         ) : (
           <>
-            <h3>Variáveis de ambiente</h3>
+            <h3>Variáveis de ambiente :</h3>
             <ul>
               {Object.entries(envFileData).map(([key, value]) => (
                 <li key={key} className="styled-item">
@@ -242,9 +301,23 @@ export default function NextPage() {
         )}
       </div>
       <div className="card">
-        <h3>Credenciais & Cookies:</h3>
-        {account ? <p>Conta salva: {account}</p> : null}
-        {session ? <p>Últimos cookies da sessão: {formattedDate}</p> : null}
+        <h3>Credenciais & Cookies :</h3>
+        {account ? (
+          <p className="styled-item">
+            <span className="label">
+              <strong>Conta salva: </strong>
+            </span>
+            <span>{account}</span>
+          </p>
+        ) : null}
+        {session ? (
+          <p className="styled-item">
+            <span className="label">
+              <strong>Últimos cookies da sessão: </strong>
+            </span>
+            <span>{formattedDate}</span>
+          </p>
+        ) : null}
         {!account && !session && (
           <p>Salve suas credenciais AVA e execute o Teste:</p>
         )}
@@ -261,30 +334,55 @@ export default function NextPage() {
         <button className="destructive">Excluir cache</button>
       </div>
       <div className="card">
-        <h3>Atualizações</h3>
-        {updateAvailable && (
-          <>
-            <p>Há uma atualização disponível: {latestVersion}</p>
-            <p>Sua Versão: {version}</p>
-            <br />
-            <button onClick={() => runPython("update_checker.py")}>
-              Atualizar
-            </button>
-          </>
-        )}
-
-        {!updateAvailable && (
-          <>
-            <p>Versão: {version}</p>
-            <br />
-            <button onClick={checkForUpdates}>Verificar Atualização</button>
-          </>
-        )}
-        <button onClick={() => runPython("updater_rollback.py")}>
-          Reverter
-        </button>
-        <button>Ver Logs</button>
-        <button className="destructive">Excluir Logs</button>
+        <h3>Atualizações :</h3>
+        <div className="card">
+          <h4>Bot :</h4>
+          {updateAvailable ? (
+            <>
+              <p>Há uma atualização disponível: {latestVersion}</p>
+              <p>Sua Versão: {version}</p>
+              <br />
+              <button onClick={() => runPython("update_checker.py")}>
+                Atualizar
+              </button>
+            </>
+          ) : (
+            <>
+              <p>Versão: {version}</p>
+              <br />
+              <button onClick={checkForUpdatesBot}>Verificar Atualização</button>
+            </>
+          )}
+          <button onClick={() => runPython("updater_rollback.py")}>
+            Reverter
+          </button>
+          <button>Ver Logs</button>
+          <button className="destructive">Excluir Logs</button>
+        </div>
+        <div className="card">
+          <h4>App :</h4>
+          {updateAvailable ? (
+            <>
+              <p>Há uma atualização disponível: {latestVersion}</p>
+              <p>Sua Versão: {version}</p>
+              <br />
+              <button onClick={() => runPython("update_checker.py")}>
+                Atualizar
+              </button>
+            </>
+          ) : (
+            <>
+              <p>Versão: {currentVersion}</p>
+              <br />
+              <button onClick={checkForUpdatesApp}>Verificar Atualização</button>
+            </>
+          )}
+          <button onClick={() => runPython("updater_rollback.py")}>
+            Reverter
+          </button>
+          <button>Ver Logs</button>
+          <button className="destructive">Excluir Logs</button>
+        </div>
       </div>
       <div className="card">
         <h3>Logs dos Bots:</h3>
