@@ -161,13 +161,13 @@ export default function NextPage() {
       setLatestVersion(latestVersion);
 
       // Check if there is an update available
-      if (version !== latestVersion) {
+      if (currentVersion !== latestVersion) {
         setUpdateAvailable(true);
         const wantsToUpdate = await window.githubAPI.showUpdatePopup(true);
         console.log(wantsToUpdate);
         if (wantsToUpdate) {
           console.log("User chose to update the app.");
-          window.ipc.send("run-python", "update_checker.py");
+          // window.ipc.send("run-python", "update_checker.py");
         } else {
           console.log("User choose not to update.");
         }
@@ -366,7 +366,7 @@ export default function NextPage() {
               <p>Há uma atualização disponível: {latestVersion}</p>
               <p>Sua Versão: {version}</p>
               <br />
-              <button onClick={() => runPython("update_checker.py")}>
+              <button onClick={() => runPython("")}>
                 Atualizar
               </button>
             </>
@@ -377,7 +377,7 @@ export default function NextPage() {
               <button onClick={checkForUpdatesApp}>Verificar Atualização</button>
             </>
           )}
-          <button onClick={() => runPython("updater_rollback.py")}>
+          <button onClick={() => runPython("")}>
             Reverter
           </button>
           <button>Ver Logs</button>

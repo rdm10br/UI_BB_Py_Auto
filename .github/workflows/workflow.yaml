@@ -1,25 +1,82 @@
 name: Continuous Integration
 
 on:
-  pull_request:
+  push:
     branches:
-      - 'master'
+      - main
+  workflow_dispatch:  # Allows manual triggering
+
 
 jobs:
   continuous-integration:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Python 3.12
-        uses: actions/setup-python@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          python-version: '3.12'
+          node-version: '16'
+
       - name: Install dependencies
+        run: npm install
+
+      - name: Get current version from package.json
+        id: get_version
         run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install --upgrade pip
-          pip install -r requirements.txt
-          python -m playwright install
-          python -m spacy download pt_core_news_sm
+          CURRENT_VERSION=$(jq -r '.version' package.json)
+          echo "Current version is $CURRENT_VERSION"
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_ENV
+
+      - name: Determine version bump
+        id: determine_bump
+        run: |
+          # Default to patch version bump
+          VERSION_BUMP="patch"
+
+          # Check for keywords in the commit message to determine the bump type
+          if git log -1 --pretty=%B | grep -qE '\[major\]'; then
+            VERSION_BUMP="major"
+          elif git log -1 --pretty=%B | grep -qE '\[minor\]'; then
+            VERSION_BUMP="minor"
+          fi
+
+          echo "Version bump type: $VERSION_BUMP"
+          echo "version_bump=$VERSION_BUMP" >> $GITHUB_ENV
+
+      - name: Bump patch accordingly
+        id: bump_version
+        run: |
+          IFS='.' read -r -a version_parts <<< "$CURRENT_VERSION"
+          major=${version_parts[0]}
+          minor=${version_parts[1]}
+          patch=${version_parts[2]}
+
+          case "$VERSION_BUMP" in
+            major)
+              NEW_VERSION="$((major + 1)).0.0"
+              ;;
+            minor)
+              NEW_VERSION="$major.$((minor + 1)).0"
+              ;;
+            patch)
+              NEW_VERSION="$major.$minor.$((patch + 1))"
+              ;;
+          esac
+
+          echo "New version is $NEW_VERSION"
+          echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: Update package.json version
+        run: |
+            jq ".version = \"$NEW_VERSION\"" package.json > temp.json && mv temp.json package.json
+
+      - name: Commit updated package.json
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add package.json
+          git commit -m "💚 ci-fix: Update package.json version to $NEW_VERSION"
+          git push

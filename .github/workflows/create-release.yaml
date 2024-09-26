@@ -1,0 +1,63 @@
+name: Create Release
+
+on:
+  workflow_run:
+    workflows: ["Continuous Integration"]
+    types:
+      - completed
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  release:
+    runs-on: windows-latest  # Use a Windows runner to support Inno Setup
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: main
+
+      - name: Get Latest Tag from GitHub API
+        id: get_latest_tag
+        run: |
+          TAG_NAME=$(curl --silent "https://api.github.com/repos/${{ github.repository }}/tags" | jq -r '.[0].name')
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+
+      - name: Install Inno Setup
+        run: |
+          choco install innosetup
+
+      - name: Build the Inno Setup Installer
+        run: |
+          # Assuming you have an Inno Setup script (.iss) in your repo
+          "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" build/installer/setup.iss
+        env:
+          VERSION: ${{ env.TAG_NAME }}
+
+      - name: Generate Release Notes
+        id: release_notes
+        run: |
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 "${{ env.TAG_NAME }}"^ 2>/dev/null || echo "")
+          if [ -z "$PREVIOUS_TAG" ]; then
+            echo "RELEASE_NOTES=$(git log --oneline --pretty=format:"%h %s" | awk '{print ":seedling: " $0}')" >> $GITHUB_ENV
+          else
+            echo "RELEASE_NOTES=$(git log $PREVIOUS_TAG..${{ env.TAG_NAME }} --oneline --pretty=format:"%h %s" | awk '{print ":seedling: " $0}')" >> $GITHUB_ENV
+          fi
+
+      - name: Upload Installer
+        uses: actions/upload-artifact@v2
+        with:
+          name: setup-installer
+          path: path\to\output\installer\setup.exe  # Replace with the actual path to your .exe
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          release_name: ${{ env.TAG_NAME }}
+          body: ${{ env.RELEASE_NOTES }}
+          draft: false
+          prerelease: false
+          assets: path\to\output\installer\setup.exe  # Attach the installer as a release asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
