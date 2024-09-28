@@ -1,5 +1,5 @@
 appId: com.example.nextron
-productName: My Nextron App
+productName: BlackBot
 copyright: Copyright © 2018 Yoshihide Shiono
 directories:
   output: dist
@@ -8,5 +8,9 @@ files:
   - from: .
     filter:
       - package.json
-      - app
+      - app/**
+asar: true
+extraResources:
+  - from: ../BB_Py_Automation/
+    to: BB_Py_Automation  # Optional: rename directory in the output
 publish: null

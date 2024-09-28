@@ -20,16 +20,16 @@ export default function NextPage() {
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [envFile, setEnvFile] = useState(false);
   const [envFileData, setEnvFileData] = useState("");
-  const envFilePath = "../BB_Py_Automation/.env";
   const [baseUrl, setBaseUrl] = useState("");
   const [repoId, setRepoId] = useState("");
   const [ownerRepo, setOwnerRepo] = useState("");
   const [gitBranch, setGitBranch] = useState("");
+  const [envFilePath, setenvFilePath] = useState("../BB_Py_Automation/.env");
 
   useEffect(() => {
-    const loginFilePath =
+    let loginFilePath =
       "../BB_Py_Automation/src/Metodos/Login/__pycache__/login.json";
-    const cookieFilePath =
+    let cookieFilePath =
       "../BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json";
 
     const fetchFileStatus = async () => {
@@ -40,16 +40,48 @@ export default function NextPage() {
         const fileStatuses = await window.fileAPI.checkFilesExist(filePaths);
 
         // Process the results
-        fileStatuses.forEach((status) => {
+        fileStatuses.forEach(async (status) => {
           console.log(`${status.path}: ${status.exists}`);
           if (status.path === loginFilePath) {
             setLoginFileExists(status.exists);
+            
+            if (!status.exists) {
+              // Try another path if the file doesn't exist
+              const _loginFilePath = `../../${loginFilePath}`;
+              const [_loginFileStatus] = await window.fileAPI.checkFilesExist([_loginFilePath]);
+              setLoginFileExists(_loginFileStatus.exists);
+              console.log(`Trying alternative login file path: ${_loginFilePath}, exists: ${_loginFileStatus.exists}`);
+            }
           }
+
           if (status.path === cookieFilePath) {
             setCookieFileExists(status.exists);
+
+            if (!status.exists) {
+              // Try another path if the file doesn't exist
+              const _cookieFilePath = `../../${cookieFilePath}`;
+              const [_cookieFiletatus] = await window.fileAPI.checkFilesExist([_cookieFilePath]);
+              setLoginFileExists(_cookieFiletatus.exists);
+              console.log(`Trying alternative login file path: ${_cookieFilePath}, exists: ${_cookieFiletatus.exists}`);
+            }
           }
+
           if (status.path === envFilePath) {
-            setEnvFile(status.exists);
+            if (status.exists === true) {
+              setEnvFile(status.exists); // File exists, set it
+            } else if (status.exists === false) {
+              // Try another path if the file doesn't exist
+              const _envFilePath = `../${envFilePath}`;
+              
+              // Since this is an async operation, use 'await' to get the result
+              const [_envFileStatus] = await window.fileAPI.checkFilesExist([_envFilePath]);
+              console.log(`Trying alternative env file path: ${_envFilePath}, exists: ${_envFileStatus.exists}`);
+          
+              if (_envFileStatus.exists == true) {
+                setEnvFile(_envFileStatus.exists);
+                setenvFilePath(_envFilePath)
+              }
+            }
           }
         });
       } catch (error) {
@@ -90,13 +122,14 @@ export default function NextPage() {
     const envFileData = async () => {
       if (loginFileExists) {
         try {
+          console.log(envFilePath)
           const data = await window.envAPI.getEnvVariables(`${envFilePath}`);
           if (data != null && data != "") {
             // console.log(`data : ${data}`)
             setEnvFileData(data);
           }
         } catch (error) {
-          console.error("Error loading login file:", error);
+          console.error("Error loading env file:", error);
         }
       }
     };
