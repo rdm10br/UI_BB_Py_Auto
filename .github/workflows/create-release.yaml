@@ -23,14 +23,14 @@ jobs:
           TAG_NAME=$(curl --silent "https://api.github.com/repos/${{ github.repository }}/tags" | jq -r '.[0].name')
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
-      - name: Install Inno Setup
-        run: |
-          choco install innosetup
+      # - name: Install Inno Setup
+      #   run: |
+      #     choco install innosetup
 
-      - name: Build the Inno Setup Installer
-        run: |
-          # Assuming you have an Inno Setup script (.iss) in your repo
-          "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" build/installer/setup.iss
+      # - name: Build the Inno Setup Installer
+      #   run: |
+      #     # Assuming you have an Inno Setup script (.iss) in your repo
+      #     "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" build/installer/setup.iss
         env:
           VERSION: ${{ env.TAG_NAME }}
 
@@ -45,7 +45,7 @@ jobs:
           fi
 
       # - name: Upload Installer
-      #   uses: actions/upload-artifact@v2
+      #   uses: actions/upload-artifact@v3
       #   with:
       #     name: setup-installer
       #     path: path\to\output\installer\setup.exe  # Replace with the actual path to your .exe
