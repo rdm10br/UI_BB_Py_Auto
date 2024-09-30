@@ -40,12 +40,22 @@ jobs:
       - name: Generate Release Notes
         id: release_notes
         run: |
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0 "${{ env.TAG_NAME }}"^ 2>/dev/null || echo "")
-          if [ -z "$PREVIOUS_TAG" ]; then
-            echo "RELEASE_NOTES=$(git log --oneline --pretty=format:"%h %s" | awk '{print ":seedling: " $0}')" >> $GITHUB_ENV
-          else
-            echo "RELEASE_NOTES=$(git log $PREVIOUS_TAG..${{ env.TAG_NAME }} --oneline --pretty=format:"%h %s" | awk '{print ":seedling: " $0}')" >> $GITHUB_ENV
-          fi
+            $PREVIOUS_TAG = $(git describe --tags --abbrev=0 "0.5.0"^ 2>$null)
+  
+            if ([string]::IsNullOrEmpty($PREVIOUS_TAG)) {
+              $release_notes = git log --oneline --pretty=format:"%h %s" | ForEach-Object { ":seedling: $_" }
+            } else {
+              $release_notes = git log $PREVIOUS_TAG..$TAG_NAME --oneline --pretty=format:"%h %s" | ForEach-Object { ":seedling: $_" }
+            }
+            
+            echo "RELEASE_NOTES=$release_notes" >> $env:GITHUB_ENV
+            
+        # PREVIOUS_TAG=$(git describe --tags --abbrev=0 "${{ env.TAG_NAME }}"^ 2>/dev/null || echo "")
+        # if [ -z "$PREVIOUS_TAG" ]; then
+        #   echo "RELEASE_NOTES=$(git log --oneline --pretty=format:"%h %s" | awk '{print ":seedling: " $0}')" >> $GITHUB_ENV
+        # else
+        #   echo "RELEASE_NOTES=$(git log $PREVIOUS_TAG..${{ env.TAG_NAME }} --oneline --pretty=format:"%h %s" | awk '{print ":seedling: " $0}')" >> $GITHUB_ENV
+        # fi
 
       # - name: Upload Installer
       #   uses: actions/upload-artifact@v3
