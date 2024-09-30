@@ -17,13 +17,20 @@ jobs:
         with:
           ref: main
 
-      - name: Get Latest Tag from GitHub API
-        id: get_latest_tag
+      # - name: Get Latest Tag from GitHub API
+      #   id: get_latest_tag
+      #   run: |
+      #       $tag_name = (curl --silent "https://api.github.com/repos/${{ github.repository }}/tags" | jq -r '.[0].name')
+      #       echo "TAG_NAME=$tag_name" >> $env:GITHUB_ENV
+      #     # TAG_NAME=$(curl --silent "https://api.github.com/repos/${{ github.repository }}/tags" | jq -r '.[0].name')
+      #     # echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+      #   shell: pwsh
+      
+      - name: Get Version from package.json
+        id: get_version
         run: |
-            $tag_name = (curl --silent "https://api.github.com/repos/${{ github.repository }}/tags" | jq -r '.[0].name')
-            echo "TAG_NAME=$tag_name" >> $env:GITHUB_ENV
-          # TAG_NAME=$(curl --silent "https://api.github.com/repos/${{ github.repository }}/tags" | jq -r '.[0].name')
-          # echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+            $version = (Get-Content package.json | ConvertFrom-Json).version
+            echo "TAG_NAME=$version" >> $env:GITHUB_ENV
         shell: pwsh
 
       # - name: Install Inno Setup
