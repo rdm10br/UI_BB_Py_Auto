@@ -20,8 +20,11 @@ jobs:
       - name: Get Latest Tag from GitHub API
         id: get_latest_tag
         run: |
-          TAG_NAME=$(curl --silent "https://api.github.com/repos/${{ github.repository }}/tags" | jq -r '.[0].name')
-          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+            $tag_name = (curl --silent "https://api.github.com/repos/${{ github.repository }}/tags" | jq -r '.[0].name')
+            echo "TAG_NAME=$tag_name" >> $env:GITHUB_ENV
+          # TAG_NAME=$(curl --silent "https://api.github.com/repos/${{ github.repository }}/tags" | jq -r '.[0].name')
+          # echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+        shell: pwsh
 
       # - name: Install Inno Setup
       #   run: |
@@ -31,8 +34,8 @@ jobs:
       #   run: |
       #     # Assuming you have an Inno Setup script (.iss) in your repo
       #     "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" build/installer/setup.iss
-        env:
-          VERSION: ${{ env.TAG_NAME }}
+      #   env:
+      #     VERSION: ${{ env.TAG_NAME }}
 
       - name: Generate Release Notes
         id: release_notes
