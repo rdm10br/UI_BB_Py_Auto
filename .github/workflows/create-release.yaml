@@ -40,7 +40,7 @@ jobs:
       - name: Generate Release Notes
         id: release_notes
         run: |
-            $PREVIOUS_TAG = $(git describe --tags --abbrev=0 "0.5.0"^ 2>$null)
+            $PREVIOUS_TAG = git describe --tags --abbrev=0 2>$null
   
             if ([string]::IsNullOrEmpty($PREVIOUS_TAG)) {
               $release_notes = git log --oneline --pretty=format:"%h %s" | ForEach-Object { ":seedling: $_" }
