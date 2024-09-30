@@ -74,6 +74,7 @@ jobs:
 
       - name: Update package.json version
         run: |
+            NEW_VERSION=${{ env.new_version }}
             jq ".version = \"$NEW_VERSION\"" package.json > temp.json && mv temp.json package.json
 
       - name: Commit updated package.json
