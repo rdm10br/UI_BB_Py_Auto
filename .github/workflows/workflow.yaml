@@ -15,13 +15,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: '16'
 
-      - name: Install dependencies
-        run: npm install
+      # - name: Install dependencies
+      #   run: npm install
 
       - name: Get current version from package.json
         id: get_version
@@ -46,9 +46,12 @@ jobs:
           echo "Version bump type: $VERSION_BUMP"
           echo "version_bump=$VERSION_BUMP" >> $GITHUB_ENV
 
-      - name: Bump patch accordingly
+      - name: Bump version accordingly
         id: bump_version
         run: |
+          CURRENT_VERSION=${{ env.current_version }}
+          VERSION_BUMP=${{ env.version_bump }}
+
           IFS='.' read -r -a version_parts <<< "$CURRENT_VERSION"
           major=${version_parts[0]}
           minor=${version_parts[1]}

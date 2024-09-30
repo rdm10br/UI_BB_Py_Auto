@@ -44,11 +44,11 @@ jobs:
             echo "RELEASE_NOTES=$(git log $PREVIOUS_TAG..${{ env.TAG_NAME }} --oneline --pretty=format:"%h %s" | awk '{print ":seedling: " $0}')" >> $GITHUB_ENV
           fi
 
-      - name: Upload Installer
-        uses: actions/upload-artifact@v2
-        with:
-          name: setup-installer
-          path: path\to\output\installer\setup.exe  # Replace with the actual path to your .exe
+      # - name: Upload Installer
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: setup-installer
+      #     path: path\to\output\installer\setup.exe  # Replace with the actual path to your .exe
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
@@ -58,6 +58,6 @@ jobs:
           body: ${{ env.RELEASE_NOTES }}
           draft: false
           prerelease: false
-          assets: path\to\output\installer\setup.exe  # Attach the installer as a release asset
+          # assets: path\to\output\installer\setup.exe  # Attach the installer as a release asset
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
