@@ -446,4 +446,11 @@
   resize: vertical;
   padding: 10px;
   border-radius: 12px;
+  background-color: black;
+  color: var(--accent-foreground);
+  font-family: inherit;
+}
+.accordeon{
+  cursor: pointer;
+  user-select: none;
 }

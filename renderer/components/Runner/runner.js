@@ -126,16 +126,13 @@ const Runner = ({ script }) => {
           </>
         )}
       </div>
-      <div id="feedback" className="card">
-        <h3
-          onClick={() => setIsAccordionOpen(!isAccordionOpen)}
-          style={{ cursor: "pointer" }}
-        >
-          Feedback{" "}
+      <div id="feedback" className={styles.accordeon}>
+        <h3 onClick={() => setIsAccordionOpen(!isAccordionOpen)}>
+          FeedBack
           {isAccordionOpen ? (
-            <FaChevronUp className={styles.icon} />
-          ) : (
             <FaChevronDown className={styles.icon} />
+          ) : (
+            <FaChevronUp className={styles.icon} />
           )}
         </h3>
         {!isAccordionOpen &&
@@ -147,7 +144,7 @@ const Runner = ({ script }) => {
               placeholder="Dê seu FeedBack aqui !"
               value={feedBack}
               onChange={(e) => setFeedBack(e.target.value)}
-              rows={10}
+              rows={5}
             />
             <button className={styles.runner} onClick={submitFeedback}>
               Submeter
