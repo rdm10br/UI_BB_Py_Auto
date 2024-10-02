@@ -72,7 +72,7 @@
   margin-top: 0rem;
 }
 
-.sideMenu .link {
+.sideMenu .links {
   width: 100%;
   height: 100%;
   display: block;
@@ -292,7 +292,7 @@
   border-bottom-left-radius: 0;
   border-top-right-radius: 0;
 }
-.settings .link {
+.settings .links {
   width: 100%;
   height: 100%;
   display: block;
@@ -349,12 +349,12 @@
   opacity: 0;
   transform: translateX(-20px);
 }
-.link {
+.links {
   display: flex;
   align-items: center;
   transition: all 0.3s ease-out;
 }
-.collapsed .link span {
+.collapsed .links span {
   display: none;
 }
 

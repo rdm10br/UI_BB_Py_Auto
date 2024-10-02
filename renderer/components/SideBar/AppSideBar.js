@@ -349,7 +349,7 @@ const AppSideBar = () => {
 
   const renderMenuItem = (label, icon, link, tooltip) => (
     <li className={styles.menu}>
-      <Link href={link} className={styles.link}>
+      <Link href={link} className={styles.links}>
         <Image className={styles.icon_menus} src={icon} height={20} width={20} alt={label} />
         {!collapsed && <span>{label}</span>}
         {collapsed && <span className={styles.tooltiptext}>{tooltip}</span>}
@@ -369,7 +369,7 @@ const AppSideBar = () => {
         <ul className={styles.dropdown}>
           {items.map(({ label, link }, index) => (
             <li key={index}>
-              <Link href={link} className={styles.link}>
+              <Link href={link} className={styles.links}>
                 {label}
               </Link>
             </li>
@@ -413,7 +413,7 @@ const AppSideBar = () => {
         {renderMenuItem("X9", "/icon/detective.png", "/bot/x9", "X9")}
         {renderMenuItem("Teste", "/icon/experiment.png", "/bot/teste", "Teste")}
         <li className={styles.plan}>
-          <Link href="#" className={styles.link} onClick={openExcelFile}>
+          <Link href="#" className={styles.links} onClick={openExcelFile}>
             <Image className={styles.icon_menus} src="/icon/spreadsheet.png" height={20} width={20} alt="Planilha" />
             {!collapsed && <span>Planilha</span>}
             {collapsed && <span className={styles.tooltiptext}>Planilha</span>}
