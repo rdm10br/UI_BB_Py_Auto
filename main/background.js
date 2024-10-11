@@ -6,11 +6,12 @@ import { createWindow } from "./helpers";
 import { spawn, exec } from "child_process";
 import axios from "axios";
 import { autoUpdater } from "electron-updater";
-const Store = require("electron-store");
+import { Store } from "electron-store";
 // import ExcelJS from 'exceljs'
 
 const isProd = process.env.NODE_ENV === "production";
 const isWindows = process.platform === "win32";
+
 let pythonProcess = null;
 
 if (isProd) {
@@ -36,7 +37,7 @@ if (isProd) {
       contextIsolation: true,
       enableRemoteModule: false,
       nodeIntegration: false,
-      sandbox: true,
+      sandbox: false,
       additionalArguments: [
         "--disable-autofill",
         "--disable-features=Autofill",
@@ -44,7 +45,7 @@ if (isProd) {
     },
   });
 
-  autoUpdater.checkForUpdatesAndNotify();
+  // autoUpdater.checkForUpdatesAndNotify();
 
   await mainWindow.setMenuBarVisibility(false);
 
@@ -53,19 +54,12 @@ if (isProd) {
   } else {
     const port = process.argv[2];
     await mainWindow.loadURL(`http://localhost:${port}/home`);
-    // await mainWindow.loadURL('https://sereduc.blackboard.com/ultra/admin')
     // mainWindow.webContents.openDevTools()
   }
 
   // tray = new Tray(iconPath);  // Set the system tray icon using the same icon
   // tray.setToolTip('My Electron App');
 
-  ipcMain.on("set-title", (event, title) => {
-    // console.log(`BBAutoPy - ${title}`);
-    mainWindow.webContents.executeJavaScript(
-      `document.title = "BlackBot - ${title}"`
-    );
-  });
 })();
 
 // app.on("window-all-closed", () => {
@@ -88,6 +82,13 @@ app.on("window-all-closed", () => {
     // app.hide(); // Hide the app instead of quitting
     app.quit();
   }
+});
+
+ipcMain.on("set-title", (event, title) => {
+  // console.log(`BBAutoPy - ${title}`);
+  mainWindow.webContents.executeJavaScript(
+    `document.title = "BlackBot - ${title}"`
+  );
 });
 
 ipcMain.on("message", async (event, arg) => {

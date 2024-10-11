@@ -1,0 +1,34 @@
+// import { contextBridge } from 'electron';
+// import ipcHandler from './controller/ipcHandler';
+// import githubAPI from './controller/githubAPI';
+// import fileAPI from './controller/fileAPI';
+// import envAPI from './controller/envAPI';
+
+// // Expose IPC handler to the renderer process
+// contextBridge.exposeInMainWorld('ipc', ipcHandler);
+
+// // Expose GitHub API functions
+// contextBridge.exposeInMainWorld('githubAPI', githubAPI);
+
+// // Expose File API functions
+// contextBridge.exposeInMainWorld('fileAPI', fileAPI);
+
+// // Expose Environment API functions
+// contextBridge.exposeInMainWorld('envAPI', envAPI);
+
+import { contextBridge, ipcRenderer } from "electron";
+
+// Expose APIs to the renderer process securely
+contextBridge.exposeInMainWorld("electronAPI", {
+  runPythonScript: (scriptPath) => ipcRenderer.send("run-python-script", scriptPath),
+  pausePythonScript: () => ipcRenderer.send("pause-python-script"),
+  resumePythonScript: () => ipcRenderer.send("resume-python-script"),
+  stopPythonScript: () => ipcRenderer.send("stop-python-script"),
+  checkForUpdates: () => ipcRenderer.send("check-for-updates"),
+  quitAndInstall: () => ipcRenderer.send("quit-and-install"),
+  minimizeWindow: () => ipcRenderer.send("minimize-window"),
+  maximizeWindow: () => ipcRenderer.send("maximize-window"),
+  closeWindow: () => ipcRenderer.send("close-window"),
+  openExcelFile: (filePath) => ipcRenderer.send("open-excel-file", filePath),
+  // Other APIs as needed
+});
