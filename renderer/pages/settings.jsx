@@ -25,6 +25,7 @@ export default function NextPage() {
   const [ownerRepo, setOwnerRepo] = useState("");
   const [gitBranch, setGitBranch] = useState("");
   const [envFilePath, setenvFilePath] = useState("../BB_Py_Automation/.env");
+  const [activeTab, setActiveTab] = useState("userPreferences");
 
   useEffect(() => {
     let loginFilePath =
@@ -255,6 +256,11 @@ export default function NextPage() {
     }
   };
 
+  const handleTabChange = (tab) => {
+    console.log(tab)
+    setActiveTab(tab);
+  };
+
   const formattedDate = session
     ? (() => {
         const date = new Date(session);
@@ -278,6 +284,23 @@ export default function NextPage() {
       </Head>
       <div>
         <h2>Configurações</h2>
+      </div>
+      <div className="tabs">
+        <button onClick={() => handleTabChange("userPreferences")}>
+          Preferências do Usuário
+        </button>
+        <button onClick={() => handleTabChange("envSettings")}>
+          Requisitos para o Env
+        </button>
+        <button onClick={() => handleTabChange("credentialsCookies")}>
+          Credenciais & Cookies
+        </button>
+        <button onClick={() => handleTabChange("updates")}>
+          Atualizações
+        </button>
+        <button onClick={() => handleTabChange("logs")}>
+          Logs
+        </button>
       </div>
       <div className="card">
         <h3>Preferências do Usuário :</h3>

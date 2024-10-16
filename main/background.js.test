@@ -5,13 +5,7 @@ import { createWindow } from "./helpers";
 import { autoUpdater } from "electron-updater";
 import pythonProcessController from "./controllers/pythonProcess";
 import updaterController from "./controllers/updater";
-import {
-  handleExcelFile,
-  handleEnvFile,
-  handleWindowEvents,
-  handlePythonEvents,
-  handleUpdateEvents
-} from "./ipc";
+import { setupIPC } from "./ipc";
 
 const isProd = process.env.NODE_ENV === "production";
 const isWindows = process.platform === "win32";
@@ -57,11 +51,7 @@ if (isProd) {
   updaterController.initAutoUpdater(mainWindow);
 
   // Set up all IPC handlers
-  handleExcelFile(ipcMain);
-  handleEnvFile(ipcMain);
-  handleWindowEvents(ipcMain, mainWindow);
-  handlePythonEvents(ipcMain, mainWindow);
-  handleUpdateEvents(ipcMain, autoUpdater);
+  setupIPC(mainWindow, autoUpdater);
 })();
 
 app.on("window-all-closed", () => {
