@@ -31,3 +31,8 @@ contextBridge.exposeInMainWorld('envAPI', {
   createEnvFile: (envData) => ipcRenderer.invoke('create-env-file', envData),
   deleteEnvFile: () => ipcRenderer.invoke('delete-env-file'),
 });
+
+contextBridge.exposeInMainWorld('api', {
+  readDirectory: (dirPath) => ipcRenderer.invoke('read-directory', dirPath),
+  readLogFile: (filePath) => ipcRenderer.invoke('read-log-file', filePath),
+});

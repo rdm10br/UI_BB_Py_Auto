@@ -333,3 +333,23 @@ autoUpdater.on("update-not-available", () => {
 ipcMain.on("check-for-updates", () => {
   autoUpdater.checkForUpdatesAndNotify();
 });
+
+ipcMain.handle('read-directory', async (event, dirPath) => {
+  try {
+    const files = fs.readdirSync(dirPath);
+    return files;
+  } catch (error) {
+    console.error('Error reading directory:', error);
+    return [];
+  }
+});
+
+ipcMain.handle('read-log-file', async (event, filePath) => {
+  try {
+    const content = fs.readFileSync(filePath, 'utf8');
+    return content;
+  } catch (error) {
+    console.error('Error reading log file:', error);
+    return '';
+  }
+});

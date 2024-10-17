@@ -1,5 +1,6 @@
 import Head from "next/head";
 import React from "react";
+import Link from 'next/link'
 
 export default function HomePage() {
   return (
@@ -10,6 +11,9 @@ export default function HomePage() {
       <div className="title">
         <h2>BlackBot - Home</h2>
       </div>
+      <Link href='/log/logview'>
+        logview
+      </Link>
       <div className="card">
         <h3>Para começar a usar essa aplicação: </h3>
         <ul>
