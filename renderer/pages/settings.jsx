@@ -444,7 +444,7 @@ export default function NextPage() {
         <h3>Logs dos Bots:</h3>
         <p>Logs de todas as execuções dos bots</p>
         <br />
-        <button>Ver Logs</button>
+        <button href='/log/logview'>Ver Logs</button>
         <button className="destructive">Excluir Logs</button>
       </div>
     </React.Fragment>
