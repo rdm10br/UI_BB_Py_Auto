@@ -1,16 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+import styles from "./logView.module.css";
 
 const LogViewer = () => {
   const [files, setFiles] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [logContent, setLogContent] = useState('');
-  const [filterText, setFilterText] = useState('');
-  const [filteredContent, setFilteredContent] = useState('');
+  const [logContent, setLogContent] = useState("");
+  const [filterText, setFilterText] = useState("");
+  const [filteredContent, setFilteredContent] = useState("");
 
   useEffect(() => {
     const loadFiles = async () => {
       // Replace with your directory path
-      const dirPath = '../BB_Py_Automation/Logs/bot/';
+      const dirPath = "../BB_Py_Automation/Logs/bot/";
       const files = await window.api.readDirectory(dirPath);
       setFiles(files);
     };
@@ -30,21 +31,21 @@ const LogViewer = () => {
     setFilterText(text);
     setFilteredContent(
       logContent
-        .split('\n')
+        .split("\n")
         .filter((line) => line.includes(text))
-        .join('\n')
+        .join("\n")
     );
   };
 
   return (
-    <div style={{ display: 'flex' }}>
-      <div style={{ width: '20%', borderRight: '1px solid #ccc', padding: '10px' }}>
-        <h3>Files</h3>
-        <ul style={{height: '75vh', overflow:'auto'}}>
+    <div className={styles.container}>
+      <div className={styles.fileList}>
+        <h3 className={styles.fileListTitle}>Files</h3>
+        <ul className={styles.fileListItems}>
           {files.map((file) => (
             <li
               key={file}
-              style={{ cursor: 'pointer', marginBottom: '5px' }}
+              className={styles.fileListItem}
               onClick={() => handleFileClick(file)}
             >
               {file}
@@ -52,8 +53,10 @@ const LogViewer = () => {
           ))}
         </ul>
       </div>
-      <div style={{ width: '80%', padding: '10px' }}>
-        <h3>{selectedFile || 'Select a file'}</h3>
+      <div className={styles.logContent}>
+        <h3 className={styles.logContentTitle}>
+          {selectedFile || "Select a file"}
+        </h3>
         {selectedFile && (
           <>
             <input
@@ -61,9 +64,9 @@ const LogViewer = () => {
               placeholder="Filter log content..."
               value={filterText}
               onChange={handleFilterChange}
-              style={{ width: '100%', marginBottom: '10px' }}
+              className={styles.filterInput}
             />
-            <pre style={{ whiteSpace: 'pre-wrap', backgroundColor: '#303030', padding: '10px' , height: '60vh', overflow:'auto'}}>
+            <pre className={styles.logDisplay}>
               {filteredContent}
             </pre>
           </>

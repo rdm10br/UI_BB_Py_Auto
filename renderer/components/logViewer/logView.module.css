@@ -1,0 +1,67 @@
+.container {
+    display: flex;
+  }
+  
+  .fileList {
+    width: 20%;
+    height: auto;
+    border-radius: 12px;
+    border-right: 1px solid #6f6f6f;
+    padding: 10px;
+    padding-left: 0;
+    margin-left: 0;
+  }
+  
+  .fileListTitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .fileListItems {
+    height: 75vh;
+    overflow: auto;
+    padding-left: 0;
+    margin-left: 0;
+  }
+  
+  .fileListItem {
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 6px;
+    margin-right: 3px;
+    padding: 8px;
+    padding-right: 0;
+    padding-left: 0;
+    list-style: none;
+  }
+  .fileListItem:hover{
+    background-color: hsla(224.3, 50%, 36%, 1);
+    border: 2;
+    border-radius: 12px;
+  }
+  
+  .logContent {
+    width: 80%;
+    padding: 10px;
+  }
+  
+  .logContentTitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .filterInput {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .logDisplay {
+    white-space: pre-wrap;
+    background-color: #000000;
+    color: white;
+    padding: 10px;
+    height: 60vh;
+    overflow: auto;
+    font-size: 16px;
+  }
+  

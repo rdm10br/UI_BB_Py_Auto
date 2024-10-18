@@ -12,7 +12,7 @@ export default function NextPage() {
       {/* <p>
             Teste - <Link href="/home">Go to home page</Link>
           </p> */}
-      <h2>Teste</h2>
+      <h2>Log View / Bot</h2>
       <LogView />
     </React.Fragment>
   );
