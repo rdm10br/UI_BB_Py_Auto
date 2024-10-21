@@ -4,6 +4,15 @@
   "description": "My application description",
   "version": "0.6.12",
   "author": "Rafael Dias <rafadm230@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/rdm10br/UI_BB_PY_AUTO#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rdm10br/UI_BB_PY_AUTO.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rdm10br/UI_BB_PY_AUTO/issues"
+  },
   "main": "app/background.js",
   "scripts": {
     "start": "npm run dev",
@@ -14,7 +23,8 @@
     "build:win64": "nextron build --win --x64",
     "build:mac": "nextron build --mac --x64",
     "build:linux": "nextron build --linux",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "make": "electron-forge make"
   },
   "dependencies": {
     "@lingui/cli": "^4.11.4",
@@ -25,12 +35,16 @@
     "electron-store": "^8.2.0",
     "electron-updater": "^6.3.4",
     "exceljs": "^4.4.0",
-    "fs": "^0.0.1-security",
     "i18n": "^0.15.1",
     "react-devtools": "^4.27.2",
     "react-icons": "^5.2.1"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^7.5.0",
+    "@electron-forge/maker-deb": "^7.5.0",
+    "@electron-forge/maker-rpm": "^7.5.0",
+    "@electron-forge/maker-squirrel": "^7.5.0",
+    "@electron-forge/maker-zip": "^7.5.0",
     "electron": "^31.2.0",
     "electron-builder": "^24.13.3",
     "next": "^14.2.4",
@@ -46,5 +60,23 @@
   },
   "linux": {
     "icon": "icon/1android.png"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "icon": "icon/1android",
+        "asar": true
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "BlackBot",
+            "setupExe": "BlackBotSetup.exe",
+            "noMsi": true
+          }
+        }
+      ]
+    }
   }
 }
