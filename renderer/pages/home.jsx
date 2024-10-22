@@ -11,9 +11,9 @@ export default function HomePage() {
       <div className="title">
         <h2>BlackBot - Home</h2>
       </div>
-      {/* <Link href='/log/logview'>
+      <Link href='/log/logview'>
         logview
-      </Link> */}
+      </Link>
       <div className="card">
         <h3>Para começar a usar essa aplicação: </h3>
         <ul>
