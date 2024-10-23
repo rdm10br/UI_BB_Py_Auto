@@ -3,7 +3,7 @@ import Head from "next/head";
 // import { useTranslation } from 'react-i18next';
 // import { withTranslation } from '../lib/withTranslation.js';
 import packageJson from '../../package.json'
-import versionData from "../../../BB_Py_Automation/release.json";
+import versionData from "../../scripts/BB_Py_Automation/release.json";
 // import LanguageSwitcher from "../components/LanguageSwitcher/LanguageSwitcher.js";
 
 // export const getServerSideProps = withTranslation('common');
@@ -24,14 +24,14 @@ export default function NextPage() {
   const [repoId, setRepoId] = useState("");
   const [ownerRepo, setOwnerRepo] = useState("");
   const [gitBranch, setGitBranch] = useState("");
-  const [envFilePath, setenvFilePath] = useState("../BB_Py_Automation/.env");
+  const [envFilePath, setenvFilePath] = useState("scripts/BB_Py_Automation/.env");
   const [activeTab, setActiveTab] = useState("userPreferences");
 
   useEffect(() => {
     let loginFilePath =
-      "../BB_Py_Automation/src/Metodos/Login/__pycache__/login.json";
+      "scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json";
     let cookieFilePath =
-      "../BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json";
+      "scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json";
 
     const fetchFileStatus = async () => {
       const filePaths = [loginFilePath, cookieFilePath, envFilePath];
@@ -98,7 +98,7 @@ export default function NextPage() {
       if (loginFileExists) {
         try {
           const loginData = await import(
-            `../../../BB_Py_Automation/src/Metodos/Login/__pycache__/login.json`
+            `../../scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json`
           );
           setAccount(loginData.username);
         } catch (error) {
@@ -111,7 +111,7 @@ export default function NextPage() {
       if (cookieFileExists) {
         try {
           const cookieData = await import(
-            `../../../BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json`
+            `../../scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json`
           );
           setSession(cookieData.timestamp);
         } catch (error) {

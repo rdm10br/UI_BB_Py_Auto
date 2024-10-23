@@ -1,6 +1,6 @@
 appId: com.example.nextron
 productName: BlackBot
-copyright: Copyright © 2018 Yoshihide Shiono
+copyright: Copyright © 2024 Rafael Dias
 directories:
   output: dist
   buildResources: resources
@@ -11,6 +11,11 @@ files:
       - app/**
 asar: true
 extraResources:
-  - from: ../BB_Py_Automation/
-    to: BB_Py_Automation  # Optional: rename directory in the output
+  - from: scripts/BB_Py_Automation/
+    to: scripts/BB_Py_Automation  # Optional: rename directory in the output
 publish: null
+  # provider: "github"
+  # owner: "rdm10br"
+  # repo: "UI_BB_PY_AUTO"
+  # private: false
+  # publishAutoUpdate: true

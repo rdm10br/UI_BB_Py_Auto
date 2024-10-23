@@ -106,12 +106,10 @@ ipcMain.on("open-excel-file", (event, filePath) => {
 });
 
 ipcMain.on("run-python", (event, arg) => {
-  const workingDirectory = path.resolve(__dirname, "../../BB_Py_Automation");
-  const pythonPath = path.resolve(
-    __dirname,
-    "../../BB_Py_Automation/venv/Scripts/python.exe"
-  );
-  const scriptPath = path.resolve(__dirname, `../../BB_Py_Automation/${arg}`);
+  const workingDirectory = path.resolve(__dirname, "../scripts/BB_Py_Automation");
+  console.log(workingDirectory)
+  const pythonPath = path.resolve(workingDirectory, "/venv/Scripts/python.exe");
+  const scriptPath = path.resolve(workingDirectory, arg);
 
   pythonProcess = spawn(pythonPath, [scriptPath], {
     cwd: workingDirectory,
