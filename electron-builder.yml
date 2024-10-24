@@ -9,10 +9,11 @@ files:
     filter:
       - package.json
       - app/**
-asar: true
-extraResources:
-  - from: scripts/BB_Py_Automation/
-    to: scripts/BB_Py_Automation  # Optional: rename directory in the output
+      - scripts/BB_Py_Automation/
+asar: false
+# extraResources:
+#   - from: scripts/BB_Py_Automation/
+#     to: scripts/BB_Py_Automation  # Optional: rename directory in the output
 publish: null
   # provider: "github"
   # owner: "rdm10br"

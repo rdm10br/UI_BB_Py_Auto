@@ -107,9 +107,11 @@ ipcMain.on("open-excel-file", (event, filePath) => {
 
 ipcMain.on("run-python", (event, arg) => {
   const workingDirectory = path.resolve(__dirname, "../scripts/BB_Py_Automation");
-  console.log(workingDirectory)
-  const pythonPath = path.resolve(workingDirectory, "/venv/Scripts/python.exe");
+  // console.log(workingDirectory)
+  const pythonPath = path.resolve(workingDirectory, "venv/Scripts/python.exe");
+  // console.log(pythonPath)
   const scriptPath = path.resolve(workingDirectory, arg);
+  // console.log(scriptPath)
 
   pythonProcess = spawn(pythonPath, [scriptPath], {
     cwd: workingDirectory,
@@ -272,29 +274,43 @@ ipcMain.handle("check-files-exist", async (event, filePaths) => {
 
 ipcMain.handle("get-env-variables", async (event, envFilePath) => {
   return new Promise((resolve, reject) => {
-    fs.readFile(envFilePath, "utf8", (err, data) => {
-      if (err) {
-        return reject("Error reading .env file");
-      }
-      // console.error('File content:', data);
-      const envVariables = {};
-      data.split("\n").forEach((line) => {
-        // Skip empty lines and comments
-        if (line && !line.startsWith("#")) {
-          const [key, value] = line.split("=").map((part) => part.trim());
-          if (key && value) {
-            envVariables[key] = value;
+    const readEnvFile = (filePath) => {
+      fs.readFile(filePath, "utf8", (err, data) => {
+        if (err) {
+          return reject(`Error reading .env file from ${filePath}`);
+        }
+
+        const envVariables = {};
+        data.split("\n").forEach((line) => {
+          // Skip empty lines and comments
+          if (line && !line.startsWith("#")) {
+            const [key, value] = line.split("=").map((part) => part.trim());
+            if (key && value) {
+              envVariables[key] = value;
+            }
           }
+        });
+
+        if (Object.keys(envVariables).length === 0) {
+          // If no env variables are found, try another path
+          const alternativePath = path.resolve('../../', envFilePath);
+          console.warn("No env variables found, trying alternative path:", alternativePath);
+          
+          // Try reading the alternative file and resolve it if successful
+          readEnvFile(alternativePath); // Recursion continues for alternative path
+        } else {
+          resolve(envVariables); // Resolve once env variables are found
         }
       });
-      // console.warn(envVariables)
-      resolve(envVariables);
-    });
+    };
+
+    // Start by reading the initial file path
+    readEnvFile(envFilePath);
   });
 });
 
 ipcMain.handle("create-env-file", async (event, envData) => {
-  const envFilePath = path.join(__dirname, "../../BB_Py_Automation/.env");
+  const envFilePath = path.join(__dirname, "../scripts/BB_Py_Automation/.env");
 
   const envContent = Object.entries(envData)
     .map(([key, value]) => `${key}=${value}`)
