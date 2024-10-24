@@ -97,7 +97,15 @@ ipcMain.on("message", async (event, arg) => {
 });
 
 ipcMain.on("open-excel-file", (event, filePath) => {
-  const fullPath = path.resolve(__dirname, filePath);
+  let fullPath;
+
+  if (isProd){
+    const parentDir = path.dirname(path.dirname(path.dirname(__dirname)))
+    fullPath = path.resolve(parentDir, filePath);
+  }else{
+    fullPath = path.resolve(__dirname, `../${filePath}`);
+  }
+
   exec(`start "" "${fullPath}"`, (error) => {
     if (error) {
       console.error(`Error opening file: ${error.message}`);
@@ -106,11 +114,20 @@ ipcMain.on("open-excel-file", (event, filePath) => {
 });
 
 ipcMain.on("run-python", (event, arg) => {
-  const workingDirectory = path.resolve(__dirname, "../scripts/BB_Py_Automation");
-  // console.log(workingDirectory)
-  const pythonPath = path.resolve(workingDirectory, "venv/Scripts/python.exe");
+  let workingDirectory, pythonPath, scriptPath;
+
+  if (isProd){
+    const parentDir = path.dirname(path.dirname(path.dirname(__dirname)))
+    workingDirectory = path.resolve(parentDir, "scripts/BB_Py_Automation");
+    // console.log(workingDirectory)
+  }else{
+    workingDirectory = path.resolve(__dirname, "../scripts/BB_Py_Automation");
+    // console.log(workingDirectory)
+  }
+  
+  pythonPath = path.resolve(workingDirectory, "venv/Scripts/python.exe");
   // console.log(pythonPath)
-  const scriptPath = path.resolve(workingDirectory, arg);
+  scriptPath = path.resolve(workingDirectory, arg);
   // console.log(scriptPath)
 
   pythonProcess = spawn(pythonPath, [scriptPath], {
@@ -293,7 +310,7 @@ ipcMain.handle("get-env-variables", async (event, envFilePath) => {
 
         if (Object.keys(envVariables).length === 0) {
           // If no env variables are found, try another path
-          const alternativePath = path.resolve('../../', envFilePath);
+          const alternativePath = path.resolve('../', envFilePath);
           console.warn("No env variables found, trying alternative path:", alternativePath);
           
           // Try reading the alternative file and resolve it if successful
@@ -326,7 +343,7 @@ ipcMain.handle("create-env-file", async (event, envData) => {
 });
 
 ipcMain.handle("delete-env-file", async () => {
-  const envFilePath = path.join(__dirname, "../../BB_Py_Automation/.env");
+  const envFilePath = path.join(__dirname, "../scripts/BB_Py_Automation/.env");
   try {
     fs.unlinkSync(envFilePath);
     console.log(".env file deleted");

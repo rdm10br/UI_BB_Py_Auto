@@ -3,14 +3,14 @@
 
 #define MyAppName "BlackBot"
 #define MyAppVersion "1.0.0"
-#define MyAppPublisher "My Company, Inc."
+#define MyAppPublisher "self.inc"
 #define MyAppURL "https://www.example.com/"
-#define MyAppExeName "BlackBot.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{E2FC8089-0BDE-431A-B358-5E8DA9B220D7}}
+
+AppId={{66D1C899-342E-4B22-8BE9-2A590EABEA5B}}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
@@ -19,13 +19,14 @@ AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
-DisableProgramGroupPage=yes
-LicenseFile={#SourcePath}\LICENSE.electron.txt
+DefaultGroupName={#MyAppName}
+AllowNoIcons=yes
+
 ; Remove the following line to run in administrative install mode (install for all users.)
+
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
-OutputBaseFilename=BlackBot
-SetupIconFile={#SourcePath}\resources\icon.ico
+OutputBaseFilename=mysetup
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -57,37 +58,42 @@ Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
 Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 
-[Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
-
 [Files]
-Source: "{#SourcePath}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\chrome_100_percent.pak"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\chrome_200_percent.pak"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\d3dcompiler_47.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\ffmpeg.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\icudtl.dat"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\libEGL.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\libGLESv2.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\LICENSE.electron.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\LICENSES.chromium.html"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\resources.pak"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\snapshot_blob.bin"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\v8_context_snapshot.bin"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\vk_swiftshader.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\vk_swiftshader_icd.json"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\vulkan-1.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\scripts\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#SourcePath}\resources\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#SourcePath}\locales\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+; Source: "C:\Users\013190873\Downloads\Pessoal\VS\BB_Py_Automation\.env"; DestDir: "{app}\BB_Py_Automation"; Flags: ignoreversion
+; Source: "C:\Users\013190873\Downloads\Pessoal\VS\BB_Py_Automation\MainSpec.spec"; DestDir: "{app}\BB_Py_Automation"; Flags: ignoreversion
+; Source: "C:\Users\013190873\Downloads\Pessoal\VS\BB_Py_Automation\OLD_Main.py"; DestDir: "{app}\BB_Py_Automation"; Flags: ignoreversion
+
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\BB_Py_Automation\.env.example"; DestDir: "{app}\BB_Py_Automation"; Flags: ignoreversion
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\BB_Py_Automation\.gitignore"; DestDir: "{app}\BB_Py_Automation"; Flags: ignoreversion
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\BB_Py_Automation\README.md"; DestDir: "{app}\BB_Py_Automation"; Flags: ignoreversion
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\BB_Py_Automation\release.json"; DestDir: "{app}\BB_Py_Automation"; Flags: ignoreversion
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\BB_Py_Automation\requirements.txt"; DestDir: "{app}\BB_Py_Automation"; Flags: ignoreversion
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\BB_Py_Automation\run_update_checker.bat"; DestDir: "{app}\BB_Py_Automation"; Flags: ignoreversion
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\BB_Py_Automation\setup.bat"; DestDir: "{app}\BB_Py_Automation"; Flags: ignoreversion
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\BB_Py_Automation\update_checker.py"; DestDir: "{app}\BB_Py_Automation"; Flags: ignoreversion
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\BB_Py_Automation\updater_rollback.py"; DestDir: "{app}\BB_Py_Automation"; Flags: ignoreversion
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\BB_Py_Automation\src\*"; DestDir: "{app}\BB_Py_Automation\src"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "__pycache__"
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\BB_Py_Automation\Planilhas\GRUPOS_SEM_FAEL.csv"; DestDir: "{app}\BB_Py_Automation\Planilhas"; Flags: ignoreversion
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\BB_Py_Automation\Planilhas\GRUPOS1.csv"; DestDir: "{app}\BB_Py_Automation\Planilhas"; Flags: ignoreversion
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\BB_Py_Automation\Planilhas\SALAS.xlsx"; DestDir: "{app}\BB_Py_Automation\Planilhas"; Flags: ignoreversion
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\BB_Py_Automation\Logs\*"; DestDir: "{app}\BB_Py_Automation\Logs"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "*.log"
+
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\UI_BB_Py_Auto\.gitignore"; DestDir: "{app}\UI_BB_Py_Auto"; Flags: ignoreversion
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\UI_BB_Py_Auto\electron-builder.yml"; DestDir: "{app}\UI_BB_Py_Auto"; Flags: ignoreversion
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\UI_BB_Py_Auto\package.json"; DestDir: "{app}\UI_BB_Py_Auto"; Flags: ignoreversion
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\UI_BB_Py_Auto\package-lock.json"; DestDir: "{app}\UI_BB_Py_Auto"; Flags: ignoreversion
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\UI_BB_Py_Auto\README.md"; DestDir: "{app}\UI_BB_Py_Auto"; Flags: ignoreversion
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\UI_BB_Py_Auto\renderer\*"; DestDir: "{app}\UI_BB_Py_Auto\renderer"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\UI_BB_Py_Auto\resources\*"; DestDir: "{app}\UI_BB_Py_Auto\resources"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\UI_BB_Py_Auto\public\*"; DestDir: "{app}\UI_BB_Py_Auto\public"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\013190873\Downloads\Pessoal\VS\UI_BB_Py_Auto\main\*"; DestDir: "{app}\UI_BB_Py_Auto\main"; Flags: ignoreversion recursesubdirs createallsubdirs
+
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 
 [Run]
-;Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 ; Set execution policy for PowerShell scripts
 Filename: "powershell"; Parameters: "-Command Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force"; Flags: runhidden waituntilterminated; StatusMsg: "Setting PowerShell execution policy..."
 

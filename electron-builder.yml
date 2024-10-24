@@ -9,8 +9,10 @@ files:
     filter:
       - package.json
       - app/**
-      - scripts/BB_Py_Automation/
-asar: false
+      # - scripts/BB_Py_Automation/
+asar: true
+extraFiles:
+  - scripts
 # extraResources:
 #   - from: scripts/BB_Py_Automation/
 #     to: scripts/BB_Py_Automation  # Optional: rename directory in the output

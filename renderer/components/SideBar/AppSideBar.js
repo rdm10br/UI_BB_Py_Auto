@@ -16,7 +16,7 @@ const AppSideBar = () => {
   const openExcelFile = () => {
     window.ipc.send(
       "open-excel-file",
-      "../scripts/BB_Py_Automation/Planilhas/SALAS.xlsx"
+      "scripts/BB_Py_Automation/Planilhas/SALAS.xlsx"
     );
   };
 
