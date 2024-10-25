@@ -39,16 +39,20 @@ jobs:
         run: |
             npm install
 
+      - name: List Cloned Files for Debugging
+        run: |
+          tree
+
       # - name: List Cloned Files for Debugging
       #   run: |
       #     dir /scripts/BB_Py_Automation /s
       
       - name: Create Mock JSON Files
         run: |
-          echo '{}' > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json
-          echo '{}' > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json
+          echo {} > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json
+          echo {} > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json
 
-      - name: List Cloned Files for Debugging
+      - name: List Cloned Files for Debugging2
         run: |
           tree
 
