@@ -41,7 +41,8 @@ jobs:
 
       - name: List Cloned Files for Debugging
         run: |
-          tree
+          tree -I 'node_modules'
+
 
       # - name: List Cloned Files for Debugging
       #   run: |
@@ -54,7 +55,8 @@ jobs:
 
       - name: List Cloned Files for Debugging2
         run: |
-          tree
+          tree -I 'node_modules'
+
 
       - name: Build Nextron.js app
         run: |
