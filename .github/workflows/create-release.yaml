@@ -41,7 +41,7 @@ jobs:
 
       - name: List Cloned Files
         run: |
-          tree
+          dir scripts\BB_Py_Automation /s
 
       - name: Build Nextron.js app
         run: |

@@ -3,19 +3,24 @@ import Head from "next/head";
 // import { useTranslation } from 'react-i18next';
 // import { withTranslation } from '../lib/withTranslation.js';
 import packageJson from '../../package.json'
-import versionData from "../../scripts/BB_Py_Automation/release.json";
+// const isProduction = process.env.NODE_ENV === 'production';
+// const releasePath = !isProduction ? '../../scripts/BB_Py_Automation/release.json': '../scripts/BB_Py_Automation/release.json';
+// // import versionData from "../../scripts/BB_Py_Automation/release.json";
+// const versionData = require(releasePath);
 // import LanguageSwitcher from "../components/LanguageSwitcher/LanguageSwitcher.js";
 
 // export const getServerSideProps = withTranslation('common');
 
 export default function NextPage() {
   // const { t } = useTranslation('common');
-  const [version] = useState(versionData.CURRENT_VERSION);
+  // const [version] = useState(versionData.CURRENT_VERSION);
   const [currentVersion] = useState(packageJson.version);
   const [account, setAccount] = useState(null);
   const [session, setSession] = useState(null);
+  const [version, setVersion] = useState(null);
   const [loginFileExists, setLoginFileExists] = useState(false);
   const [cookieFileExists, setCookieFileExists] = useState(false);
+  const [releaseFileExists, setReleaseFileExists] = useState(false);
   const [latestVersion, setLatestVersion] = useState(null);
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [envFile, setEnvFile] = useState(false);
@@ -32,9 +37,11 @@ export default function NextPage() {
       "scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json";
     let cookieFilePath =
       "scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json";
+    let releaseFilePath =
+      "../scripts/BB_Py_Automation/release.json";
 
     const fetchFileStatus = async () => {
-      const filePaths = [loginFilePath, cookieFilePath, envFilePath];
+      const filePaths = [loginFilePath, cookieFilePath, envFilePath, releaseFilePath];
 
       try {
         // Call the IPC method to check file existence
@@ -82,6 +89,18 @@ export default function NextPage() {
                 setEnvFile(_envFileStatus.exists);
                 setenvFilePath(_envFilePath)
               }
+            }
+          }
+
+          if (status.path === releaseFilePath) {
+            setReleaseFileExists(status.exists);
+            
+            if (!status.exists) {
+              // Try another path if the file doesn't exist
+              const _releaseFilePath = `../${releaseFilePath}`;
+              const [_releaseFileStatus] = await window.fileAPI.checkFilesExist([_releaseFilePath]);
+              setLoginFileExists(_releaseFileStatus.exists);
+              console.log(`Trying alternative login file path: ${_releaseFilePath}, exists: ${_releaseFileStatus.exists}`);
             }
           }
         });
@@ -135,10 +154,24 @@ export default function NextPage() {
       }
     };
 
+    const loadReleaseData = async () => {
+      if (cookieFileExists) {
+        try {
+          const releaseData = await import(
+            `../../scripts/BB_Py_Automation/release.json`
+          );
+          setVersion(releaseData.CURRENT_VERSION);
+        } catch (error) {
+          console.error("Error loading cookie file:", error);
+        }
+      }
+    };
+
     loadLoginData();
     loadCookieData();
     envFileData();
-  }, [loginFileExists, cookieFileExists, envFile]);
+    loadReleaseData();
+  }, [loginFileExists, cookieFileExists, envFile, releaseFileExists]);
 
   const checkForUpdatesBot = async () => {
     const GITHUB_REPO = "rdm10br/BB_Py_Automation";
