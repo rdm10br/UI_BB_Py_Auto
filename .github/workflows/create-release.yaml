@@ -39,9 +39,9 @@ jobs:
         run: |
             npm install
 
-      - name: List Cloned Files for Debugging
-        run: |
-          ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
+      # - name: List Cloned Files for Debugging
+      #   run: |
+      #     ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
 
       # - name: List Cloned Files for Debugging
       #   run: |
@@ -49,8 +49,8 @@ jobs:
       
       - name: Create Mock JSON Files
         run: |
-          echo {} > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json
-          echo {} > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json
+          echo "{\"username\": \"username\", \"password\": \"password\"}" > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json
+          echo "{\"timestamp\": \"1500-01-01T00:00:00.000000\", \"cookies\": []}" > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json
 
       - name: List Cloned Files for Debugging2
         run: |
