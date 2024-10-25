@@ -39,9 +39,9 @@ jobs:
         run: |
             npm install
 
-      - name: List Cloned Files
-        run: |
-          dir ./scripts/BB_Py_Automation /s
+      # - name: List Cloned Files for Debugging
+      #   run: |
+      #     dir /scripts/BB_Py_Automation /s
 
       - name: Build Nextron.js app
         run: |
