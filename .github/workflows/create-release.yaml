@@ -41,8 +41,7 @@ jobs:
 
       - name: List Cloned Files for Debugging
         run: |
-          tree -I 'node_modules'
-
+          Get-ChildItem -Recurse -Directory -Exclude node_modules
 
       # - name: List Cloned Files for Debugging
       #   run: |
@@ -55,8 +54,7 @@ jobs:
 
       - name: List Cloned Files for Debugging2
         run: |
-          tree -I 'node_modules'
-
+          Get-ChildItem -Recurse -Directory -Exclude node_modules
 
       - name: Build Nextron.js app
         run: |
