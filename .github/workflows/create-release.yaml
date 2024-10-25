@@ -41,7 +41,7 @@ jobs:
 
       - name: List Cloned Files for Debugging
         run: |
-          Get-ChildItem -Recurse -Directory -Exclude node_modules
+          ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
 
       # - name: List Cloned Files for Debugging
       #   run: |
@@ -54,7 +54,7 @@ jobs:
 
       - name: List Cloned Files for Debugging2
         run: |
-          Get-ChildItem -Recurse -Directory -Exclude node_modules
+          ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
 
       - name: Build Nextron.js app
         run: |
