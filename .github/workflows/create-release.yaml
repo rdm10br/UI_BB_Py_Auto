@@ -53,9 +53,9 @@ jobs:
           echo "{\"username\": \"username\",\n \"password\": \"password\"}" > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json
           echo "{\"timestamp\": \"1500-01-01T00:00:00.000000\",\n \"cookies\": []}" > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json
 
-      # - name: List Cloned Files for Debugging2
-      #   run: |
-      #     ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
+      - name: List Cloned Files for Debugging2
+        run: |
+          ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
 
       - name: Build Nextron.js app
         run: |
