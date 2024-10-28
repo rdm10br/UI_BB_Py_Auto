@@ -96,6 +96,11 @@ jobs:
           echo "{\n\"username\": \"username\",\n \"password\": \"password\"\n}" > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json
           echo "{\n\"timestamp\": \"1500-01-01T00:00:00.000000\",\n \"cookies\": []\n}" > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json
 
+      - name: Test
+        run: |
+          Get-Content scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json
+          Get-Content scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json
+
       - name: List Cloned Files for Debugging2
         run: |
           ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
