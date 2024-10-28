@@ -103,13 +103,17 @@ jobs:
       #     Get-Content scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json
       #     Get-Content scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json
 
-      - name: List Cloned Files for Debugging2
-        run: |
-          ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
+      # - name: List Cloned Files for Debugging2
+      #   run: |
+      #     ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
 
       - name: Build Nextron.js app
         run: |
             npm run build
+
+      - name: List Cloned Files for Debugging
+        run: |
+          ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
