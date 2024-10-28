@@ -138,9 +138,9 @@ jobs:
         env:
           VERSION: ${{ env.TAG_NAME }}
           
-      - name: List Cloned Files for Debugging
-        run: |
-          ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
+      # - name: List Cloned Files for Debugging
+      #   run: |
+      #     ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
 
       - name: Upload Installer
         uses: actions/upload-artifact@v3
@@ -160,6 +160,12 @@ jobs:
             }
             
             echo "RELEASE_NOTES=$release_notes" >> $env:GITHUB_ENV
+
+      - name: List Contents of dist
+        run: ls -al ./dist
+
+      - name: List Contents of Output
+        run: ls -al build/installer/Output
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
