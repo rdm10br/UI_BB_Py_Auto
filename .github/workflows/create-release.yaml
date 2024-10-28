@@ -119,7 +119,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: nextron-build
-          path: ./dist
+          path: ./dist/win-unpacked
           
       - name: Install Chocolatey
         run: |
@@ -161,11 +161,11 @@ jobs:
             
             echo "RELEASE_NOTES=$release_notes" >> $env:GITHUB_ENV
 
-      - name: List Contents of dist
-        run: Get-ChildItem -Path ./dist -Force
+      # - name: List Contents of dist
+      #   run: Get-ChildItem -Path ./dist -Force
 
-      - name: List Contents of Output
-        run: Get-ChildItem -Path build/installer/Output -Force
+      # - name: List Contents of Output
+      #   run: Get-ChildItem -Path build/installer/Output -Force
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
@@ -176,7 +176,7 @@ jobs:
           draft: false
           prerelease: false
           assets: |
-            ./dist/*
+            ./dist/win-unpacked/*
             build/installer/Output/BlackBot.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
