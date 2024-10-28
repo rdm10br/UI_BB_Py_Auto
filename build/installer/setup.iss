@@ -6,6 +6,8 @@
 #define MyAppPublisher "My Company, Inc."
 #define MyAppURL "https://www.example.com/"
 #define MyAppExeName "BlackBot.exe"
+#define SourcePath "D:\a\UI_BB_Py_Auto\UI_BB_Py_Auto\dist\win-unpacked"
+
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
