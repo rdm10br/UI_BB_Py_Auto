@@ -162,10 +162,10 @@ jobs:
             echo "RELEASE_NOTES=$release_notes" >> $env:GITHUB_ENV
 
       - name: List Contents of dist
-        run: ls -al ./dist
+        run: Get-ChildItem -Path ./dist -Force
 
       - name: List Contents of Output
-        run: ls -al build/installer/Output
+        run: Get-ChildItem -Path build/installer/Output -Force
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
