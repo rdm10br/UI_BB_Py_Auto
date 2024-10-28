@@ -111,9 +111,9 @@ jobs:
         run: |
             npm run build
 
-      - name: List Cloned Files for Debugging
-        run: |
-          ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
+      # - name: List Cloned Files for Debugging
+      #   run: |
+      #     ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
@@ -137,6 +137,10 @@ jobs:
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "build/installer/setup.iss"
         env:
           VERSION: ${{ env.TAG_NAME }}
+          
+      - name: List Cloned Files for Debugging
+        run: |
+          ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
 
       - name: Upload Installer
         uses: actions/upload-artifact@v3

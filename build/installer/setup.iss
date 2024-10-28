@@ -100,13 +100,13 @@ Filename: "cmd"; Parameters: "/c winget --version"; Flags: runhidden waituntilte
 Filename: "cmd"; Parameters: "/c winget install Python.Python.3.12 --scope=user"; Flags: runhidden waituntilterminated; Check: NeedsPython; StatusMsg: "Installing Python..."
 
 ; Install Node.js for the current user (no admin privileges)
-Filename: "cmd"; Parameters: "/c winget install OpenJS.NodeJS --scope=user"; Flags: runhidden waituntilterminated; Check: NeedsNodeJS; StatusMsg: "Installing Node.js..."
+; Filename: "cmd"; Parameters: "/c winget install OpenJS.NodeJS --scope=user"; Flags: runhidden waituntilterminated; Check: NeedsNodeJS; StatusMsg: "Installing Node.js..."
 
 ; Run the setup.bat after installation
-Filename: "{app}\BB_Py_Automation\setup.bat"; WorkingDir: "{app}\BB_Py_Automation"; Flags: runhidden waituntilterminated; StatusMsg: "Running setup script..."
+Filename: "{app}\scripts\BB_Py_Automation\setup.bat"; WorkingDir: "{app}\scripts\BB_Py_Automation"; Flags: runhidden waituntilterminated; StatusMsg: "Running setup script..."
 
 ; Run npm install
-Filename: "cmd"; Parameters: "/c npm install"; WorkingDir: "{app}\UI_BB_Py_Auto"; Flags: runhidden waituntilterminated; StatusMsg: "Running npm setup script..."
+; Filename: "cmd"; Parameters: "/c npm install"; WorkingDir: "{app}\UI_BB_Py_Auto"; Flags: runhidden waituntilterminated; StatusMsg: "Running npm setup script..."
 
 [Code]
 function WingetAvailable: Boolean;
