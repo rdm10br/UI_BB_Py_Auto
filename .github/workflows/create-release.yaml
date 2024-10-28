@@ -23,6 +23,49 @@ jobs:
             $version = (Get-Content package.json | ConvertFrom-Json).version
             echo "TAG_NAME=$version" >> $env:GITHUB_ENV
         shell: pwsh
+
+      - name: Cleanup Old Artifacts
+        run: |
+          # Set variables
+          GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+          REPO="rdm10br/UI_BB_PY_AUTO"  # Replace with your repository name, e.g., "your-username/your-repo"
+          THRESHOLD_DAYS=7    # Set the threshold for old artifacts
+
+          # Get the current date in seconds since epoch
+          CURRENT_DATE=$(date +%s)
+
+          # Fetch all artifacts
+          ARTIFACTS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+                          -H "Accept: application/vnd.github.v3+json" \
+                          "https://api.github.com/repos/$REPO/actions/artifacts")
+
+          # Iterate through artifacts
+          for row in $(echo "${ARTIFACTS}" | jq -r '.artifacts[] | @base64'); do
+            _jq() {
+              echo "${row}" | base64 --decode | jq -r "${1}"
+            }
+
+            # Get artifact name and creation date
+            ARTIFACT_NAME=$(_jq '.name')
+            CREATED_AT=$(_jq '.created_at')
+
+            # Convert created_at to seconds since epoch
+            ARTIFACT_DATE=$(date -d "$CREATED_AT" +%s)
+
+            # Calculate the age of the artifact in days
+            AGE=$(( (CURRENT_DATE - ARTIFACT_DATE) / (60*60*24) ))
+
+            # Check if the artifact is older than the threshold
+            if [ "$AGE" -gt "$THRESHOLD_DAYS" ]; then
+              # Delete the artifact
+              echo "Deleting artifact: $ARTIFACT_NAME (Age: $AGE days)"
+              ARTIFACT_ID=$(_jq '.id')
+              curl -X DELETE -H "Authorization: token $GITHUB_TOKEN" \
+                "https://api.github.com/repos/$REPO/actions/artifacts/$ARTIFACT_ID"
+            fi
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
       - name: Clone additional GitHub repo into scripts folder
         run: |
@@ -50,8 +93,8 @@ jobs:
       - name: Create Mock JSON Files
         run: |
           mkdir -p scripts/BB_Py_Automation/src/Metodos/Login/__pycache__
-          echo "{\"username\": \"username\",\n \"password\": \"password\"}" > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json
-          echo "{\"timestamp\": \"1500-01-01T00:00:00.000000\",\n \"cookies\": []}" > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json
+          echo "{\n\"username\": \"username\",\n \"password\": \"password\"\n}" > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json
+          echo "{\n\"timestamp\": \"1500-01-01T00:00:00.000000\",\n \"cookies\": []\n}" > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json
 
       - name: List Cloned Files for Debugging2
         run: |
@@ -102,49 +145,6 @@ jobs:
             }
             
             echo "RELEASE_NOTES=$release_notes" >> $env:GITHUB_ENV
-
-      - name: Cleanup Old Artifacts
-        run: |
-          # Set variables
-          GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
-          REPO="owner/repo"  # Replace with your repository name, e.g., "your-username/your-repo"
-          THRESHOLD_DAYS=7    # Set the threshold for old artifacts
-
-          # Get the current date in seconds since epoch
-          CURRENT_DATE=$(date +%s)
-
-          # Fetch all artifacts
-          ARTIFACTS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-                          -H "Accept: application/vnd.github.v3+json" \
-                          "https://api.github.com/repos/$REPO/actions/artifacts")
-
-          # Iterate through artifacts
-          for row in $(echo "${ARTIFACTS}" | jq -r '.artifacts[] | @base64'); do
-            _jq() {
-              echo "${row}" | base64 --decode | jq -r "${1}"
-            }
-
-            # Get artifact name and creation date
-            ARTIFACT_NAME=$(_jq '.name')
-            CREATED_AT=$(_jq '.created_at')
-
-            # Convert created_at to seconds since epoch
-            ARTIFACT_DATE=$(date -d "$CREATED_AT" +%s)
-
-            # Calculate the age of the artifact in days
-            AGE=$(( (CURRENT_DATE - ARTIFACT_DATE) / (60*60*24) ))
-
-            # Check if the artifact is older than the threshold
-            if [ "$AGE" -gt "$THRESHOLD_DAYS" ]; then
-              # Delete the artifact
-              echo "Deleting artifact: $ARTIFACT_NAME (Age: $AGE days)"
-              ARTIFACT_ID=$(_jq '.id')
-              curl -X DELETE -H "Authorization: token $GITHUB_TOKEN" \
-                "https://api.github.com/repos/$REPO/actions/artifacts/$ARTIFACT_ID"
-            fi
-          done
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
