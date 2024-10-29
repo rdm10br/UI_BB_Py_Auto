@@ -168,6 +168,7 @@ jobs:
       #   run: Get-ChildItem -Path build/installer/Output -Force
 
       - name: Create GitHub Release
+        id: create_release
         uses: actions/create-release@v1
         with:
           tag_name: ${{ env.TAG_NAME }}
@@ -187,7 +188,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./build/installer/Output/BlackBot-Setup.exe
-          asset_name: BlackBot.exe
+          asset_name: BlackBot-Setup.exe
           asset_content_type: application/octet-stream
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
