@@ -193,9 +193,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload all files from win-unpacked
-        shell: bash
+      - name: Upload Assets with GitHub CLI
         run: |
           for file in ./dist/win-unpacked/*; do
             echo "Uploading $file"
             gh release upload ${{ env.TAG_NAME }} "$file" --cl
+          done
+        shell: bash
