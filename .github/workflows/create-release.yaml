@@ -196,17 +196,13 @@ jobs:
       - name: Upload Assets with GitHub CLI
         run: |
           for file in ./dist/*; do
-          if [ -f "$file" ]; then  # Check if it's a file
-            echo "Uploading $file"
-            gh release upload "${{ env.TAG_NAME }}" "$file" --clobber
-          fi
-          done
-          for file in ./dist/win-unpacked/*; do
             if [ -f "$file" ]; then  # Check if it's a file
               echo "Uploading $file"
               gh release upload "${{ env.TAG_NAME }}" "$file" --clobber
             fi
           done
+          echo "Uploading compressed win-unpacked.zip"
+          gh release upload "${{ env.TAG_NAME }}" "dist/win-unpacked.zip" --clobber
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
