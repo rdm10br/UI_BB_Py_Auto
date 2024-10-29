@@ -115,11 +115,11 @@ jobs:
       #   run: |
       #     ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
 
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: nextron-build
-          path: ./dist/win-unpacked
+      # - name: Upload Build Artifact
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: nextron-build
+      #     path: ./dist/win-unpacked
           
       - name: Install Chocolatey
         run: |
@@ -142,11 +142,11 @@ jobs:
       #   run: |
       #     ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
 
-      - name: Upload Installer
-        uses: actions/upload-artifact@v3
-        with:
-          name: setup-installer
-          path: build/installer/Output/BlackBot-Setup.exe
+      # - name: Upload Installer
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: setup-installer
+      #     path: build/installer/Output/BlackBot-Setup.exe
 
       - name: Generate Release Notes
         id: release_notes
