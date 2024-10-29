@@ -79,9 +79,9 @@ Source: "{#SourcePath}\v8_context_snapshot.bin"; DestDir: "{app}"; Flags: ignore
 Source: "{#SourcePath}\vk_swiftshader.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourcePath}\vk_swiftshader_icd.json"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourcePath}\vulkan-1.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourcePath}\scripts\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#SourcePath}\resources\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#SourcePath}\locales\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#SourcePath}\scripts\*"; DestDir: "{app}\scripts"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#SourcePath}\resources\*"; DestDir: "{app}\resources"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#SourcePath}\locales\*"; DestDir: "{app}\locales"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

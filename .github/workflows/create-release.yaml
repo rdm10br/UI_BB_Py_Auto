@@ -197,6 +197,6 @@ jobs:
         run: |
           for file in ./dist/win-unpacked/*; do
             echo "Uploading $file"
-            gh release upload ${{ env.TAG_NAME }} "$file" --cl
+            gh release upload ${{ env.TAG_NAME }} "$file" --clobber
           done
         shell: bash
