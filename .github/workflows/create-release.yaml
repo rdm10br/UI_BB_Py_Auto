@@ -200,3 +200,5 @@ jobs:
             gh release upload ${{ env.TAG_NAME }} "$file" --clobber
           done
         shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
