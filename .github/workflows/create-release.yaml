@@ -195,7 +195,8 @@ jobs:
 
       - name: Compress win-unpacked directory
         run: |
-          zip -r dist.zip dist
+          Compress-Archive -Path dist -DestinationPath dist.zip -Force
+        shell: pwsh
 
       - name: Upload Assets with GitHub CLI
         run: |
