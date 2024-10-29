@@ -26,7 +26,7 @@ LicenseFile={#SourcePath}\LICENSE.electron.txt
 ; Remove the following line to run in administrative install mode (install for all users.)
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
-OutputBaseFilename=BlackBot
+OutputBaseFilename=BlackBot-Setup
 ; SetupIconFile={#SourcePath}\resources\icon.ico
 Compression=lzma
 SolidCompression=yes

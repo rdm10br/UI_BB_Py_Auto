@@ -146,7 +146,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: setup-installer
-          path: build/installer/Output/BlackBot.exe
+          path: build/installer/Output/BlackBot-Setup.exe
 
       - name: Generate Release Notes
         id: release_notes
@@ -175,8 +175,26 @@ jobs:
           body: ${{ env.RELEASE_NOTES }}
           draft: false
           prerelease: false
-          assets: |
-            ./dist/win-unpacked/*
-            build/installer/Output/BlackBot.exe
+          # assets: |
+          #   ./dist/*
+          #   build/installer/Output/BlackBot-Setup.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Upload assets individually
+      - name: Upload BlackBot executable
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/installer/Output/BlackBot-Setup.exe
+          asset_name: BlackBot.exe
+          asset_content_type: application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload all files from win-unpacked
+        shell: bash
+        run: |
+          for file in ./dist/win-unpacked/*; do
+            echo "Uploading $file"
+            gh release upload ${{ env.TAG_NAME }} "$file" --cl
