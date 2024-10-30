@@ -1,12 +1,16 @@
 import { ipcMain } from "electron";
-import handleExcelFile from "./ipcExcel";
-import handleEnvFile from "./ipcEnv";
-import handlePythonEvents from "./ipcPython";
-import handleUpdateEvents from "./ipcUpdate";
+import { initializeRunPythonHandlers } from './runPython';
+import { initializeFileAPIHandlers } from "./checkFile";
+import { initializeGitHubAPIHandlers } from "./githubAPI";
+import { initializeGeneralAPIHandlers } from "./generalAPI";
+import { initializeEnvAPIHandlers } from "./envAPI";
+import { initializeFileHandlers } from './fileHandler';
 
-export const setupIPC = (mainWindow, autoUpdater) => {
-  handleExcelFile(ipcMain);
-  handleEnvFile(ipcMain);
-  handlePythonEvents(ipcMain, mainWindow);
-  handleUpdateEvents(ipcMain, autoUpdater);
-};
+export function initializeIpcHandlers(mainWindow) {
+  initializeRunPythonHandlers(ipcMain);
+  initializeFileAPIHandlers(ipcMain);
+  initializeGitHubAPIHandlers(ipcMain);
+  initializeGeneralAPIHandlers(ipcMain, mainWindow);
+  initializeEnvAPIHandlers(ipcMain);
+  initializeFileHandlers(ipcMain);
+}

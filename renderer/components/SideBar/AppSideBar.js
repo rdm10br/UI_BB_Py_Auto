@@ -14,10 +14,7 @@ const AppSideBar = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   const openExcelFile = () => {
-    window.ipc.send(
-      "open-excel-file",
-      "scripts/BB_Py_Automation/Planilhas/SALAS.xlsx"
-    );
+    window.MainIPC.openExcel("scripts/BB_Py_Automation/Planilhas/SALAS.xlsx");
   };
 
   // Toggle dropdown menus

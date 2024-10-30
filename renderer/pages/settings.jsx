@@ -2,50 +2,47 @@ import React, { useState, useEffect } from "react";
 import Head from "next/head";
 // import { useTranslation } from 'react-i18next';
 // import { withTranslation } from '../lib/withTranslation.js';
-import packageJson from '../../package.json'
 // const isProduction = process.env.NODE_ENV === 'production';
-// const releasePath = !isProduction ? '../../scripts/BB_Py_Automation/release.json': '../scripts/BB_Py_Automation/release.json';
-// // import versionData from "../../scripts/BB_Py_Automation/release.json";
-// const versionData = require(releasePath);
 // import LanguageSwitcher from "../components/LanguageSwitcher/LanguageSwitcher.js";
 
 // export const getServerSideProps = withTranslation('common');
 
 export default function NextPage() {
   // const { t } = useTranslation('common');
-  // const [version] = useState(versionData.CURRENT_VERSION);
-  const [currentVersion] = useState(packageJson.version);
+  const [currentVersion, SetcurrentVersion] = useState(null);
   const [account, setAccount] = useState(null);
   const [session, setSession] = useState(null);
   const [version, setVersion] = useState(null);
   const [loginFileExists, setLoginFileExists] = useState(false);
   const [cookieFileExists, setCookieFileExists] = useState(false);
   const [releaseFileExists, setReleaseFileExists] = useState(false);
+  const [packFileExists, setPackFileExists] = useState(false);
   const [latestVersion, setLatestVersion] = useState(null);
   const [updateAvailable, setUpdateAvailable] = useState(false);
+  const [latestVersionApp, setLatestVersionApp] = useState(null);
+  const [updateAvailableApp, setUpdateAvailableApp] = useState(false);
   const [envFile, setEnvFile] = useState(false);
   const [envFileData, setEnvFileData] = useState("");
+  const [packFileData, setPackFileData] = useState("");
   const [baseUrl, setBaseUrl] = useState("");
   const [repoId, setRepoId] = useState("");
   const [ownerRepo, setOwnerRepo] = useState("");
   const [gitBranch, setGitBranch] = useState("");
   const [envFilePath, setenvFilePath] = useState("scripts/BB_Py_Automation/.env");
+  const [pack, setPack] = useState("package.json");
+  const [loginFilePath, setLoginFilePath] = useState("scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json");
+  const [cookieFilePath, setCookieFilePath] = useState("scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json");
+  const [releaseFilePath, setReleaseFilePath] = useState("scripts/BB_Py_Automation/release.json");
   const [activeTab, setActiveTab] = useState("userPreferences");
 
   useEffect(() => {
-    let loginFilePath =
-      "scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json";
-    let cookieFilePath =
-      "scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json";
-    let releaseFilePath =
-      "../scripts/BB_Py_Automation/release.json";
 
     const fetchFileStatus = async () => {
-      const filePaths = [loginFilePath, cookieFilePath, envFilePath, releaseFilePath];
+      const filePaths = [loginFilePath, cookieFilePath, envFilePath, releaseFilePath, pack];
 
       try {
         // Call the IPC method to check file existence
-        const fileStatuses = await window.fileAPI.checkFilesExist(filePaths);
+        const fileStatuses = await window.MainIPC.checkFilesExist(filePaths);
 
         // Process the results
         fileStatuses.forEach(async (status) => {
@@ -56,7 +53,8 @@ export default function NextPage() {
             if (!status.exists) {
               // Try another path if the file doesn't exist
               const _loginFilePath = `../../${loginFilePath}`;
-              const [_loginFileStatus] = await window.fileAPI.checkFilesExist([_loginFilePath]);
+              const [_loginFileStatus] = await window.MainIPC.checkFilesExist([_loginFilePath]);
+              setLoginFilePath(_loginFilePath)
               setLoginFileExists(_loginFileStatus.exists);
               console.log(`Trying alternative login file path: ${_loginFilePath}, exists: ${_loginFileStatus.exists}`);
             }
@@ -68,7 +66,8 @@ export default function NextPage() {
             if (!status.exists) {
               // Try another path if the file doesn't exist
               const _cookieFilePath = `../../${cookieFilePath}`;
-              const [_cookieFiletatus] = await window.fileAPI.checkFilesExist([_cookieFilePath]);
+              const [_cookieFiletatus] = await window.MainIPC.checkFilesExist([_cookieFilePath]);
+              setCookieFilePath(_cookieFilePath)
               setLoginFileExists(_cookieFiletatus.exists);
               console.log(`Trying alternative login file path: ${_cookieFilePath}, exists: ${_cookieFiletatus.exists}`);
             }
@@ -79,10 +78,10 @@ export default function NextPage() {
               setEnvFile(status.exists); // File exists, set it
             } else if (status.exists === false) {
               // Try another path if the file doesn't exist
-              const _envFilePath = `../${envFilePath}`;
+              const _envFilePath = `../../${envFilePath}`;
               
               // Since this is an async operation, use 'await' to get the result
-              const [_envFileStatus] = await window.fileAPI.checkFilesExist([_envFilePath]);
+              const [_envFileStatus] = await window.MainIPC.checkFilesExist([_envFilePath]);
               console.log(`Trying alternative env file path: ${_envFilePath}, exists: ${_envFileStatus.exists}`);
           
               if (_envFileStatus.exists == true) {
@@ -98,9 +97,23 @@ export default function NextPage() {
             if (!status.exists) {
               // Try another path if the file doesn't exist
               const _releaseFilePath = `../${releaseFilePath}`;
-              const [_releaseFileStatus] = await window.fileAPI.checkFilesExist([_releaseFilePath]);
+              const [_releaseFileStatus] = await window.MainIPC.checkFilesExist([_releaseFilePath]);
+              setReleaseFilePath(_releaseFilePath)
               setLoginFileExists(_releaseFileStatus.exists);
               console.log(`Trying alternative login file path: ${_releaseFilePath}, exists: ${_releaseFileStatus.exists}`);
+            }
+          }
+
+          if (status.path === pack) {
+            setPackFileExists(status.exists);
+            
+            if (!status.exists) {
+              // Try another path if the file doesn't exist
+              const _pack = `../${pack}`;
+              const [_packFileStatus] = await window.MainIPC.checkFilesExist([_pack]);
+              setPack(_pack)
+              setPackFileExists(_packFileStatus.exists);
+              console.log(`Trying alternative login file path: ${_pack}, exists: ${_packFileStatus.exists}`);
             }
           }
         });
@@ -142,8 +155,8 @@ export default function NextPage() {
     const envFileData = async () => {
       if (loginFileExists) {
         try {
-          console.log(envFilePath)
-          const data = await window.envAPI.getEnvVariables(`${envFilePath}`);
+          // console.log(envFilePath)
+          const data = await window.MainIPC.getEnvVariables(`${envFilePath}`);
           if (data != null && data != "") {
             // console.log(`data : ${data}`)
             setEnvFileData(data);
@@ -167,11 +180,27 @@ export default function NextPage() {
       }
     };
 
+    const packFileData = async () => {
+      if (packFileExists) {
+        try {
+          // console.log(envFilePath)
+          const data = await window.MainIPC.getJsonData(`${pack}`);
+          if (data != null && data != "") {
+            // console.log(`data : ${data.version}`)
+            setPackFileData(data.version);
+          }
+        } catch (error) {
+          console.error("Error loading env file:", error);
+        }
+      }
+    };
+
     loadLoginData();
     loadCookieData();
     envFileData();
     loadReleaseData();
-  }, [loginFileExists, cookieFileExists, envFile, releaseFileExists]);
+    packFileData();
+  }, [loginFileExists, cookieFileExists, envFile, releaseFileExists, packFileExists]);
 
   const checkForUpdatesBot = async () => {
     const GITHUB_REPO = "rdm10br/BB_Py_Automation";
@@ -221,15 +250,15 @@ export default function NextPage() {
       }
 
       // GitHub API data should already be parsed, no need to call `data.json()`
-      const latestVersion = data.tag_name;
-      console.log(latestVersion);
+      const latestVersionApp = data.tag_name;
+      console.log(latestVersionApp);
 
       // Update the state with the latest version
-      setLatestVersion(latestVersion);
+      setLatestVersionApp(latestVersionApp);
 
       // Check if there is an update available
-      if (currentVersion !== latestVersion) {
-        setUpdateAvailable(true);
+      if (currentVersion !== latestVersionApp) {
+        setUpdateAvailableApp(true);
         const wantsToUpdate = await window.githubAPI.showUpdatePopup(true);
         console.log(wantsToUpdate);
         if (wantsToUpdate) {
@@ -450,10 +479,10 @@ export default function NextPage() {
         </div>
         <div className="card">
           <h4>App :</h4>
-          {updateAvailable ? (
+          {updateAvailableApp ? (
             <>
-              <p>Há uma atualização disponível: {latestVersion}</p>
-              <p>Sua Versão: {version}</p>
+              <p>Há uma atualização disponível: {latestVersionApp}</p>
+              <p>Sua Versão: {packFileData}</p>
               <br />
               <button onClick={() => runPython("")}>
                 Atualizar
@@ -461,7 +490,7 @@ export default function NextPage() {
             </>
           ) : (
             <>
-              <p>Versão: {currentVersion}</p>
+              <p>Versão: {packFileData}</p>
               <br />
               <button onClick={checkForUpdatesApp}>Verificar Atualização</button>
             </>

@@ -12,12 +12,12 @@ const Runner = ({ script }) => {
   const [isAccordionOpen, setIsAccordionOpen] = useState(true);
 
   useEffect(() => {
-    // window.ipc.on("python-start", (event, data) => {
+    // window.MainIPC.on("python-start", (event, data) => {
     //   setResult(data);
     // });
 
     // Set up IPC listeners when the component mounts
-    // window.ipc.on("python-result", (event, data) => {
+    // window.MainIPC.on("python-result", (event, data) => {
     //   console.warn("Received data:", data);
     //   setResult((prevResult) => prevResult + (data ? data.toString() : ""));
     //   // setPlay(false); // Stop playing once the result is received
@@ -29,23 +29,47 @@ const Runner = ({ script }) => {
       window.scrollTo(0, document.body.scrollHeight);
     }
 
-    window.ipc.on("python-output", (data) => {
+    const handlePythonOutput = (data) => {
       setResult((prev) => prev + `${data}`);
       scrollToBottom();
-    });
+    };
 
-    window.ipc.on("python-error", (data) => {
-      setOutput((prev) => prev + `${data}`);
+    const handlePythonError = (data) => {
+      setResult((prev) => prev + `${data}`);
       scrollToBottom();
-    });
-
-    window.ipc.on("python-close", (data) => {
-      // setResult((prev) => prev + `${data}`);
+    };
+  
+    const handlePythonClose = (data) => {
       scrollToBottom();
       setPlay(false);
-    });
+    };
+
+    // window.MainIPC.onPythonOutput((data) => {
+    //   setResult((prev) => prev + `${data}`);
+    //   scrollToBottom();
+    // });
+
+    // window.MainIPC.onPythonError((data) => {
+    //   setOutput((prev) => prev + `${data}`);
+    //   scrollToBottom();
+    // });
+
+    // window.MainIPC.onPythonClose((data) => {
+    //   // setResult((prev) => prev + `${data}`);
+    //   scrollToBottom();
+    //   setPlay(false);
+    // });
+
+    window.MainIPC.onPythonOutput(handlePythonOutput);
+    window.MainIPC.onPythonError(handlePythonError);
+    window.MainIPC.onPythonClose(handlePythonClose);
+
     // Cleanup listeners when the component unmounts
-    return () => {};
+    return () => {
+      window.MainIPC.onPythonOutput(() => {}); // Cleanup
+      window.MainIPC.onPythonError(() => {}); // Cleanup
+      window.MainIPC.onPythonClose(() => {}); // Cleanup
+    };
   }, []);
 
   const runPython = () => {
@@ -53,31 +77,31 @@ const Runner = ({ script }) => {
     setResult(`Starting Python Script: ${script}\n`); // Clear the previous result
     setTerminal(true);
     setPlay(true);
-    window.ipc.send("run-python", `src/${script}`); // Trigger Python script execution
+    window.MainIPC.runPython(`src/${script}`); // Trigger Python script execution
   };
 
   const stopPython = () => {
     setPlay(false); // Stop the execution
     setTerminal(false); // Optionally hide the terminal
-    window.ipc.send("stop-python"); // Send a signal to stop the Python script
+    window.MainIPC.stopPython(); // Send a signal to stop the Python script
   };
 
   const pausePython = () => {
     setPlay(false); // Stop the execution
     setTerminal(false); // Optionally hide the terminal
-    window.ipc.send("pause-python"); // Send a signal to stop the Python script
+    window.MainIPC.send("pause-python"); // Send a signal to stop the Python script
   };
   const resumePython = () => {
     setPlay(false); // Stop the execution
     setTerminal(false); // Optionally hide the terminal
-    window.ipc.send("resume-python"); // Send a signal to stop the Python script
+    window.MainIPC.send("resume-python"); // Send a signal to stop the Python script
   };
   const submitFeedback = () => {
     let submitedFeedback = `Feedback for ${script} submitted: ${feedBack}`;
     console.log(submitedFeedback);
 
     // Here you could send the feedback to an API or backend, e.g.:
-    // window.ipc.send("submit-feedback", feedBack);
+    // window.MainIPC.send("submit-feedback", feedBack);
 
     // Clear the feedback input after submission
     setFeedBack("");
