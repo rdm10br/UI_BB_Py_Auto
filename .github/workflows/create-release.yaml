@@ -110,6 +110,8 @@ jobs:
       - name: Build Nextron.js app
         run: |
             npm run build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # - name: List Cloned Files for Debugging
       #   run: |

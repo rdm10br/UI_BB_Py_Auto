@@ -20,7 +20,7 @@ win:
     - provider: github
       owner: rdm10br
       repo: UI_BB_PY_AUTO
-      private: false
+      private: true
       releaseType: draft
 
 nsis:
