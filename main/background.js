@@ -37,10 +37,6 @@ if (isProd) {
     },
   });
 
-  checkForUpdates()
-
-  setInterval(checkForUpdates, 3600000); // 3,600,000 ms = 1 hour
-
   function checkForUpdates() {
     autoUpdater.autoDownload = true; // Enables background download
     console.log('Verifying if there is an update...')
@@ -69,7 +65,8 @@ if (isProd) {
 
   // tray = new Tray(iconPath);  // Set the system tray icon using the same icon
   // tray.setToolTip('My Electron App');
-
+  setInterval(checkForUpdates, 3600000); // 3,600,000 ms = 1 hour
+  checkForUpdates()
   initializeIpcHandlers(mainWindow);
 })();
 
