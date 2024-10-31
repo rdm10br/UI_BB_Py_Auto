@@ -12,7 +12,7 @@ export default function HomePage() {
         <h2>BlackBot - Home</h2>
       </div>
       <Link href='/log/logview'>
-        logview
+        log_view
       </Link>
       <div className="card">
         <h3>Para começar a usar essa aplicação: </h3>
