@@ -216,7 +216,7 @@ export default function NextPage() {
   const checkForUpdatesBot = async () => {
     const GITHUB_REPO = "rdm10br/BB_Py_Automation";
     try {
-      const data = await window.githubAPI.getRepo(GITHUB_REPO);
+      const data = await window.MainIPC.getGitRepo(GITHUB_REPO);
 
       // Check if there's an error in the response
       if (data.error) {
@@ -253,7 +253,7 @@ export default function NextPage() {
   const checkForUpdatesApp = async () => {
     const GITHUB_REPO = "rdm10br/UI_BB_Py_Auto";
     try {
-      const data = await window.githubAPI.getRepo(GITHUB_REPO);
+      const data = await window.MainIPC.getGitRepo(GITHUB_REPO);
 
       // Check if there's an error in the response
       if (data.error) {
