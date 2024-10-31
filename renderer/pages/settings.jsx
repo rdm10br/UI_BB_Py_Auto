@@ -356,7 +356,7 @@ export default function NextPage() {
         <title>Configurações</title>
       </Head>
       <div>
-        <h2>Configurações</h2>
+        <h2>Configurações : </h2>
       </div>
       <div className="tabs">
         <button onClick={() => handleTabChange("userPreferences")}>
