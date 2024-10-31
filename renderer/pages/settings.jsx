@@ -133,7 +133,7 @@ export default function NextPage() {
           const data = await window.MainIPC.getJsonData(`${loginFilePath}`);
           if (data != null && data != "") {
             // console.log(`data : ${data.version}`)
-            setVersion(data.username);
+            setAccount(data.username);
           }
         } catch (error) {
           console.error("Error loading env file:", error);
@@ -148,7 +148,7 @@ export default function NextPage() {
           const data = await window.MainIPC.getJsonData(`${cookieFilePath}`);
           if (data != null && data != "") {
             // console.log(`data : ${data.version}`)
-            setVersion(data.timestamp);
+            setSession(data.timestamp);
           }
         } catch (error) {
           console.error("Error loading env file:", error);
