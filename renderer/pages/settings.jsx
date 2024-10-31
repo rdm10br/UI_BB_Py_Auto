@@ -233,7 +233,7 @@ export default function NextPage() {
       // Check if there is an update available
       if (version !== latestVersion) {
         setUpdateAvailable(true);
-        const wantsToUpdate = await window.githubAPI.showUpdatePopup(true);
+        const wantsToUpdate = await window.MainIPC.showUpdatePopup(true);
         console.log(wantsToUpdate);
         if (wantsToUpdate) {
           console.log("User chose to update the app.");
@@ -242,7 +242,7 @@ export default function NextPage() {
           console.log("User choose not to update.");
         }
       } else {
-        await window.githubAPI.showUpdatePopup(false);
+        await window.MainIPC.showUpdatePopup(false);
         console.log("User is already up to date.");
       }
     } catch (err) {
@@ -270,7 +270,7 @@ export default function NextPage() {
       // Check if there is an update available
       if (currentVersion !== latestVersionApp) {
         setUpdateAvailableApp(true);
-        const wantsToUpdate = await window.githubAPI.showUpdatePopup(true);
+        const wantsToUpdate = await window.MainIPC.showUpdatePopup(true);
         console.log(wantsToUpdate);
         if (wantsToUpdate) {
           console.log("User chose to update the app.");
@@ -279,7 +279,7 @@ export default function NextPage() {
           console.log("User choose not to update.");
         }
       } else {
-        await window.githubAPI.showUpdatePopup(false);
+        await window.MainIPC.showUpdatePopup(false);
         console.log("User is already up to date.");
       }
     } catch (err) {
