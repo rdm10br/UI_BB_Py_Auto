@@ -195,11 +195,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Find Blockmap file
-        id: find_blockmap
+      - name: Find Blockmap File
         run: |
-          BLOCKMAP_FILE=$(find ./dist -name "*.blockmap" -print -quit)
-          echo "BLOCKMAP_FILE=$BLOCKMAP_FILE" >> $GITHUB_ENV
+          $blockmapFile = Get-ChildItem -Path ./dist -Filter *.blockmap -File -Recurse | Select-Object -First 1
+          if ($blockmapFile) {
+            echo "BLOCKMAP_FILE=$($blockmapFile.FullName)" >> $env:GITHUB_ENV
+          }
+        shell: pwsh
 
       - name: Set Blockmap Filename
         id: blockmap_filename
