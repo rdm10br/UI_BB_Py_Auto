@@ -201,13 +201,18 @@ jobs:
           BLOCKMAP_FILE=$(find ./dist -name "*.blockmap" -print -quit)
           echo "BLOCKMAP_FILE=$BLOCKMAP_FILE" >> $GITHUB_ENV
 
+      - name: Set Blockmap Filename
+        id: blockmap_filename
+        run: echo "BLOCKMAP_FILENAME=$(basename $BLOCKMAP_FILE)" >> $GITHUB_ENV
+        shell: bash
+
       - name: Upload Blockmap file
         if: env.BLOCKMAP_FILE != ''
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ env.BLOCKMAP_FILE }}
-          asset_name: ${{ env.BLOCKMAP_FILE##*/ }}
+          asset_name: ${{ env.BLOCKMAP_FILENAME }}
           asset_content_type: application/json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
