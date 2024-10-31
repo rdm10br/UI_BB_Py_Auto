@@ -207,7 +207,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ env.BLOCKMAP_FILE }}
-          asset_name: ${{ env.BLOCKMAP_FILE | basename }}
+          asset_name: ${{ env.BLOCKMAP_FILE##*/ }}
           asset_content_type: application/json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
