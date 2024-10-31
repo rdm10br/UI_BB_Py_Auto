@@ -60,23 +60,5 @@
   },
   "linux": {
     "icon": "icon/1android.png"
-  },
-  "config": {
-    "forge": {
-      "packagerConfig": {
-        "icon": "icon/1android",
-        "asar": true
-      },
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "BlackBot",
-            "setupExe": "BlackBotSetup.exe",
-            "noMsi": true
-          }
-        }
-      ]
-    }
   }
 }

@@ -1,8 +1,9 @@
 import path from "path";
-import { app } from "electron";
+import { app, ipcMain } from "electron";
 import serve from "electron-serve";
 import { createWindow } from "./helpers";
 import { initializeIpcHandlers } from './ipc';
+import { autoUpdater } from 'electron-updater';
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -36,7 +37,22 @@ if (isProd) {
     },
   });
 
-  // autoUpdater.checkForUpdatesAndNotify();
+  checkForUpdates()
+
+  setInterval(checkForUpdates, 3600000); // 3,600,000 ms = 1 hour
+
+  function checkForUpdates() {
+    autoUpdater.autoDownload = true; // Enables background download
+    autoUpdater.checkForUpdatesAndNotify();
+  
+    autoUpdater.on('update-available', () => {
+      mainWindow.webContents.send('update_available');
+    });
+  
+    autoUpdater.on('update-downloaded', () => {
+      mainWindow.webContents.send('update_downloaded');
+    });
+  }
 
   await mainWindow.setMenuBarVisibility(false);
 
@@ -57,4 +73,8 @@ if (isProd) {
 // Handle window close behavior
 app.on("window-all-closed", () => {
   app.quit();
+});
+
+ipcMain.on('restart_app', () => {
+  autoUpdater.quitAndInstall();
 });

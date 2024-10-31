@@ -32,4 +32,9 @@ contextBridge.exposeInMainWorld('MainIPC', {
   getJsonData: (filePath) => ipcRenderer.invoke('get-json-data', filePath),
   readDirectory: (dirPath) => ipcRenderer.invoke("read-directory", dirPath),
   readLogFile: (filePath) => ipcRenderer.invoke("read-log-file", filePath),
+
+  // Method for update the app
+  onUpdateAvailable: (callback) => ipcRenderer.on('update_available', callback),
+  onUpdateDownloaded: (callback) => ipcRenderer.on('update_downloaded', callback),
+  restartApp: () => ipcRenderer.send('restart_app'),
 });
