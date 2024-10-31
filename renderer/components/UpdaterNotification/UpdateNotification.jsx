@@ -11,6 +11,7 @@ function UpdateNotification() {
 
     window.MainIPC.onUpdateDownloaded(() => {
       setUpdateAvailable(false);
+      console.log('A new update is ready to install. Restart the app to apply it.');
       alert('A new update is ready to install. Restart the app to apply it.');
     });
   }, []);
