@@ -195,6 +195,33 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Find Blockmap file
+        id: find_blockmap
+        run: |
+          BLOCKMAP_FILE=$(find ./dist -name "*.blockmap" -print -quit)
+          echo "BLOCKMAP_FILE=$BLOCKMAP_FILE" >> $GITHUB_ENV
+
+      - name: Upload Blockmap file
+        if: env.BLOCKMAP_FILE != ''
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ env.BLOCKMAP_FILE }}
+          asset_name: ${{ env.BLOCKMAP_FILE | basename }}
+          asset_content_type: application/json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload latest yaml
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/latest.yml
+          asset_name: latest.yml
+          asset_content_type: application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Compress win-unpacked directory
         run: |
           Compress-Archive -Path dist -DestinationPath dist.zip -Force
