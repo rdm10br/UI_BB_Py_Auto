@@ -129,12 +129,14 @@ export default function NextPage() {
     const loadLoginData = async () => {
       if (loginFileExists) {
         try {
-          const loginData = await import(
-            `../../scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json`
-          );
-          setAccount(loginData.username);
+          // console.log(envFilePath)
+          const data = await window.MainIPC.getJsonData(`${loginFilePath}`);
+          if (data != null && data != "") {
+            // console.log(`data : ${data.version}`)
+            setVersion(data.username);
+          }
         } catch (error) {
-          console.error("Error loading login file:", error);
+          console.error("Error loading env file:", error);
         }
       }
     };
@@ -142,12 +144,14 @@ export default function NextPage() {
     const loadCookieData = async () => {
       if (cookieFileExists) {
         try {
-          const cookieData = await import(
-            `../../scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json`
-          );
-          setSession(cookieData.timestamp);
+          // console.log(envFilePath)
+          const data = await window.MainIPC.getJsonData(`${cookieFilePath}`);
+          if (data != null && data != "") {
+            // console.log(`data : ${data.version}`)
+            setVersion(data.timestamp);
+          }
         } catch (error) {
-          console.error("Error loading cookie file:", error);
+          console.error("Error loading env file:", error);
         }
       }
     };
@@ -168,14 +172,16 @@ export default function NextPage() {
     };
 
     const loadReleaseData = async () => {
-      if (cookieFileExists) {
+      if (releaseFileExists) {
         try {
-          const releaseData = await import(
-            `../../scripts/BB_Py_Automation/release.json`
-          );
-          setVersion(releaseData.CURRENT_VERSION);
+          // console.log(envFilePath)
+          const data = await window.MainIPC.getJsonData(`${releaseFilePath}`);
+          if (data != null && data != "") {
+            // console.log(`data : ${data.version}`)
+            setVersion(data.CURRENT_VERSION);
+          }
         } catch (error) {
-          console.error("Error loading cookie file:", error);
+          console.error("Error loading env file:", error);
         }
       }
     };
@@ -280,7 +286,7 @@ export default function NextPage() {
     // checkForUpdates();
   }, [version]);
 
-  const runPython = (script) => window.ipc.send("run-python", script);
+  const runPython = (script) => window.MainIPC.runPython(`${script}`);;
 
   const handleGenerateEnv = async () => {
     const envData = {
@@ -296,7 +302,7 @@ export default function NextPage() {
     }
     try {
       // Send the env data to the backend via IPC to create the .env file
-      await window.envAPI.createEnvFile(envData);
+      await window.MainIPC.createEnvFile(envData);
       console.log("Env file created successfully!");
       setEnvFile(true);
     } catch (error) {
@@ -307,7 +313,7 @@ export default function NextPage() {
   const handleDeleteEnv = async () => {
     try {
       // Send IPC to delete the .env file
-      await window.envAPI.deleteEnvFile();
+      await window.MainIPC.deleteEnvFile();
       console.log(".env file deleted successfully!");
 
       // Optionally, you can reset the state if needed after deletion
