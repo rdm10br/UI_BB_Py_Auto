@@ -1,4 +1,4 @@
-appId: com.example.nextron
+appId: com.BlackBot.nextron
 productName: BlackBot
 copyright: Copyright © 2024 Rafael Dias
 directories:
@@ -9,16 +9,24 @@ files:
     filter:
       - package.json
       - app/**
-      # - scripts/BB_Py_Automation/
 asar: true
 extraFiles:
   - scripts
-# extraResources:
-#   - from: scripts/BB_Py_Automation/
-#     to: scripts/BB_Py_Automation  # Optional: rename directory in the output
-publish: null
-  # provider: "github"
-  # owner: "rdm10br"
-  # repo: "UI_BB_PY_AUTO"
-  # private: false
-  # publishAutoUpdate: true
+
+win:
+  target:
+    - nsis
+  publish:
+    - provider: github
+      owner: rdm10br
+      repo: UI_BB_PY_AUTO
+      private: false
+      releaseType: draft
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  runAfterFinish: true
+  deleteAppDataOnUninstall: false
+  artifactName: "${productName}-Setup-${version}.${ext}"

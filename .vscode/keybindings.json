@@ -1,0 +1,4 @@
+{
+  "key": "ctrl+oem_102",
+  "command": "workbench.action.terminal.kill"
+}

@@ -13,27 +13,32 @@ export default function NextPage() {
   const [account, setAccount] = useState(null);
   const [session, setSession] = useState(null);
   const [version, setVersion] = useState(null);
+  
   const [loginFileExists, setLoginFileExists] = useState(false);
   const [cookieFileExists, setCookieFileExists] = useState(false);
   const [releaseFileExists, setReleaseFileExists] = useState(false);
   const [packFileExists, setPackFileExists] = useState(false);
+  const [envFile, setEnvFile] = useState(false);
+  
   const [latestVersion, setLatestVersion] = useState(null);
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [latestVersionApp, setLatestVersionApp] = useState(null);
   const [updateAvailableApp, setUpdateAvailableApp] = useState(false);
-  const [envFile, setEnvFile] = useState(false);
   const [envFileData, setEnvFileData] = useState("");
   const [packFileData, setPackFileData] = useState("");
+  
   const [baseUrl, setBaseUrl] = useState("");
   const [repoId, setRepoId] = useState("");
   const [ownerRepo, setOwnerRepo] = useState("");
   const [gitBranch, setGitBranch] = useState("");
-  const [envFilePath, setenvFilePath] = useState("scripts/BB_Py_Automation/.env");
+  
+  const [activeTab, setActiveTab] = useState("userPreferences");
+
   const [pack, setPack] = useState("package.json");
+  const [envFilePath, setenvFilePath] = useState("scripts/BB_Py_Automation/.env");
   const [loginFilePath, setLoginFilePath] = useState("scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json");
   const [cookieFilePath, setCookieFilePath] = useState("scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json");
   const [releaseFilePath, setReleaseFilePath] = useState("scripts/BB_Py_Automation/release.json");
-  const [activeTab, setActiveTab] = useState("userPreferences");
 
   useEffect(() => {
 
