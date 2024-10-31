@@ -47,10 +47,12 @@ if (isProd) {
     autoUpdater.checkForUpdatesAndNotify();
   
     autoUpdater.on('update-available', () => {
+      console.log('update_available')
       mainWindow.webContents.send('update_available');
     });
   
     autoUpdater.on('update-downloaded', () => {
+      console.log('update_downloaded')
       mainWindow.webContents.send('update_downloaded');
     });
   }
