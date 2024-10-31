@@ -6,6 +6,7 @@ function UpdateNotification() {
   useEffect(() => {
     window.MainIPC.onUpdateAvailable(() => {
       setUpdateAvailable(true);
+      console.log('An update is available!');
     });
 
     window.MainIPC.onUpdateDownloaded(() => {
