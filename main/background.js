@@ -1,5 +1,5 @@
 import path from "path";
-import { app, ipcMain } from "electron";
+import { app, ipcMain, dialog } from "electron";
 import serve from "electron-serve";
 import { createWindow } from "./helpers";
 import { initializeIpcHandlers } from './ipc';
@@ -40,15 +40,33 @@ if (isProd) {
   function checkForUpdates() {
     autoUpdater.autoDownload = true; // Enables background download
     console.log('Verifying if there is an update...')
+    dialog.showMessageBox({
+      type: "info",
+      title: "Update Check",
+      message: 'Verifying if there is an update...',
+      buttons: ["OK"],
+    });
     autoUpdater.checkForUpdatesAndNotify();
   
     autoUpdater.on('update-available', () => {
       console.log('update_available')
+      dialog.showMessageBox({
+        type: "info",
+        title: "Update Check",
+        message: 'update_available',
+        buttons: ["OK"],
+      });
       mainWindow.webContents.send('update_available');
     });
   
     autoUpdater.on('update-downloaded', () => {
       console.log('update_downloaded')
+      dialog.showMessageBox({
+        type: "info",
+        title: "Update Check",
+        message: 'update_downloaded',
+        buttons: ["OK"],
+      });
       mainWindow.webContents.send('update_downloaded');
     });
   }
