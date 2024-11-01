@@ -39,35 +39,50 @@ if (isProd) {
 
   function checkForUpdates() {
     autoUpdater.autoDownload = true; // Enables background download
-    console.log('Verifying if there is an update...')
-    dialog.showMessageBox({
-      type: "info",
-      title: "Update Check",
-      message: 'Verifying if there is an update...',
-      buttons: ["OK"],
-    });
+    // console.log('Verifying if there is an update...')
+    // dialog.showMessageBox({
+    //   type: "info",
+    //   title: "Update Check",
+    //   message: 'Verifying if there is an update...',
+    //   buttons: ["OK"],
+    // });
     autoUpdater.checkForUpdatesAndNotify();
   
     autoUpdater.on('update-available', () => {
-      console.log('update_available')
-      dialog.showMessageBox({
-        type: "info",
-        title: "Update Check",
-        message: 'update_available',
-        buttons: ["OK"],
-      });
+      // console.log('update_available')
+      // dialog.showMessageBox({
+      //   type: "info",
+      //   title: "Update Check",
+      //   message: 'update_available',
+      //   buttons: ["OK"],
+      // });
       mainWindow.webContents.send('update_available');
     });
   
+    // autoUpdater.on('update-downloaded', () => {
+    //   console.log('update_downloaded')
+    //   dialog.showMessageBox({
+    //     type: "info",
+    //     title: "Update Check",
+    //     message: 'update_downloaded',
+    //     buttons: ["OK"],
+    //   });
+    //   mainWindow.webContents.send('update_downloaded');
+    // });
     autoUpdater.on('update-downloaded', () => {
-      console.log('update_downloaded')
       dialog.showMessageBox({
         type: "info",
-        title: "Update Check",
-        message: 'update_downloaded',
-        buttons: ["OK"],
+        title: "Update Ready",
+        message: "A new update has been downloaded. The application will restart to apply the update.",
+        buttons: ["Restart Now"],
+      }).then(() => {
+        autoUpdater.quitAndInstall();
       });
-      mainWindow.webContents.send('update_downloaded');
+    });
+  
+    // Listen for download progress and send updates to renderer
+    autoUpdater.on('download-progress', (progressObj) => {
+      mainWindow.webContents.send('download_progress', progressObj);
     });
   }
 
