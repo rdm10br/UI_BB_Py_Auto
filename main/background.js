@@ -69,6 +69,7 @@ if (isProd) {
     //   });
     //   mainWindow.webContents.send('update_downloaded');
     // });
+    
     autoUpdater.on('update-downloaded', () => {
       dialog.showMessageBox({
         type: "info",
