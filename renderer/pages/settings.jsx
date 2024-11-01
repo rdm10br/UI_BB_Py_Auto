@@ -360,7 +360,7 @@ export default function NextPage() {
       </div>
       <div className="tabs">
         <button onClick={() => handleTabChange("userPreferences")}>
-          Preferências do Usuário
+          Preferências do Usuário :
         </button>
         <button onClick={() => handleTabChange("envSettings")}>
           Requisitos para o Env
