@@ -291,7 +291,13 @@ export default function NextPage() {
     // checkForUpdates();
   }, [version]);
 
-  const runPython = (script) => window.MainIPC.runPython(`${script}`);;
+  const runPython = (script) => {
+    window.MainIPC.runPython(`${script}`);
+    
+    // if(script == 'src/Main_Save_Login.py'){
+    //   loadLoginData();
+    // }
+  }
 
   const handleGenerateEnv = async () => {
     const envData = {
@@ -310,6 +316,7 @@ export default function NextPage() {
       await window.MainIPC.createEnvFile(envData);
       console.log("Env file created successfully!");
       setEnvFile(true);
+      // await envFileData();
     } catch (error) {
       console.error("Error creating env file:", error);
     }
@@ -337,7 +344,8 @@ export default function NextPage() {
   const formattedDate = session
     ? (() => {
         const date = new Date(session);
-        const offset = -3; // GMT-3
+        // const offset = -3; // GMT-3
+        const offset = 0;
         const gmt3Date = new Date(date.getTime() + offset * 60 * 60 * 1000);
         const day = String(gmt3Date.getDate()).padStart(2, "0");
         const month = String(gmt3Date.getMonth() + 1).padStart(2, "0");

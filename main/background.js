@@ -46,6 +46,7 @@ if (isProd) {
     //   message: 'Verifying if there is an update...',
     //   buttons: ["OK"],
     // });
+
     autoUpdater.checkForUpdatesAndNotify();
   
     autoUpdater.on('update-available', () => {
@@ -69,7 +70,7 @@ if (isProd) {
     //   });
     //   mainWindow.webContents.send('update_downloaded');
     // });
-    
+
     autoUpdater.on('update-downloaded', () => {
       dialog.showMessageBox({
         type: "info",
