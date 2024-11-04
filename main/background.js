@@ -39,6 +39,7 @@ if (isProd) {
 
   function checkForUpdates() {
     autoUpdater.autoDownload = true; // Enables background download
+    
     // console.log('Verifying if there is an update...')
     // dialog.showMessageBox({
     //   type: "info",
