@@ -2,8 +2,8 @@ import path from "path";
 import { app, ipcMain, dialog } from "electron";
 import serve from "electron-serve";
 import { createWindow } from "./helpers";
-import { initializeIpcHandlers } from './ipc';
-import { autoUpdater } from 'electron-updater';
+import { initializeIpcHandlers } from "./ipc";
+import { autoUpdater } from "electron-updater";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -39,7 +39,7 @@ if (isProd) {
 
   function checkForUpdates() {
     autoUpdater.autoDownload = true; // Enables background download
-    
+
     // console.log('Verifying if there is an update...')
     // dialog.showMessageBox({
     //   type: "info",
@@ -49,8 +49,8 @@ if (isProd) {
     // });
 
     autoUpdater.checkForUpdatesAndNotify();
-  
-    autoUpdater.on('update-available', () => {
+
+    autoUpdater.on("update-available", () => {
       // console.log('update_available')
       // dialog.showMessageBox({
       //   type: "info",
@@ -58,9 +58,9 @@ if (isProd) {
       //   message: 'update_available',
       //   buttons: ["OK"],
       // });
-      mainWindow.webContents.send('update_available');
+      mainWindow.webContents.send("update_available");
     });
-  
+
     // autoUpdater.on('update-downloaded', () => {
     //   console.log('update_downloaded')
     //   dialog.showMessageBox({
@@ -72,23 +72,30 @@ if (isProd) {
     //   mainWindow.webContents.send('update_downloaded');
     // });
 
-    autoUpdater.on('update-downloaded', () => {
-      dialog.showMessageBox({
-        type: "info",
-        title: "Update Ready",
-        message: "A new update has been downloaded. The application will restart to apply the update.",
-        buttons: ["Restart Now"],
-      }).then(() => {
-        autoUpdater.quitAndInstall();
-      });
+    autoUpdater.on("update-downloaded", () => {
+      dialog
+        .showMessageBox({
+          type: "info",
+          title: "Update Ready",
+          message:
+            "A new update has been downloaded. The application will restart to apply the update.",
+          buttons: ["Restart Now"],
+        })
+        .then((result) => {
+          if (result.response === 0) {
+            autoUpdater.quitAndInstall();
+          }
+        });
     });
-  
+
     // Listen for download progress and send updates to renderer
-    autoUpdater.on('download-progress', (progressObj) => {
-      console.log(`Download speed: ${progress.bytesPerSecond}`);
-      console.log(`Downloaded ${progress.percent}%`);
-      console.log(`Downloaded ${progress.transferred} of ${progress.total} bytes`);
-      mainWindow.webContents.send('download_progress', progressObj);
+    autoUpdater.on("download-progress", (progressObj) => {
+      console.log(`Download speed: ${progressObj.bytesPerSecond}`);
+      console.log(`Downloaded ${progressObj.percent}%`);
+      console.log(
+        `Downloaded ${progressObj.transferred} of ${progressObj.total} bytes`
+      );
+      mainWindow.webContents.send("download_progress", progressObj);
     });
   }
 
@@ -105,7 +112,7 @@ if (isProd) {
   // tray = new Tray(iconPath);  // Set the system tray icon using the same icon
   // tray.setToolTip('My Electron App');
   setInterval(checkForUpdates, 3600000); // 3,600,000 ms = 1 hour
-  checkForUpdates()
+  checkForUpdates();
   initializeIpcHandlers(mainWindow);
 })();
 
@@ -114,6 +121,6 @@ app.on("window-all-closed", () => {
   app.quit();
 });
 
-ipcMain.on('restart_app', () => {
+ipcMain.on("restart_app", () => {
   autoUpdater.quitAndInstall();
 });
