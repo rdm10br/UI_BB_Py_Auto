@@ -7,10 +7,19 @@ const isProd = process.env.NODE_ENV === "production";
 
 export function initializeFileAPIHandlers(ipcMain) {
   ipcMain.handle("check-files-exist", async (event, filePaths) => {
-    return filePaths.map((filePath) => ({
-      path: filePath,
-      exists: fs.existsSync(path.join(process.cwd(), filePath)),
-    }));
+    return filePaths.map((filePath) => {
+      if (isProd && filePath === "package.json") {
+        return {
+          path: filePath,
+          exists: true,
+        };
+      } else {
+        return {
+          path: filePath,
+          exists: fs.existsSync(path.join(process.cwd(), filePath)),
+        };
+      }
+    });
   });
 
   ipcMain.handle("read-directory", async (event, dirPath) => {
