@@ -84,6 +84,9 @@ if (isProd) {
   
     // Listen for download progress and send updates to renderer
     autoUpdater.on('download-progress', (progressObj) => {
+      console.log(`Download speed: ${progress.bytesPerSecond}`);
+      console.log(`Downloaded ${progress.percent}%`);
+      console.log(`Downloaded ${progress.transferred} of ${progress.total} bytes`);
       mainWindow.webContents.send('download_progress', progressObj);
     });
   }

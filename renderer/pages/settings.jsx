@@ -130,88 +130,39 @@ export default function NextPage() {
     fetchFileStatus();
   }, []);
 
+  const loadEnvFileData = async () => {
+    if (loginFileExists) {
+      try {
+        // console.log(envFilePath)
+        const data = await window.MainIPC.getEnvVariables(`${envFilePath}`);
+        if (data != null && data != "") {
+          // console.log(`data : ${data}`)
+          if (data) setEnvFileData(data);
+        }
+      } catch (error) {
+        console.error("Error loading env file:", error);
+      }
+    }
+  };
+
+  const loadFileData = async (fileExists, filePath, setData, errorMessage) => {
+    if (fileExists) {
+      try {
+        const data = await window.MainIPC.getJsonData(filePath);
+        if (data) setData(data);
+      } catch (error) {
+        console.error(`${errorMessage}:`, error);
+      }
+    }
+  };
+  
   useEffect(() => {
-    const loadLoginData = async () => {
-      if (loginFileExists) {
-        try {
-          // console.log(envFilePath)
-          const data = await window.MainIPC.getJsonData(`${loginFilePath}`);
-          if (data != null && data != "") {
-            // console.log(`data : ${data.version}`)
-            setAccount(data.username);
-          }
-        } catch (error) {
-          console.error("Error loading env file:", error);
-        }
-      }
-    };
-
-    const loadCookieData = async () => {
-      if (cookieFileExists) {
-        try {
-          // console.log(envFilePath)
-          const data = await window.MainIPC.getJsonData(`${cookieFilePath}`);
-          if (data != null && data != "") {
-            // console.log(`data : ${data.version}`)
-            setSession(data.timestamp);
-          }
-        } catch (error) {
-          console.error("Error loading env file:", error);
-        }
-      }
-    };
-
-    const envFileData = async () => {
-      if (loginFileExists) {
-        try {
-          // console.log(envFilePath)
-          const data = await window.MainIPC.getEnvVariables(`${envFilePath}`);
-          if (data != null && data != "") {
-            // console.log(`data : ${data}`)
-            setEnvFileData(data);
-          }
-        } catch (error) {
-          console.error("Error loading env file:", error);
-        }
-      }
-    };
-
-    const loadReleaseData = async () => {
-      if (releaseFileExists) {
-        try {
-          // console.log(envFilePath)
-          const data = await window.MainIPC.getJsonData(`${releaseFilePath}`);
-          if (data != null && data != "") {
-            // console.log(`data : ${data.version}`)
-            setVersion(data.CURRENT_VERSION);
-          }
-        } catch (error) {
-          console.error("Error loading env file:", error);
-        }
-      }
-    };
-
-    const packFileData = async () => {
-      if (packFileExists) {
-        try {
-          // console.log(envFilePath)
-          const data = await window.MainIPC.getJsonData(`${pack}`);
-          if (data != null && data != "") {
-            // console.log(`data : ${data.version}`)
-            setPackFileData(data.version);
-          }
-        } catch (error) {
-          console.error("Error loading env file:", error);
-        }
-      }
-    };
-
-    loadLoginData();
-    loadCookieData();
-    envFileData();
-    loadReleaseData();
-    packFileData();
-  }, [loginFileExists, cookieFileExists, envFile, releaseFileExists, packFileExists]);
+    loadFileData(loginFileExists, loginFilePath, (data) => setAccount(data.username), "Error loading login file");
+    loadFileData(cookieFileExists, cookieFilePath, (data) => setSession(data.timestamp), "Error loading cookie file");
+    loadFileData(releaseFileExists, releaseFilePath, (data) => setVersion(data.CURRENT_VERSION), "Error loading release file");
+    loadFileData(packFileExists, pack, (data) => setPackFileData(data.version), "Error loading pack file");
+    loadEnvFileData()
+  }, [loginFileExists, cookieFileExists, releaseFileExists, packFileExists, envFile]);
 
   const checkForUpdatesBot = async () => {
     const GITHUB_REPO = "rdm10br/BB_Py_Automation";
@@ -293,10 +244,6 @@ export default function NextPage() {
 
   const runPython = (script) => {
     window.MainIPC.runPython(`${script}`);
-    
-    // if(script == 'src/Main_Save_Login.py'){
-    //   loadLoginData();
-    // }
   }
 
   const handleGenerateEnv = async () => {
@@ -316,7 +263,7 @@ export default function NextPage() {
       await window.MainIPC.createEnvFile(envData);
       console.log("Env file created successfully!");
       setEnvFile(true);
-      // await envFileData();
+      loadEnvFileData();
     } catch (error) {
       console.error("Error creating env file:", error);
     }
