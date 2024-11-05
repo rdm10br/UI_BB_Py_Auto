@@ -1,0 +1,200 @@
+name: Create Release
+
+on:
+  workflow_run:
+    workflows: ["Continuous Integration"]
+    types:
+      - completed
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  prepare:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2.4.0
+        with:
+          ref: main
+      
+      - name: Get Version from package.json
+        id: get_version
+        run: |
+            $version = (Get-Content package.json | ConvertFrom-Json).version
+            echo "TAG_NAME=$version" >> $env:GITHUB_ENV
+        shell: pwsh
+
+      - name: Clone additional GitHub repo into scripts folder
+        run: |
+            git clone https://github.com/rdm10br/BB_Py_Automation.git scripts/BB_Py_Automation
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Mock JSON Files
+        run: |
+          mkdir -p scripts/BB_Py_Automation/src/Metodos/Login/__pycache__
+          echo "{n    "username": "username",n    "password": "password"n}" > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json
+          echo "{n    "timestamp": "1500-01-01T00:00:00.000000",n    "cookies": []n}" > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json
+
+      - name: Upload artifacts from prepare
+        uses: actions/upload-artifact@v3
+        with:
+          name: prepared-files
+          path: scripts  # Adjust if there are specific files to share
+
+  Build-App:
+    runs-on: windows-latest
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.4.0'
+
+      - name: Install dependencies
+        run: |
+            npm install
+      
+      - name: Download artifacts from prepare
+        uses: actions/download-artifact@v3
+        with:
+          name: prepared-files
+
+      - name: Build Nextron.js app
+        run: |
+            npm run build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-files
+          path: dist  # Replace with the relevant path if different
+
+  Build-installer:
+    runs-on: windows-latest
+    steps:
+      - name: Install Chocolatey
+        run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force;
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
+          iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+      - name: Install Inno Setup
+        run: |
+          choco install innosetup
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-files
+
+      - name: Build the Inno Setup Installer
+        run: |
+          # Assuming you have an Inno Setup script (.iss) in your repo
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "build/installer/setup.iss"
+        env:
+          VERSION: ${{ env.TAG_NAME }}
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: installer
+          path: build/installer/Output
+
+  Release:
+    runs-on: windows-latest
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-files
+
+      - name: Download installer artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: installer
+
+      - name: Generate Release Notes
+        id: release_notes
+        run: |
+            $PREVIOUS_TAG = git describe --tags --abbrev=0 2>$null
+  
+            if ([string]::IsNullOrEmpty($PREVIOUS_TAG)) {
+              $release_notes = git log --oneline --pretty=format:"%h %s" | ForEach-Object { ":seedling: $_" }
+            } else {
+              $release_notes = git log $PREVIOUS_TAG..$TAG_NAME --oneline --pretty=format:"%h %s" | ForEach-Object { ":seedling: $_" }
+            }
+            
+            echo "RELEASE_NOTES=$release_notes" >> $env:GITHUB_ENV
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          release_name: ${{ env.TAG_NAME }}
+          body: ${{ env.RELEASE_NOTES }}
+          draft: false
+          prerelease: false
+          # assets: |
+          #   ./dist/*
+          #   build/installer/Output/BlackBot-Setup.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Upload BlackBot executable
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/installer/Output/BlackBot-Setup.exe
+          asset_name: BlackBot-Setup.exe
+          asset_content_type: application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Find Blockmap File
+        run: |
+          $blockmapFile = Get-ChildItem -Path ./dist -Filter *.blockmap -File -Recurse | Select-Object -First 1
+          if ($blockmapFile) {
+            echo "BLOCKMAP_FILE=$($blockmapFile.FullName)" >> $env:GITHUB_ENV
+          }
+        shell: pwsh
+
+      - name: Set Blockmap Filename
+        id: blockmap_filename
+        run: echo "BLOCKMAP_FILENAME=$(basename $BLOCKMAP_FILE)" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Upload Blockmap file
+        if: env.BLOCKMAP_FILE != ''
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ env.BLOCKMAP_FILE }}
+          asset_name: ${{ env.BLOCKMAP_FILENAME }}
+          asset_content_type: application/json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload latest yaml
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/latest.yml
+          asset_name: latest.yml
+          asset_content_type: application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compress win-unpacked directory
+        run: |
+          Compress-Archive -Path dist -DestinationPath dist.zip -Force
+        shell: pwsh
+
+      - name: Upload Assets with GitHub CLI
+        run: |
+          echo "Uploading compressed win-unpacked.zip"
+          gh release upload "${{ env.TAG_NAME }}" "dist.zip" --clobber
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
