@@ -8,8 +8,9 @@ on:
   workflow_dispatch:  # Allows manual triggering
 
 jobs:
-  prepare:
-    runs-on: windows-latest
+  release:
+    runs-on: windows-latest  # Use a Windows runner to support Inno Setup
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2.4.0
@@ -22,6 +23,12 @@ jobs:
             $version = (Get-Content package.json | ConvertFrom-Json).version
             echo "TAG_NAME=$version" >> $env:GITHUB_ENV
         shell: pwsh
+        
+      - name: Clone additional GitHub repo into scripts folder
+        run: |
+            git clone https://github.com/rdm10br/BB_Py_Automation.git scripts/BB_Py_Automation
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -32,6 +39,18 @@ jobs:
         run: |
             npm install
       
+      - name: Create Mock JSON Files
+        run: |
+          mkdir -p scripts/BB_Py_Automation/src/Metodos/Login/__pycache__
+          echo "{`n    `"username`": `"username`",`n    `"password`": `"password`"`n}" > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json
+          echo "{`n    `"timestamp`": `"1500-01-01T00:00:00.000000`",`n    `"cookies`": []`n}" > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json
+
+      - name: Build Nextron.js app
+        run: |
+            npm run build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Install Chocolatey
         run: |
           Set-ExecutionPolicy Bypass -Scope Process -Force; `
@@ -41,54 +60,6 @@ jobs:
       - name: Install Inno Setup
         run: |
           choco install innosetup
-      
-      - name: Clone additional GitHub repo into scripts folder
-        run: |
-            git clone https://github.com/rdm10br/BB_Py_Automation.git scripts/BB_Py_Automation
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create Mock JSON Files
-        run: |
-          mkdir -p scripts/BB_Py_Automation/src/Metodos/Login/__pycache__
-          echo "{`n    `"username`": `"username`",`n    `"password`": `"password`"`n}" > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json
-          echo "{`n    `"timestamp`": `"1500-01-01T00:00:00.000000`",`n    `"cookies`": []`n}" > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json
-
-      - name: Upload artifacts from prepare
-        uses: actions/upload-artifact@v3
-        with:
-          name: prepared-files
-          path: scripts  # Adjust if there are specific files to share
-
-  Build-App:
-    needs: prepare
-    runs-on: windows-latest
-    steps:
-      - name: Download artifacts from prepare
-        uses: actions/download-artifact@v3
-        with:
-          name: prepared-files
-
-      - name: Build Nextron.js app
-        run: |
-            npm run build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-files
-          path: dist  # Replace with the relevant path if different
-
-  Build-installer:
-    needs: Build-App
-    runs-on: windows-latest
-    steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-files
 
       - name: Build the Inno Setup Installer
         run: |
@@ -96,26 +67,6 @@ jobs:
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "build/installer/setup.iss"
         env:
           VERSION: ${{ env.TAG_NAME }}
-
-      - name: Upload installer
-        uses: actions/upload-artifact@v3
-        with:
-          name: installer
-          path: build/installer/Output
-
-  Release:
-    needs: Build-installer
-    runs-on: windows-latest
-    steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-files
-          
-      - name: Download installer artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: installer
 
       - name: Generate Release Notes
         id: release_notes
@@ -144,7 +95,8 @@ jobs:
           #   build/installer/Output/BlackBot-Setup.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+          
+      # Upload assets individually
       - name: Upload BlackBot executable
         uses: actions/upload-release-asset@v1
         with:
