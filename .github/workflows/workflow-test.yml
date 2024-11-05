@@ -1,11 +1,11 @@
-name: Create Release
+name: Create Release Test
 
 on:
   workflow_run:
     workflows: ["Continuous Integration"]
     types:
       - completed
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch: # Allows manual triggering
 
 jobs:
   prepare:
@@ -15,17 +15,17 @@ jobs:
         uses: actions/checkout@v2.4.0
         with:
           ref: main
-      
+
       - name: Get Version from package.json
         id: get_version
         run: |
-            $version = (Get-Content package.json | ConvertFrom-Json).version
-            echo "TAG_NAME=$version" >> $env:GITHUB_ENV
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          echo "TAG_NAME=$version" >> $env:GITHUB_ENV
         shell: pwsh
 
       - name: Clone additional GitHub repo into scripts folder
         run: |
-            git clone https://github.com/rdm10br/BB_Py_Automation.git scripts/BB_Py_Automation
+          git clone https://github.com/rdm10br/BB_Py_Automation.git scripts/BB_Py_Automation
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -39,20 +39,21 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: prepared-files
-          path: scripts  # Adjust if there are specific files to share
+          path: scripts # Adjust if there are specific files to share
 
   Build-App:
     runs-on: windows-latest
+    needs: prepare
     steps:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '22.4.0'
+          node-version: "22.4.0"
 
       - name: Install dependencies
         run: |
-            npm install
-      
+          npm install
+
       - name: Download artifacts from prepare
         uses: actions/download-artifact@v3
         with:
@@ -60,7 +61,7 @@ jobs:
 
       - name: Build Nextron.js app
         run: |
-            npm run build
+          npm run build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -68,10 +69,11 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: build-files
-          path: dist  # Replace with the relevant path if different
+          path: dist # Replace with the relevant path if different
 
   Build-installer:
     runs-on: windows-latest
+    needs: Build-App
     steps:
       - name: Install Chocolatey
         run: |
@@ -103,6 +105,7 @@ jobs:
 
   Release:
     runs-on: windows-latest
+    needs: Build-installer
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v3
@@ -117,15 +120,15 @@ jobs:
       - name: Generate Release Notes
         id: release_notes
         run: |
-            $PREVIOUS_TAG = git describe --tags --abbrev=0 2>$null
-  
-            if ([string]::IsNullOrEmpty($PREVIOUS_TAG)) {
-              $release_notes = git log --oneline --pretty=format:"%h %s" | ForEach-Object { ":seedling: $_" }
-            } else {
-              $release_notes = git log $PREVIOUS_TAG..$TAG_NAME --oneline --pretty=format:"%h %s" | ForEach-Object { ":seedling: $_" }
-            }
-            
-            echo "RELEASE_NOTES=$release_notes" >> $env:GITHUB_ENV
+          $PREVIOUS_TAG = git describe --tags --abbrev=0 2>$null
+
+          if ([string]::IsNullOrEmpty($PREVIOUS_TAG)) {
+            $release_notes = git log --oneline --pretty=format:"%h %s" | ForEach-Object { ":seedling: $_" }
+          } else {
+            $release_notes = git log $PREVIOUS_TAG..$TAG_NAME --oneline --pretty=format:"%h %s" | ForEach-Object { ":seedling: $_" }
+          }
+
+          echo "RELEASE_NOTES=$release_notes" >> $env:GITHUB_ENV
 
       - name: Create GitHub Release
         id: create_release
@@ -141,7 +144,7 @@ jobs:
           #   build/installer/Output/BlackBot-Setup.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Upload BlackBot executable
         uses: actions/upload-release-asset@v1
         with:
