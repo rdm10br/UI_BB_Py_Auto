@@ -69,6 +69,10 @@ jobs:
         with:
           name: prepared-files
 
+      - name: List Cloned Files for Debugging
+        run: |
+          ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
+
       - name: Build Nextron.js app
         run: |
           npm run build
