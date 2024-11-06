@@ -68,7 +68,7 @@ jobs:
       - name: Download artifacts from prepare
         uses: actions/download-artifact@v3
         with:
-          name: UI_BB_Py_Auto
+          name: UI_BB_Py_Auto-files
 
       - name: List Cloned Files for Debugging
         run: |
