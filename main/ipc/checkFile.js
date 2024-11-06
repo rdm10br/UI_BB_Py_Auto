@@ -45,7 +45,7 @@ export function initializeFileAPIHandlers(ipcMain) {
   ipcMain.handle("get-json-data", async (event, filePath) => {
     return new Promise((resolve, reject) => {
       if (isProd && filePath == "package.json") {
-        resolve(app.getVersion());
+        resolve({ version: app.getVersion() });
       } else {
         fs.readFile(filePath, "utf-8", (err, data) => {
           if (err) {
