@@ -9,6 +9,7 @@ const Runner = ({ script }) => {
   const [terminal, setTerminal] = useState(false);
   const [play, setPlay] = useState(false);
   const [feedBack, setFeedBack] = useState("");
+  const [feedBackType, setFeedBackType] = useState("Bug");
   const [isAccordionOpen, setIsAccordionOpen] = useState(true);
 
   useEffect(() => {
@@ -97,13 +98,11 @@ const Runner = ({ script }) => {
     window.MainIPC.send("resume-python"); // Send a signal to stop the Python script
   };
   const submitFeedback = () => {
-    let submitedFeedback = `Feedback for ${script} submitted: ${feedBack}`;
-    console.log(submitedFeedback);
-
-    // Here you could send the feedback to an API or backend, e.g.:
-    // window.MainIPC.send("submit-feedback", feedBack);
-
-    // Clear the feedback input after submission
+    let title = `${feedBackType} for ${script} submitted: ${feedBack}`;
+    const GITHUB_REPO = 'rdm10br/BB_Py_Automation'
+    const token = ''
+    console.log(title);
+    window.MainIPC.postGitIssue(GITHUB_REPO, token, title, feedBack);
     setFeedBack("");
   };
   return (
@@ -162,6 +161,14 @@ const Runner = ({ script }) => {
         {!isAccordionOpen &&
         (
           <>
+            <select
+            id="dropdown-feedback"
+            onChange={(e) => setFeedBackType(e.target.value)}>
+              <option>Bug</option>
+              <option>Novo recurso</option>
+              <option>Otimização</option>
+              <option>Outros</option>
+            </select>
             <textarea
               className={styles.feedbackfield}
               type="text"

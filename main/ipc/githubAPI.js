@@ -10,4 +10,26 @@ export function initializeGitHubAPIHandlers(ipcMain) {
       return { error: "Error fetching latest release" };
     }
   });
+  ipcMain.handle("create-github-issue", async (event, { GITHUB_REPO, token, title, body }) => {
+    try {
+      const [owner, repo] = GITHUB_REPO.split("/");
+      const response = await axios.post(
+        `https://api.github.com/repos/${owner}/${repo}/issues`,
+        {
+          title,
+          body,
+        },
+        {
+          headers: {
+            Authorization: `token ${token}`,
+            Accept: "application/vnd.github.v3+json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error creating GitHub issue:", error);
+      return { error: "Error creating GitHub issue" };
+    }
+  });
 }
