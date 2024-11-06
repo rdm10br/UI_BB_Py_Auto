@@ -219,7 +219,7 @@ export default function NextPage() {
       setLatestVersionApp(latestVersionApp);
 
       // Check if there is an update available
-      if (currentVersion !== latestVersionApp) {
+      if (packFileData !== latestVersionApp) {
         setUpdateAvailableApp(true);
         const wantsToUpdate = await window.MainIPC.showUpdatePopup(true);
         console.log(wantsToUpdate);
