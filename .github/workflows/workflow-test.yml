@@ -23,6 +23,25 @@ jobs:
           echo "TAG_NAME=$version" >> $env:GITHUB_ENV
         shell: pwsh
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22.4.0"
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Install Chocolatey
+        run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force;
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
+          iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+      - name: Install Inno Setup
+        run: |
+          choco install innosetup
+
       - name: Clone additional GitHub repo into scripts folder
         run: |
           git clone https://github.com/rdm10br/BB_Py_Automation.git scripts/BB_Py_Automation
@@ -45,15 +64,6 @@ jobs:
     runs-on: windows-latest
     needs: prepare
     steps:
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "22.4.0"
-
-      - name: Install dependencies
-        run: |
-          npm install
-
       - name: Download artifacts from prepare
         uses: actions/download-artifact@v3
         with:
@@ -75,16 +85,6 @@ jobs:
     runs-on: windows-latest
     needs: Build-App
     steps:
-      - name: Install Chocolatey
-        run: |
-          Set-ExecutionPolicy Bypass -Scope Process -Force;
-          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
-          iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-
-      - name: Install Inno Setup
-        run: |
-          choco install innosetup
-
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
