@@ -168,3 +168,15 @@ input{
 .styled-item .label{
     user-select: none;
 }
+
+.tabs button{
+    margin: 0;
+    border: 1px solid var(--muted-foreground);
+    border-radius: 0;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    background-color: var(--muted-foreground);
+}
+.tabs button:hover{
+    background-color: var(--muted);
+}

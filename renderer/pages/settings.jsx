@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
-import Link from 'next/link'
+import Link from 'next/link';
 // import { useTranslation } from 'react-i18next';
 // import { withTranslation } from '../lib/withTranslation.js';
 // const isProduction = process.env.NODE_ENV === 'production';
@@ -330,151 +330,161 @@ export default function NextPage() {
           Logs
         </button>
       </div>
-      <div className="card">
-        <h3>Preferências do Usuário :</h3>
-        <p>{/* Idioma : <LanguageSwitcher /> */}</p>
-        <button className="destructive">Restaurar Configurações</button>
-      </div>
-      <div className="card">
-        {!envFile ? (
-          <>
-            <h3>Requisitos para o Env :</h3>
-            <input
-              type="text"
-              placeholder="BASE_URL"
-              value={baseUrl}
-              onChange={(e) => setBaseUrl(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="ID_REPOSITORIO_BQ"
-              value={repoId}
-              onChange={(e) => setRepoId(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="OWNER/GIT_REPO"
-              value={ownerRepo}
-              onChange={(e) => setOwnerRepo(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="GIT_BRANCH"
-              value={gitBranch}
-              onChange={(e) => setGitBranch(e.target.value)}
-            />
-            <br />
-            <button onClick={handleGenerateEnv}>Gerar novo env</button>
-          </>
-        ) : (
-          <>
-            <h3>Variáveis de ambiente :</h3>
-            <ul>
-              {Object.entries(envFileData).map(([key, value]) => (
-                <li key={key} className="styled-item">
-                  <span className="label">
-                    <strong>{key} : </strong>
-                  </span>
-                  <span className="value">{value}</span>
-                </li>
-              ))}
-            </ul>
-            <br />
-            <button onClick={handleDeleteEnv}>Deletar .env</button>
-          </>
-        )}
-      </div>
-      <div className="card">
-        <h3>Credenciais & Cookies :</h3>
-        {account ? (
-          <p className="styled-item">
-            <span className="label">
-              <strong>Conta salva: </strong>
-            </span>
-            <span>{account}</span>
-          </p>
-        ) : null}
-        {session ? (
-          <p className="styled-item">
-            <span className="label">
-              <strong>Últimos cookies da sessão: </strong>
-            </span>
-            <span>{formattedDate}</span>
-          </p>
-        ) : null}
-        {!account && !session && (
-          <p>Salve suas credenciais AVA e execute o Teste:</p>
-        )}
-        <br />
-        <button onClick={() => runPython("src/Main_Save_Login.py")}>
+      {activeTab == "userPreferences" && (
+        <div className="card">
+          <h3>Preferências do Usuário :</h3>
+          <p>{/* Idioma : <LanguageSwitcher /> */}</p>
+          <button className="destructive">Restaurar Configurações</button>
+        </div>
+      )}
+      {activeTab == "envSettings" && (
+        <div className="card">
+          {!envFile ? (
+            <>
+              <h3>Requisitos para o Env :</h3>
+              <input
+                type="text"
+                placeholder="BASE_URL"
+                value={baseUrl}
+                onChange={(e) => setBaseUrl(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="ID_REPOSITORIO_BQ"
+                value={repoId}
+                onChange={(e) => setRepoId(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="OWNER/GIT_REPO"
+                value={ownerRepo}
+                onChange={(e) => setOwnerRepo(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="GIT_BRANCH"
+                value={gitBranch}
+                onChange={(e) => setGitBranch(e.target.value)}
+              />
+              <br />
+              <button onClick={handleGenerateEnv}>Gerar novo env</button>
+            </>
+          ) : (
+            <>
+              <h3>Variáveis de ambiente :</h3>
+              <ul>
+                {Object.entries(envFileData).map(([key, value]) => (
+                  <li key={key} className="styled-item">
+                    <span className="label">
+                      <strong>{key} : </strong>
+                    </span>
+                    <span className="value">{value}</span>
+                  </li>
+                ))}
+              </ul>
+              <br />
+              <button onClick={handleDeleteEnv}>Deletar .env</button>
+            </>
+          )}
+        </div>
+      )}
+      {activeTab == "credentialsCookies" && (
+        <div className="card">
+          <h3>Credenciais & Cookies :</h3>
           {account ? (
-            <span>Alterar Credenciais</span>
-          ) : (
-            <span>Salvar Credenciais</span>
+            <p className="styled-item">
+              <span className="label">
+                <strong>Conta salva: </strong>
+              </span>
+              <span>{account}</span>
+            </p>
+          ) : null}
+          {session ? (
+            <p className="styled-item">
+              <span className="label">
+                <strong>Últimos cookies da sessão: </strong>
+              </span>
+              <span>{formattedDate}</span>
+            </p>
+          ) : null}
+          {!account && !session && (
+            <p>Salve suas credenciais AVA e execute o Teste:</p>
           )}
-        </button>
-        <button className="destructive">Excluir Cookies</button>
-        <button className="destructive">Excluir Credenciais & Cookies</button>
-        <button className="destructive">Excluir cache</button>
-      </div>
-      <div className="card">
-        <h3>Atualizações :</h3>
-        <div className="card">
-          <h4>Bot :</h4>
-          {updateAvailable ? (
-            <>
-              <p>Há uma atualização disponível: {latestVersion}</p>
-              <p>Sua Versão: {version}</p>
-              <br />
-              <button onClick={() => runPython("update_checker.py")}>
-                Atualizar
-              </button>
-            </>
-          ) : (
-            <>
-              <p>Versão: {version}</p>
-              <br />
-              <button onClick={checkForUpdatesBot}>Verificar Atualização</button>
-            </>
-          )}
-          <button onClick={() => runPython("updater_rollback.py")}>
-            Reverter
+          <br />
+          <button onClick={() => runPython("src/Main_Save_Login.py")}>
+            {account ? (
+              <span>Alterar Credenciais</span>
+            ) : (
+              <span>Salvar Credenciais</span>
+            )}
           </button>
-          <Link href='/log/logViewUpdater'><button>Ver Logs</button></Link>
+          <button className="destructive">Excluir Cookies</button>
+          <button className="destructive">Excluir Credenciais & Cookies</button>
+          <button className="destructive">Excluir cache</button>
+        </div>
+      )}
+      {activeTab == "updates" && (
+        <div className="card">
+          <h3>Atualizações :</h3>
+          <div className="card">
+            <h4>Bot :</h4>
+            {updateAvailable ? (
+              <>
+                <p>Há uma atualização disponível: {latestVersion}</p>
+                <p>Sua Versão: {version}</p>
+                <br />
+                <button onClick={() => runPython("update_checker.py")}>
+                  Atualizar
+                </button>
+              </>
+            ) : (
+              <>
+                <p>Versão: {version}</p>
+                <br />
+                <button onClick={checkForUpdatesBot}>Verificar Atualização</button>
+              </>
+            )}
+            <button onClick={() => runPython("updater_rollback.py")}>
+              Reverter
+            </button>
+            <Link href='/log/logViewUpdater'><button>Ver Logs</button></Link>
+            <button className="destructive">Excluir Logs</button>
+          </div>
+          <div className="card">
+            <h4>App :</h4>
+            {updateAvailableApp ? (
+              <>
+                <p>Há uma atualização disponível: {latestVersionApp}</p>
+                <p>Sua Versão: {packFileData}</p>
+                <br />
+                <button onClick={() => runPython("")}>
+                  Atualizar
+                </button>
+              </>
+            ) : (
+              <>
+                <p>Versão: {packFileData}</p>
+                <br />
+                <button onClick={checkForUpdatesApp}>Verificar Atualização</button>
+              </>
+            )}
+            <button onClick={() => runPython("")}>
+              Reverter
+            </button>
+            <button>Ver Logs</button>
+            <button className="destructive">Excluir Logs</button>
+          </div>
+        </div>
+      )}
+      {activeTab == "logs" && (
+        <div className="card">
+          <h3>Logs dos Bots:</h3>
+          <p>Logs de todas as execuções dos bots</p>
+          <br />
+          <Link href='/log/logViewBot'><button>Ver Logs</button></Link>
           <button className="destructive">Excluir Logs</button>
         </div>
-        <div className="card">
-          <h4>App :</h4>
-          {updateAvailableApp ? (
-            <>
-              <p>Há uma atualização disponível: {latestVersionApp}</p>
-              <p>Sua Versão: {packFileData}</p>
-              <br />
-              <button onClick={() => runPython("")}>
-                Atualizar
-              </button>
-            </>
-          ) : (
-            <>
-              <p>Versão: {packFileData}</p>
-              <br />
-              <button onClick={checkForUpdatesApp}>Verificar Atualização</button>
-            </>
-          )}
-          <button onClick={() => runPython("")}>
-            Reverter
-          </button>
-          <button>Ver Logs</button>
-          <button className="destructive">Excluir Logs</button>
-        </div>
-      </div>
-      <div className="card">
-        <h3>Logs dos Bots:</h3>
-        <p>Logs de todas as execuções dos bots</p>
-        <br />
-        <Link href='/log/logViewBot'><button>Ver Logs</button></Link>
-        <button className="destructive">Excluir Logs</button>
-      </div>
+      )}
     </React.Fragment>
   );
 }
