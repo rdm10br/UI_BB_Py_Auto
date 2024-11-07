@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
+import Link from 'next/link'
 // import { useTranslation } from 'react-i18next';
 // import { withTranslation } from '../lib/withTranslation.js';
 // const isProduction = process.env.NODE_ENV === 'production';
@@ -9,7 +10,6 @@ import Head from "next/head";
 
 export default function NextPage() {
   // const { t } = useTranslation('common');
-  const [currentVersion, SetcurrentVersion] = useState(null);
   const [account, setAccount] = useState(null);
   const [session, setSession] = useState(null);
   const [version, setVersion] = useState(null);
@@ -315,7 +315,7 @@ export default function NextPage() {
       </div>
       <div className="tabs">
         <button onClick={() => handleTabChange("userPreferences")}>
-          Preferências do Usuário :
+          Preferências do Usuário
         </button>
         <button onClick={() => handleTabChange("envSettings")}>
           Requisitos para o Env
@@ -440,7 +440,7 @@ export default function NextPage() {
           <button onClick={() => runPython("updater_rollback.py")}>
             Reverter
           </button>
-          <button>Ver Logs</button>
+          <Link href='/log/logViewUpdater'><button>Ver Logs</button></Link>
           <button className="destructive">Excluir Logs</button>
         </div>
         <div className="card">
@@ -472,7 +472,7 @@ export default function NextPage() {
         <h3>Logs dos Bots:</h3>
         <p>Logs de todas as execuções dos bots</p>
         <br />
-        <button href='/log/logview'>Ver Logs</button>
+        <Link href='/log/logViewBot'><button>Ver Logs</button></Link>
         <button className="destructive">Excluir Logs</button>
       </div>
     </React.Fragment>

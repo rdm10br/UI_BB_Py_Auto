@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./logView.module.css";
 
-const LogViewer = () => {
+const LogViewer = ({ dir }) => {
   const [files, setFiles] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [logContent, setLogContent] = useState("");
@@ -11,16 +11,16 @@ const LogViewer = () => {
   useEffect(() => {
     const loadFiles = async () => {
       // Replace with your directory path
-      const dirPath = "scripts/BB_Py_Automation/Logs/bot/";
-      const files = await window.api.readDirectory(dirPath);
+      const dirPath = `scripts/BB_Py_Automation/Logs/${dir}`;
+      const files = await window.MainIPC.readDirectory(dirPath);
       setFiles(files);
     };
     loadFiles();
   }, []);
 
   const handleFileClick = async (fileName) => {
-    const filePath = `scripts/BB_Py_Automation/Logs/bot/${fileName}`;
-    const content = await window.api.readLogFile(filePath);
+    const filePath = `scripts/BB_Py_Automation/Logs/${dir}/${fileName}`;
+    const content = await window.MainIPC.readLogFile(filePath);
     setSelectedFile(fileName);
     setLogContent(content);
     setFilteredContent(content);

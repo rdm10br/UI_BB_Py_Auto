@@ -98,7 +98,7 @@ const Runner = ({ script }) => {
     window.MainIPC.send("resume-python"); // Send a signal to stop the Python script
   };
   const submitFeedback = () => {
-    let title = `${feedBackType} for ${script} submitted: ${feedBack}`;
+    let title = `[${feedBackType}] - ${script} : ${feedBack}`;
     const GITHUB_REPO = 'rdm10br/BB_Py_Automation'
     const token = ''
     console.log(title);
