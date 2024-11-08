@@ -171,12 +171,19 @@ input{
 
 .tabs button{
     margin: 0;
+    margin-bottom: -16px;
     border: 1px solid var(--muted-foreground);
     border-radius: 0;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
-    background-color: var(--muted-foreground);
+    background-color: var(--muted);
+    color: var(--accent-foreground);
 }
 .tabs button:hover{
-    background-color: var(--muted);
+    background-color: var(--muted-foreground);
+    color: var(--background);
+}
+.tabs :active{
+    background-color: var(--muted-foreground);
+    color: var(--background);
 }

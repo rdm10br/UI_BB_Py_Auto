@@ -284,8 +284,9 @@ export default function NextPage() {
   };
 
   const handleTabChange = (tab) => {
-    console.log(tab)
+    console.log(tab);
     setActiveTab(tab);
+    document.body.div.classList.toggle("active");
   };
 
   const formattedDate = session
