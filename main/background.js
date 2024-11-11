@@ -3,7 +3,7 @@ import { app, ipcMain, dialog } from "electron";
 import serve from "electron-serve";
 import { createWindow } from "./helpers";
 import { initializeIpcHandlers } from "./ipc";
-import { checkForUpdates } from "./ipc/autoUpdater.js.bak";
+import { checkForUpdates } from "./ipc/autoUpdater";
 // import { autoUpdater } from "electron-updater";
 
 const isProd = process.env.NODE_ENV === "production";
