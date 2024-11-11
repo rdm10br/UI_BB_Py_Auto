@@ -42,7 +42,7 @@ export function checkForUpdates(mainWindow) {
     const maxLineLength = 30;
 
     const formatMessage = (message, maxLength) => {
-      const words = message.split(" ");
+      const words = message.split("/");
       let line = "";
       const lines = [];
 

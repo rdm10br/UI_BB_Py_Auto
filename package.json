@@ -5,13 +5,13 @@
   "version": "0.9.40",
   "author": "Rafael Dias <rafadm230@gmail.com>",
   "license": "MIT",
-  "homepage": "https://github.com/rdm10br/UI_BB_PY_AUTO#readme",
+  "homepage": "https://github.com/rdm10br/UI_BB_Py_Auto#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rdm10br/UI_BB_PY_AUTO.git"
+    "url": "https://github.com/rdm10br/UI_BB_Py_Auto.git"
   },
   "bugs": {
-    "url": "https://github.com/rdm10br/UI_BB_PY_AUTO/issues"
+    "url": "https://github.com/rdm10br/UI_BB_Py_Auto/issues"
   },
   "main": "app/background.js",
   "scripts": {
