@@ -141,15 +141,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Compress win-unpacked directory
-        run: |
-          Compress-Archive -Path dist -DestinationPath dist.zip -Force
-        shell: pwsh
+      # - name: Compress win-unpacked directory
+      #   run: |
+      #     Compress-Archive -Path dist -DestinationPath dist.zip -Force
+      #   shell: pwsh
 
-      - name: Upload Assets with GitHub CLI
-        run: |
-          echo "Uploading compressed win-unpacked.zip"
-          gh release upload "${{ env.TAG_NAME }}" "dist.zip" --clobber
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Upload Assets with GitHub CLI
+      #   run: |
+      #     echo "Uploading compressed win-unpacked.zip"
+      #     gh release upload "${{ env.TAG_NAME }}" "dist.zip" --clobber
+      #   shell: bash
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
