@@ -1,7 +1,7 @@
 import { autoUpdater } from 'electron-updater';
 import { dialog } from 'electron';
 
-function checkForUpdates(mainWindow) {
+export function checkForUpdates(mainWindow) {
     autoUpdater.autoDownload = true; // Enables background download
 
     // Begin checking for updates
@@ -28,7 +28,8 @@ function checkForUpdates(mainWindow) {
 
     // Send download progress to renderer
     autoUpdater.on('download-progress', (progressObj) => {
-        mainWindow.webContents.send('download_progress', progressObj);
+        let percent = Math.floor(progressObj.percent);
+        mainWindow.webContents.send('download_progress', percent);
     });
 
     // Optional: Error handling
@@ -37,5 +38,3 @@ function checkForUpdates(mainWindow) {
         mainWindow.webContents.send('update_error', error);
     });
 }
-
-module.exports = { checkForUpdates };
