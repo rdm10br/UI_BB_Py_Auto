@@ -297,10 +297,6 @@ export default function NextPage() {
     }
   };
 
-  useEffect(() => {
-    // checkForUpdates();
-  }, [version]);
-
   const runPython = (script) => {
     window.MainIPC.runPython(`${script}`);
   };
