@@ -182,8 +182,9 @@ input{
 .tabs button:hover{
     background-color: var(--muted-foreground);
     color: var(--background);
+    transition: ease-out 350ms;
 }
-.tabs :active{
+.tabs button.active{
     background-color: var(--muted-foreground);
     color: var(--background);
 }

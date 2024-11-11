@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
-import Link from 'next/link';
+import Link from "next/link";
 // import { useTranslation } from 'react-i18next';
 // import { withTranslation } from '../lib/withTranslation.js';
 // const isProduction = process.env.NODE_ENV === 'production';
@@ -13,37 +13,50 @@ export default function NextPage() {
   const [account, setAccount] = useState(null);
   const [session, setSession] = useState(null);
   const [version, setVersion] = useState(null);
-  
+
   const [loginFileExists, setLoginFileExists] = useState(false);
   const [cookieFileExists, setCookieFileExists] = useState(false);
   const [releaseFileExists, setReleaseFileExists] = useState(false);
   const [packFileExists, setPackFileExists] = useState(false);
   const [envFile, setEnvFile] = useState(false);
-  
+
   const [latestVersion, setLatestVersion] = useState(null);
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [latestVersionApp, setLatestVersionApp] = useState(null);
   const [updateAvailableApp, setUpdateAvailableApp] = useState(false);
   const [envFileData, setEnvFileData] = useState("");
   const [packFileData, setPackFileData] = useState("");
-  
+
   const [baseUrl, setBaseUrl] = useState("");
   const [repoId, setRepoId] = useState("");
   const [ownerRepo, setOwnerRepo] = useState("");
   const [gitBranch, setGitBranch] = useState("");
-  
+
   const [activeTab, setActiveTab] = useState("userPreferences");
 
   const [pack, setPack] = useState("package.json");
-  const [envFilePath, setenvFilePath] = useState("scripts/BB_Py_Automation/.env");
-  const [loginFilePath, setLoginFilePath] = useState("scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json");
-  const [cookieFilePath, setCookieFilePath] = useState("scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json");
-  const [releaseFilePath, setReleaseFilePath] = useState("scripts/BB_Py_Automation/release.json");
+  const [envFilePath, setenvFilePath] = useState(
+    "scripts/BB_Py_Automation/.env"
+  );
+  const [loginFilePath, setLoginFilePath] = useState(
+    "scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json"
+  );
+  const [cookieFilePath, setCookieFilePath] = useState(
+    "scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json"
+  );
+  const [releaseFilePath, setReleaseFilePath] = useState(
+    "scripts/BB_Py_Automation/release.json"
+  );
 
   useEffect(() => {
-
     const fetchFileStatus = async () => {
-      const filePaths = [loginFilePath, cookieFilePath, envFilePath, releaseFilePath, pack];
+      const filePaths = [
+        loginFilePath,
+        cookieFilePath,
+        envFilePath,
+        releaseFilePath,
+        pack,
+      ];
 
       try {
         // Call the IPC method to check file existence
@@ -54,14 +67,18 @@ export default function NextPage() {
           console.log(`${status.path}: ${status.exists}`);
           if (status.path === loginFilePath) {
             setLoginFileExists(status.exists);
-            
+
             if (!status.exists) {
               // Try another path if the file doesn't exist
               const _loginFilePath = `../../${loginFilePath}`;
-              const [_loginFileStatus] = await window.MainIPC.checkFilesExist([_loginFilePath]);
-              setLoginFilePath(_loginFilePath)
+              const [_loginFileStatus] = await window.MainIPC.checkFilesExist([
+                _loginFilePath,
+              ]);
+              setLoginFilePath(_loginFilePath);
               setLoginFileExists(_loginFileStatus.exists);
-              console.log(`Trying alternative login file path: ${_loginFilePath}, exists: ${_loginFileStatus.exists}`);
+              console.log(
+                `Trying alternative login file path: ${_loginFilePath}, exists: ${_loginFileStatus.exists}`
+              );
             }
           }
 
@@ -71,10 +88,14 @@ export default function NextPage() {
             if (!status.exists) {
               // Try another path if the file doesn't exist
               const _cookieFilePath = `../../${cookieFilePath}`;
-              const [_cookieFiletatus] = await window.MainIPC.checkFilesExist([_cookieFilePath]);
-              setCookieFilePath(_cookieFilePath)
+              const [_cookieFiletatus] = await window.MainIPC.checkFilesExist([
+                _cookieFilePath,
+              ]);
+              setCookieFilePath(_cookieFilePath);
               setLoginFileExists(_cookieFiletatus.exists);
-              console.log(`Trying alternative login file path: ${_cookieFilePath}, exists: ${_cookieFiletatus.exists}`);
+              console.log(
+                `Trying alternative login file path: ${_cookieFilePath}, exists: ${_cookieFiletatus.exists}`
+              );
             }
           }
 
@@ -84,41 +105,53 @@ export default function NextPage() {
             } else if (status.exists === false) {
               // Try another path if the file doesn't exist
               const _envFilePath = `../../${envFilePath}`;
-              
+
               // Since this is an async operation, use 'await' to get the result
-              const [_envFileStatus] = await window.MainIPC.checkFilesExist([_envFilePath]);
-              console.log(`Trying alternative env file path: ${_envFilePath}, exists: ${_envFileStatus.exists}`);
-          
+              const [_envFileStatus] = await window.MainIPC.checkFilesExist([
+                _envFilePath,
+              ]);
+              console.log(
+                `Trying alternative env file path: ${_envFilePath}, exists: ${_envFileStatus.exists}`
+              );
+
               if (_envFileStatus.exists == true) {
                 setEnvFile(_envFileStatus.exists);
-                setenvFilePath(_envFilePath)
+                setenvFilePath(_envFilePath);
               }
             }
           }
 
           if (status.path === releaseFilePath) {
             setReleaseFileExists(status.exists);
-            
+
             if (!status.exists) {
               // Try another path if the file doesn't exist
               const _releaseFilePath = `../${releaseFilePath}`;
-              const [_releaseFileStatus] = await window.MainIPC.checkFilesExist([_releaseFilePath]);
-              setReleaseFilePath(_releaseFilePath)
+              const [_releaseFileStatus] = await window.MainIPC.checkFilesExist(
+                [_releaseFilePath]
+              );
+              setReleaseFilePath(_releaseFilePath);
               setLoginFileExists(_releaseFileStatus.exists);
-              console.log(`Trying alternative login file path: ${_releaseFilePath}, exists: ${_releaseFileStatus.exists}`);
+              console.log(
+                `Trying alternative login file path: ${_releaseFilePath}, exists: ${_releaseFileStatus.exists}`
+              );
             }
           }
 
           if (status.path === pack) {
             setPackFileExists(status.exists);
-            
+
             if (!status.exists) {
               // Try another path if the file doesn't exist
               const _pack = `../${pack}`;
-              const [_packFileStatus] = await window.MainIPC.checkFilesExist([_pack]);
-              setPack(_pack)
+              const [_packFileStatus] = await window.MainIPC.checkFilesExist([
+                _pack,
+              ]);
+              setPack(_pack);
               setPackFileExists(_packFileStatus.exists);
-              console.log(`Trying alternative login file path: ${_pack}, exists: ${_packFileStatus.exists}`);
+              console.log(
+                `Trying alternative login file path: ${_pack}, exists: ${_packFileStatus.exists}`
+              );
             }
           }
         });
@@ -155,14 +188,40 @@ export default function NextPage() {
       }
     }
   };
-  
+
   useEffect(() => {
-    loadFileData(loginFileExists, loginFilePath, (data) => setAccount(data.username), "Error loading login file");
-    loadFileData(cookieFileExists, cookieFilePath, (data) => setSession(data.timestamp), "Error loading cookie file");
-    loadFileData(releaseFileExists, releaseFilePath, (data) => setVersion(data.CURRENT_VERSION), "Error loading release file");
-    loadFileData(packFileExists, pack, (data) => setPackFileData(data.version), "Error loading pack file");
-    loadEnvFileData()
-  }, [loginFileExists, cookieFileExists, releaseFileExists, packFileExists, envFile]);
+    loadFileData(
+      loginFileExists,
+      loginFilePath,
+      (data) => setAccount(data.username),
+      "Error loading login file"
+    );
+    loadFileData(
+      cookieFileExists,
+      cookieFilePath,
+      (data) => setSession(data.timestamp),
+      "Error loading cookie file"
+    );
+    loadFileData(
+      releaseFileExists,
+      releaseFilePath,
+      (data) => setVersion(data.CURRENT_VERSION),
+      "Error loading release file"
+    );
+    loadFileData(
+      packFileExists,
+      pack,
+      (data) => setPackFileData(data.version),
+      "Error loading pack file"
+    );
+    loadEnvFileData();
+  }, [
+    loginFileExists,
+    cookieFileExists,
+    releaseFileExists,
+    packFileExists,
+    envFile,
+  ]);
 
   const checkForUpdatesBot = async () => {
     const GITHUB_REPO = "rdm10br/BB_Py_Automation";
@@ -244,7 +303,7 @@ export default function NextPage() {
 
   const runPython = (script) => {
     window.MainIPC.runPython(`${script}`);
-  }
+  };
 
   const handleGenerateEnv = async () => {
     const envData = {
@@ -284,9 +343,22 @@ export default function NextPage() {
   };
 
   const handleTabChange = (tab) => {
-    console.log(tab);
+    // console.log(tab);
+    // document.body.div.button.classList.toggle("active");
     setActiveTab(tab);
-    document.body.div.classList.toggle("active");
+
+    // Remove the 'active' class from all buttons
+    document.querySelectorAll(".tabs button").forEach((button) => {
+      button.classList.remove("active");
+    });
+
+    // Add the 'active' class to the clicked button
+    const activeButton = document.querySelector(
+      `.tabs button[data-tab="${tab}"]`
+    );
+    if (activeButton) {
+      activeButton.classList.add("active");
+    }
   };
 
   const formattedDate = session
@@ -315,19 +387,39 @@ export default function NextPage() {
         <h2>Configurações : </h2>
       </div>
       <div className="tabs">
-        <button onClick={() => handleTabChange("userPreferences")}>
+        <button
+          className="active"
+          data-tab="userPreferences"
+          onClick={() => handleTabChange("userPreferences")}
+        >
           Preferências do Usuário
         </button>
-        <button onClick={() => handleTabChange("envSettings")}>
-          Requisitos para o Env
+        <button
+          className=""
+          data-tab="envSettings"
+          onClick={() => handleTabChange("envSettings")}
+        >
+          Variáveis de Ambiente
         </button>
-        <button onClick={() => handleTabChange("credentialsCookies")}>
+        <button
+          className=""
+          data-tab="credentialsCookies"
+          onClick={() => handleTabChange("credentialsCookies")}
+        >
           Credenciais & Cookies
         </button>
-        <button onClick={() => handleTabChange("updates")}>
+        <button
+          className=""
+          data-tab="updates"
+          onClick={() => handleTabChange("updates")}
+        >
           Atualizações
         </button>
-        <button onClick={() => handleTabChange("logs")}>
+        <button
+          className=""
+          data-tab="logs"
+          onClick={() => handleTabChange("logs")}
+        >
           Logs
         </button>
       </div>
@@ -442,13 +534,17 @@ export default function NextPage() {
               <>
                 <p>Versão: {version}</p>
                 <br />
-                <button onClick={checkForUpdatesBot}>Verificar Atualização</button>
+                <button onClick={checkForUpdatesBot}>
+                  Verificar Atualização
+                </button>
               </>
             )}
             <button onClick={() => runPython("updater_rollback.py")}>
               Reverter
             </button>
-            <Link href='/log/logViewUpdater'><button>Ver Logs</button></Link>
+            <Link href="/log/logViewUpdater">
+              <button>Ver Logs</button>
+            </Link>
             <button className="destructive">Excluir Logs</button>
           </div>
           <div className="card">
@@ -458,20 +554,18 @@ export default function NextPage() {
                 <p>Há uma atualização disponível: {latestVersionApp}</p>
                 <p>Sua Versão: {packFileData}</p>
                 <br />
-                <button onClick={() => runPython("")}>
-                  Atualizar
-                </button>
+                <button onClick={() => runPython("")}>Atualizar</button>
               </>
             ) : (
               <>
                 <p>Versão: {packFileData}</p>
                 <br />
-                <button onClick={checkForUpdatesApp}>Verificar Atualização</button>
+                <button onClick={checkForUpdatesApp}>
+                  Verificar Atualização
+                </button>
               </>
             )}
-            <button onClick={() => runPython("")}>
-              Reverter
-            </button>
+            <button onClick={() => runPython("")}>Reverter</button>
             <button>Ver Logs</button>
             <button className="destructive">Excluir Logs</button>
           </div>
@@ -482,7 +576,9 @@ export default function NextPage() {
           <h3>Logs dos Bots:</h3>
           <p>Logs de todas as execuções dos bots</p>
           <br />
-          <Link href='/log/logViewBot'><button>Ver Logs</button></Link>
+          <Link href="/log/logViewBot">
+            <button>Ver Logs</button>
+          </Link>
           <button className="destructive">Excluir Logs</button>
         </div>
       )}

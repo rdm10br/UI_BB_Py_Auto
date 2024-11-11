@@ -1,17 +1,18 @@
-const { autoUpdater } = require('electron-updater');
-const { dialog, ipcMain } = require('electron');
+import { autoUpdater } from 'electron-updater';
+import { dialog } from 'electron';
 
 function checkForUpdates(mainWindow) {
-    autoUpdater.autoDownload = true;
+    autoUpdater.autoDownload = true; // Enables background download
 
+    // Begin checking for updates
     autoUpdater.checkForUpdatesAndNotify();
 
-    // Notify renderer process when an update is available
+    // Notify renderer when an update is available
     autoUpdater.on('update-available', () => {
         mainWindow.webContents.send('update_available');
     });
 
-    // Show dialog when update is downloaded and prompt for restart
+    // Show dialog and prompt to restart when update is downloaded
     autoUpdater.on('update-downloaded', () => {
         dialog.showMessageBox({
             type: "info",
@@ -25,11 +26,16 @@ function checkForUpdates(mainWindow) {
         });
     });
 
-    // Track download progress and send updates to renderer
+    // Send download progress to renderer
     autoUpdater.on('download-progress', (progressObj) => {
         mainWindow.webContents.send('download_progress', progressObj);
     });
+
+    // Optional: Error handling
+    autoUpdater.on('error', (error) => {
+        dialog.showErrorBox('Update Error', `An error occurred while updating: ${error.message}`);
+        mainWindow.webContents.send('update_error', error);
+    });
 }
 
-// Expose checkForUpdates function so it can be called from elsewhere
 module.exports = { checkForUpdates };

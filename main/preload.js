@@ -36,6 +36,7 @@ contextBridge.exposeInMainWorld('MainIPC', {
   // Method for update the app
   onUpdateAvailable: (callback) => ipcRenderer.on('update_available', callback),
   onUpdateDownloaded: (callback) => ipcRenderer.on('update_downloaded', callback),
+  onDownloadProgress: (callback) => ipcRenderer.on('download-progress', callback),
   restartApp: () => ipcRenderer.send('restart_app'),
 
   // Github

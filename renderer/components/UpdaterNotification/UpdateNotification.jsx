@@ -1,19 +1,40 @@
 import React, { useEffect, useState } from 'react';
+import { style } from "./UpdateNotification.module.css";
 
 function UpdateNotification() {
   const [updateAvailable, setUpdateAvailable] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(null);
+  const [updateDownloaded, setUpdateDownloaded] = useState(false);
 
   useEffect(() => {
-    window.MainIPC.onUpdateAvailable(() => {
+    const onUpdateAvailable = () => {
       setUpdateAvailable(true);
+      setUpdateDownloaded(false);
       console.log('An update is available!');
-    });
+    };
 
-    window.MainIPC.onUpdateDownloaded(() => {
+    const onUpdateDownloaded = () => {
       setUpdateAvailable(false);
+      setUpdateDownloaded(true);
       console.log('A new update is ready to install. Restart the app to apply it.');
       alert('A new update is ready to install. Restart the app to apply it.');
-    });
+    };
+
+    const onDownloadProgress = (progressObj) => {
+      setDownloadProgress(progressObj.percent.toFixed(2));
+    };
+
+    // Register IPC listeners
+    window.MainIPC.onUpdateAvailable(onUpdateAvailable);
+    window.MainIPC.onUpdateDownloaded(onUpdateDownloaded);
+    window.MainIPC.onDownloadProgress(onDownloadProgress);
+
+    // Cleanup listeners on unmount
+    return () => {
+      window.MainIPC.removeListener('update_available', onUpdateAvailable);
+      window.MainIPC.removeListener('update_downloaded', onUpdateDownloaded);
+      window.MainIPC.removeListener('download-progress', onDownloadProgress);
+    };
   }, []);
 
   const handleRestart = () => {
@@ -22,9 +43,17 @@ function UpdateNotification() {
 
   return (
     <>
-      {updateAvailable && (
-        <div>
+      {updateAvailable && !updateDownloaded && (
+        <div className={style.update-notification}>
           <p>Update available! It will download in the background.</p>
+          {downloadProgress !== null && (
+            <p>Download progress: {downloadProgress}%</p>
+          )}
+        </div>
+      )}
+      {updateDownloaded && (
+        <div className={style.update-notification}>
+          <p>Update downloaded! Restart to apply the update.</p>
           <button onClick={handleRestart}>Restart to Update</button>
         </div>
       )}
