@@ -2,6 +2,7 @@ import { autoUpdater } from "electron-updater";
 import { dialog } from "electron";
 
 export function checkForUpdates(mainWindow) {
+  autoUpdater.fullChangelog = false;
   autoUpdater.autoDownload = true; // Enables background download
 
   // Begin checking for updates
@@ -38,8 +39,8 @@ export function checkForUpdates(mainWindow) {
 
   // Optional: Error handling
   autoUpdater.on("error", (error) => {
-    const maxLineLength = 50;
-    
+    const maxLineLength = 30;
+
     const formatMessage = (message, maxLength) => {
       const words = message.split(" ");
       let line = "";
