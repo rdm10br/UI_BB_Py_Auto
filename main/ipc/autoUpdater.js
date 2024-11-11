@@ -2,7 +2,7 @@ import { autoUpdater } from "electron-updater";
 import { dialog } from "electron";
 
 export function checkForUpdates(mainWindow) {
-  autoUpdater.fullChangelog = false;
+  autoUpdater.fullChangelog = false; // Enable blockmap
   autoUpdater.autoDownload = true; // Enables background download
 
   // Begin checking for updates
