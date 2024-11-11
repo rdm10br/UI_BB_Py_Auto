@@ -1,7 +1,11 @@
 import { autoUpdater } from "electron-updater";
 import { dialog } from "electron";
+import log from "electron-log";
 
 export function checkForUpdates(mainWindow) {
+  autoUpdater.logger = log;
+  autoUpdater.logger.transports.file.level = "info";
+
   autoUpdater.fullChangelog = false; // Enable blockmap
   autoUpdater.autoDownload = true; // Enables background download
 

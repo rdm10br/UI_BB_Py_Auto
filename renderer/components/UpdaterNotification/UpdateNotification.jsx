@@ -31,9 +31,9 @@ function UpdateNotification() {
 
     // Cleanup listeners on unmount
     return () => {
-      window.MainIPC.removeListener('update_available', onUpdateAvailable);
-      window.MainIPC.removeListener('update_downloaded', onUpdateDownloaded);
-      window.MainIPC.removeListener('download-progress', onDownloadProgress);
+      // window.MainIPC.removeListener('update_available', onUpdateAvailable);
+      // window.MainIPC.removeListener('update_downloaded', onUpdateDownloaded);
+      // window.MainIPC.removeListener('download-progress', onDownloadProgress);
     };
   }, []);
 

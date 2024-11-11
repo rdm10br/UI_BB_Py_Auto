@@ -141,6 +141,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Upload latest yaml
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/BlackBot-Setup-${{ env.TAG_NAME }}.exe
+          asset_name: BlackBot-Setup-${{ env.TAG_NAME }}.exe
+          asset_content_type: application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       # - name: Compress win-unpacked directory
       #   run: |
       #     Compress-Archive -Path dist -DestinationPath dist.zip -Force
