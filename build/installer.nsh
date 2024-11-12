@@ -1,6 +1,6 @@
 !macro preInstall
   ; Check if the scripts folder exists
-  MessageBox MB_ICONINFORMATION "Checking path: $INSTDIR\scripts"
+  MessageBox MB_ICONINFORMATION "Checking path: $INSTDIR"
   IfFileExists "$INSTDIR\scripts" 0 no_scripts_to_backup
 
   ; Create the backup folder if it doesn't already exist
@@ -36,3 +36,12 @@
   no_backup_found:
   MessageBox MB_ICONINFORMATION "No backup folder found to restore."
 !macroend
+
+!insertmacro preInstall
+
+Section
+  MessageBox MB_ICONINFORMATION "Installation tasks start here"
+  ; Regular installation tasks
+SectionEnd
+
+!insertmacro postInstall
