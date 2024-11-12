@@ -1,47 +1,54 @@
 !macro preInstall
-  ; Check if the scripts folder exists
-  MessageBox MB_ICONINFORMATION "Checking path: $INSTDIR"
-  IfFileExists "$INSTDIR\scripts" 0 no_scripts_to_backup
+  ; Backup the 'scripts' folder if it exists
+  Function preInstall
+    MessageBox MB_ICONINFORMATION "PreInstall: Checking path $INSTDIR\scripts"
+    IfFileExists "$INSTDIR\scripts\*" 0 no_scripts_to_backup
 
-  ; Create the backup folder if it doesn't already exist
-  IfFileExists "$INSTDIR\backup_scripts" 0 create_backup_folder
-    Goto backup_folder_ready
+    MessageBox MB_ICONINFORMATION "PreInstall: Creating backup folder if needed"
+    IfFileExists "$INSTDIR\backup_scripts\*" 0 create_backup_folder
+      Goto backup_folder_ready
 
-  create_backup_folder:
-  CreateDirectory "$INSTDIR\backup_scripts"
+    create_backup_folder:
+    CreateDirectory "$INSTDIR\backup_scripts"
+    MessageBox MB_ICONINFORMATION "PreInstall: Backup folder created"
 
-  backup_folder_ready:
-  ; Now backup the existing files from the scripts folder
-  SetOutPath "$INSTDIR\backup_scripts"
-  CopyFiles /SILENT "$INSTDIR\scripts\*" "$INSTDIR\backup_scripts\*"
-  MessageBox MB_ICONINFORMATION "Backup completed for the 'scripts' folder."
-  Goto pre_install_done
+    backup_folder_ready:
+    MessageBox MB_ICONINFORMATION "PreInstall: Backing up files"
+    SetOutPath "$INSTDIR\backup_scripts"
+    CopyFiles "$INSTDIR\scripts\*" "$INSTDIR\backup_scripts\*"
+    MessageBox MB_ICONINFORMATION "Backup completed for 'scripts' folder"
+    Goto pre_install_done
 
-  no_scripts_to_backup:
-  MessageBox MB_ICONINFORMATION "No 'scripts' folder found to backup."
+    no_scripts_to_backup:
+    MessageBox MB_ICONINFORMATION "No 'scripts' folder found to backup."
 
-  pre_install_done:
+    pre_install_done:
+    MessageBox MB_ICONINFORMATION "PreInstall Macro Finished"
+  FunctionEnd
 !macroend
 
 !macro postInstall
-  ; Check if a backup exists
-  IfFileExists "$INSTDIR\backup_scripts" 0 no_backup_found
+  ; Restore the 'scripts' folder from backup if it exists
+  Function postInstall
+    MessageBox MB_ICONINFORMATION "PostInstall: Checking for backup folder"
+    IfFileExists "$INSTDIR\backup_scripts\*" 0 no_backup_found
 
-  ; Restore the scripts folder from the backup, overwriting existing files
-  CopyFiles /SILENT /FILESONLY "$INSTDIR\backup_scripts\*" "$INSTDIR\scripts\*"
-  ; Clean up the backup folder
-  RMDir /r "$INSTDIR\backup_scripts"
-  MessageBox MB_ICONINFORMATION "Restored 'scripts' folder from backup."
+    MessageBox MB_ICONINFORMATION "PostInstall: Restoring files from backup"
+    CopyFiles "$INSTDIR\backup_scripts\*" "$INSTDIR\scripts\*"
+    RMDir /r "$INSTDIR\backup_scripts"
+    MessageBox MB_ICONINFORMATION "Restored 'scripts' folder from backup"
+    Goto post_install_done
 
-  no_backup_found:
-  MessageBox MB_ICONINFORMATION "No backup folder found to restore."
+    no_backup_found:
+    MessageBox MB_ICONINFORMATION "No backup folder found to restore."
+
+    post_install_done:
+    MessageBox MB_ICONINFORMATION "PostInstall Macro Finished"
+  FunctionEnd
 !macroend
 
-!insertmacro preInstall
-
-Section
-  MessageBox MB_ICONINFORMATION "Installation tasks start here"
-  ; Regular installation tasks
+Section "Main Installation"
+  !insertmacro preInstall
+  ; Add regular installation tasks here
+  !insertmacro postInstall
 SectionEnd
-
-!insertmacro postInstall
