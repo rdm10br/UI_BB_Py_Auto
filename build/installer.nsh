@@ -14,8 +14,8 @@ ${Else}
 !macro postInstall
   ; Check if a backup exists
   IfFileExists "$INSTDIR\backup_scripts\*" 0 +3
-  ; Restore the scripts folder from the backup
-  CopyFiles "$INSTDIR\backup_scripts\*" "$INSTDIR\scripts\*"
+  ; Restore the scripts folder from the backup, overwriting existing files
+  CopyFiles /SILENT /FILESONLY "$INSTDIR\backup_scripts\*" "$INSTDIR\scripts\*"
   ; Clean up the backup folder
   RMDir /r "$INSTDIR\backup_scripts"
 ${Else}
