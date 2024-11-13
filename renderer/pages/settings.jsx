@@ -247,7 +247,7 @@ export default function NextPage() {
         console.log(wantsToUpdate);
         if (wantsToUpdate) {
           console.log("User chose to update the app.");
-          window.ipc.send("run-python", "update_checker.py");
+          window.MainIPC.runPython("update_checker.py");
         } else {
           console.log("User choose not to update.");
         }
@@ -284,7 +284,7 @@ export default function NextPage() {
         console.log(wantsToUpdate);
         if (wantsToUpdate) {
           console.log("User chose to update the app.");
-          // window.ipc.send("run-python", "update_checker.py");
+          window.MainIPC.onUpdateAvailable();
         } else {
           console.log("User choose not to update.");
         }
