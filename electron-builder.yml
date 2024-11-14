@@ -15,8 +15,9 @@ extraFiles:
   - from: scripts
     to: scripts
     filter:
-      - "!venv/**"
-      - "!__pycache__/**"
+      - "!BB_Py_Automation/.git/**"
+      - "!BB_Py_Automation/venv/**"
+      - "!BB_Py_Automation/__pycache__/**"
 
 win:
   target:
