@@ -12,12 +12,14 @@ files:
 asar: true
 extraFiles:
   - scripts
-  - from: scripts
-    to: scripts
-    filter:
-      - "!BB_Py_Automation/.git/**"
-      - "!BB_Py_Automation/venv/**"
-      - "!BB_Py_Automation/__pycache__/**"
+  # - from: scripts
+  #   to: scripts
+  #   filter:
+  #     - "!BB_Py_Automation/.git/**"
+  #     - "!BB_Py_Automation/venv/**"
+  #     - "!__pycache__/**"
+  #     - "!BB_Py_Automation/.env"
+  #     - "!BB_Py_Automation/Planilhas/**"
 
 win:
   target:
@@ -30,4 +32,4 @@ nsis:
   runAfterFinish: true
   deleteAppDataOnUninstall: false
   artifactName: "${productName}-Setup-${version}.${ext}"
-  # include: build/installer.nsh
+  include: build/installer.nsh
