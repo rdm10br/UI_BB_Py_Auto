@@ -12,6 +12,11 @@ files:
 asar: true
 extraFiles:
   - scripts
+  - from: scripts
+    to: scripts
+    filter:
+      - "!venv/**"
+      - "!__pycache__/**"
 
 win:
   target:
@@ -24,4 +29,4 @@ nsis:
   runAfterFinish: true
   deleteAppDataOnUninstall: false
   artifactName: "${productName}-Setup-${version}.${ext}"
-  include: build/installer.nsh
+  # include: build/installer.nsh
