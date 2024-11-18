@@ -41,5 +41,5 @@ contextBridge.exposeInMainWorld('MainIPC', {
 
   // Github
   getGitRepo: (GITHUB_REPO) => ipcRenderer.invoke('get-github-repo', GITHUB_REPO),
-  postGitIssue: (GITHUB_REPO, token, title, body) => ipcRenderer.invoke('create-github-issue', GITHUB_REPO, token, title, body),
+  postGitIssue: (GITHUB_REPO, title, body) => ipcRenderer.invoke('create-github-issue', {GITHUB_REPO, title, body}),
 });

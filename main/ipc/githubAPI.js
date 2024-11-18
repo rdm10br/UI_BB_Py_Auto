@@ -1,4 +1,7 @@
 import axios from "axios";
+import { config } from "dotenv";
+
+config();
 
 export function initializeGitHubAPIHandlers(ipcMain) {
   ipcMain.handle("get-github-repo", async (event, GITHUB_REPO) => {
@@ -10,9 +13,11 @@ export function initializeGitHubAPIHandlers(ipcMain) {
       return { error: "Error fetching latest release" };
     }
   });
-  ipcMain.handle("create-github-issue", async (event, { GITHUB_REPO, token, title, body }) => {
+  ipcMain.handle("create-github-issue", async (event, { GITHUB_REPO, title, body }) => {
     try {
+      console.log(GITHUB_REPO)
       const [owner, repo] = GITHUB_REPO.split("/");
+      const token = process.env.GITHUB_TOKEN;
       const response = await axios.post(
         `https://api.github.com/repos/${owner}/${repo}/issues`,
         {

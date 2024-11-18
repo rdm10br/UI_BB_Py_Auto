@@ -99,10 +99,9 @@ const Runner = ({ script }) => {
   };
   const submitFeedback = () => {
     let title = `[${feedBackType}] - ${script} : ${feedBack}`;
-    const GITHUB_REPO = 'rdm10br/BB_Py_Automation'
-    const token = ''
+    const GITHUB_REPO = "rdm10br/BB_Py_Automation"
     console.log(title);
-    window.MainIPC.postGitIssue(GITHUB_REPO, token, title, feedBack);
+    window.MainIPC.postGitIssue(GITHUB_REPO, title, feedBack);
     setFeedBack("");
   };
   return (
@@ -162,6 +161,7 @@ const Runner = ({ script }) => {
         (
           <>
             <select
+            className={styles.dropdown_feedback}
             id="dropdown-feedback"
             onChange={(e) => setFeedBackType(e.target.value)}>
               <option>Bug</option>

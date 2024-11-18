@@ -45,6 +45,10 @@ jobs:
           echo "{`n    `"username`": `"username`",`n    `"password`": `"password`"`n}" > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login.json
           echo "{`n    `"timestamp`": `"1500-01-01T00:00:00.000000`",`n    `"cookies`": []`n}" > scripts/BB_Py_Automation/src/Metodos/Login/__pycache__/login_cache.json
 
+      - name: Create Mock .env File
+        run: |
+          echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" > .env
+
       - name: Build Nextron.js app
         run: |
             npm run build
@@ -150,16 +154,3 @@ jobs:
           asset_content_type: application/octet-stream
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: Compress win-unpacked directory
-      #   run: |
-      #     Compress-Archive -Path dist -DestinationPath dist.zip -Force
-      #   shell: pwsh
-
-      # - name: Upload Assets with GitHub CLI
-      #   run: |
-      #     echo "Uploading compressed win-unpacked.zip"
-      #     gh release upload "${{ env.TAG_NAME }}" "dist.zip" --clobber
-      #   shell: bash
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

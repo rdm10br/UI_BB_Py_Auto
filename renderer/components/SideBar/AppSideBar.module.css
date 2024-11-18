@@ -488,3 +488,8 @@
   visibility: visible;
   opacity: 1;
 }
+
+.dropdown_feedback{
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
