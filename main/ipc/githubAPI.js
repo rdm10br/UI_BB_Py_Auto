@@ -15,7 +15,6 @@ export function initializeGitHubAPIHandlers(ipcMain) {
   });
   ipcMain.handle("create-github-issue", async (event, { GITHUB_REPO, title, body }) => {
     try {
-      console.log(GITHUB_REPO)
       const [owner, repo] = GITHUB_REPO.split("/");
       const token = process.env.GITHUB_TOKEN;
       const response = await axios.post(

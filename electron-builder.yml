@@ -12,14 +12,8 @@ files:
 asar: true
 extraFiles:
   - scripts
-  # - from: scripts
-  #   to: scripts
-  #   filter:
-  #     - "!BB_Py_Automation/.git/**"
-  #     - "!BB_Py_Automation/venv/**"
-  #     - "!__pycache__/**"
-  #     - "!BB_Py_Automation/.env"
-  #     - "!BB_Py_Automation/Planilhas/**"
+  - from: .env
+    to: .env
 
 win:
   target:
