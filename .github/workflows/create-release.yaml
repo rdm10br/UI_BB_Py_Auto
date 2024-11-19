@@ -47,7 +47,7 @@ jobs:
 
       - name: Create Mock .env File
         run: |
-          echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" > .env
+          echo "GITHUB_TOKEN=${{ secrets.PERSONAL_GITHUB_TOKEN  }}" > .env
 
       # - name: List Cloned Files for Debugging2
       #   run: |
