@@ -1,7 +1,14 @@
 import axios from "axios";
 import { config } from "dotenv";
 
-config();
+if (process.env.NODE_ENV === "production") {
+  // Load .env file from resources folder in production
+  const envPath = path.join(process.resourcesPath, ".env");
+  config({ path: envPath });
+} else {
+  // Load .env file from the root in development
+  config();
+}
 
 export function initializeGitHubAPIHandlers(ipcMain) {
   ipcMain.handle("get-github-repo", async (event, GITHUB_REPO) => {
