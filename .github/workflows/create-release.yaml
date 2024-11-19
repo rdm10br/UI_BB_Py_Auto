@@ -49,9 +49,9 @@ jobs:
         run: |
           echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" > .env
 
-      - name: List Cloned Files for Debugging2
-        run: |
-          ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
+      # - name: List Cloned Files for Debugging2
+      #   run: |
+      #     ls -Recurse | Where-Object { $_.FullName -notmatch 'node_modules' }
 
       - name: Build Nextron.js app
         run: |
