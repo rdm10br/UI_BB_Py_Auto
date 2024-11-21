@@ -1,0 +1,76 @@
+name: Create Pull Request
+
+on:
+  push:
+    branches:
+      - 'dev'
+    paths-ignore:
+      - '.github/**'
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Get commit message
+        id: extract_commit
+        run: |
+          COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+          echo "Commit message: $COMMIT_MESSAGE"
+          echo "commit_message=$COMMIT_MESSAGE" >> $GITHUB_ENV
+          if [[ "$COMMIT_MESSAGE" != *"[pull-request]"* ]]; then
+            echo "No '[pull-request]' in commit message, skipping PR creation."
+            exit 0
+          fi
+
+      - name: Get the last pull request
+        id: last_pr
+        uses: octokit/request-action@v2
+        with:
+          route: GET /repos/${{ github.repository }}/pulls
+          headers: |
+            accept: application/vnd.github+json
+          query: |
+            state=closed&sort=updated&direction=desc&per_page=1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get commits since the last PR
+        id: commits_since
+        run: |
+          LAST_PR_SHA=$(echo '${{ steps.last_pr.outputs.data }}' | jq -r '.[0].merge_commit_sha')
+          echo "Last PR SHA: $LAST_PR_SHA"
+          if [ "$LAST_PR_SHA" = "null" ]; then
+            echo "No previous PR found; including all commits."
+            COMMITS=$(git log --oneline)
+          else
+            COMMITS=$(git log --oneline $LAST_PR_SHA..HEAD)
+          fi
+          echo "commits_body=$COMMITS" >> $GITHUB_ENV
+          echo "Formatted commits: $COMMITS"
+
+      - name: Determine PR title
+        id: determine_pr_title
+        run: |
+          PR_TITLE="Automated PR from ${{ github.ref_name }}"
+          if [[ "${{ env.commit_message }}" == *"[major]"* ]]; then
+            PR_TITLE="$PR_TITLE [major]"
+          elif [[ "${{ env.commit_message }}" == *"[minor]"* ]]; then
+            PR_TITLE="$PR_TITLE [minor]"
+          fi
+          echo "pr_title=$PR_TITLE" >> $GITHUB_ENV
+
+      - name: Create Pull Request
+        if: success()
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main
+          head: ${{ github.ref_name }}
+          title: ${{ env.pr_title }}
+          body: |
+            ### Commits included in this PR:
+            ${{ env.commits_body }}
