@@ -2,66 +2,104 @@
     display: flex;
   }
   
-  .fileList {
-    width: 20%;
-    height: auto;
-    border-radius: 12px;
-    border-right: 1px solid #6f6f6f;
-    padding: 10px;
-    padding-left: 0;
-    margin-left: 0;
-  }
-  
-  .fileListTitle {
-    font-size: 1.2rem;
-    font-weight: bold;
-  }
-  
-  .fileListItems {
-    height: 75vh;
-    overflow: auto;
-    padding-left: 0;
-    margin-left: 0;
-  }
-  
-  .fileListItem {
-    cursor: pointer;
-    user-select: none;
-    margin-bottom: 6px;
-    margin-right: 3px;
-    padding: 8px;
-    padding-right: 0;
-    padding-left: 0;
-    list-style: none;
-  }
-  .fileListItem:hover{
-    background-color: hsla(224.3, 50%, 36%, 1);
-    border: 2;
-    border-radius: 12px;
-  }
-  
-  .logContent {
-    width: 80%;
-    padding: 10px;
-  }
-  
-  .logContentTitle {
-    font-size: 1.2rem;
-    font-weight: bold;
-  }
-  
-  .filterInput {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-  
-  .logDisplay {
-    white-space: pre-wrap;
-    background-color: #000000;
-    color: white;
-    padding: 10px;
-    height: 60vh;
-    overflow: auto;
-    font-size: 16px;
-  }
-  
+.fileList {
+  width: 20%;
+  height: auto;
+  border-radius: 12px;
+  border-right: 1px solid #364055;
+  border-top: 1px solid #364055;
+  border-bottom: 1px solid #364055;
+  background-color: rgb(21, 32, 53);
+  /* background: linear-gradient(135deg, rgb(6, 3, 61) 80%, rgb(42, 42, 145) 90%, rgb(6, 116, 138) 120%); */
+  padding: 10px;
+  margin-left: -1.3%;
+  margin-bottom: -1.3%;
+  padding-bottom: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 4px;
+}
+
+.fileListTitle {
+  font-size: 1.4rem;
+  font-weight: bold;
+  border-bottom: 1px solid rgb(61, 68, 88);
+}
+
+.fileListItems {
+  height: 75vh;
+  overflow: auto;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.fileListItem {
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 6px;
+  margin-right: 3px;
+  padding: 8px;
+  padding-right: 0;
+  list-style: none;
+}
+.fileListItem:hover{
+  background-color: hsla(224.3, 50%, 36%, 1);
+  border: 2;
+  border-radius: 8px;
+}
+
+.logContent {
+  width: 80%;
+  padding: 12px;
+  padding-right: 2rem;
+  margin: -0.4%;
+  margin-top: 0%;
+  margin-bottom: -1.3%;
+  margin-right: -1%;
+  /* background: linear-gradient(135deg, rgb(6, 3, 61) 80%, rgb(42, 42, 145) 90%, rgb(6, 116, 138) 110%); */
+  /* background: radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 90%, rgba(0,148,179,1) 100%); */
+  border-top: 1px solid #364055;
+  border-left: 1px solid #364055;
+  border-right: 1px solid #364055;
+  border-bottom: 1px solid #364055;
+  border-bottom-left-radius: 12px;
+}
+
+.logContentTitle {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.filterInput {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.logDisplay {
+  line-height: 1.33;
+  white-space: pre-wrap;
+  background-color: #000000;
+  color: white;
+  padding: 8px;
+  height: 60vh;
+  overflow: auto;
+  font-size: 16px;
+  border-radius: 8px;
+}
+
+.highlight {
+  background-color: yellow;
+  font-weight: bold;
+  color: black;
+}
+.dateTime {
+  color: #a3b0bf;
+}
+.logLevel {
+  color: rgb(123, 255, 0);
+  font-style: italic;
+}
+
+.keyword {
+  color: rgb(169, 75, 224);
+  font-weight: bold;
+}

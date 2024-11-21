@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import styles from "./logView.module.css";
 
 const LogViewer = ({ dir }) => {
@@ -8,33 +8,82 @@ const LogViewer = ({ dir }) => {
   const [filterText, setFilterText] = useState("");
   const [filteredContent, setFilteredContent] = useState("");
 
+  // Load files in the specified directory
   useEffect(() => {
     const loadFiles = async () => {
-      // Replace with your directory path
-      const dirPath = `scripts/BB_Py_Automation/Logs/${dir}`;
-      const files = await window.MainIPC.readDirectory(dirPath);
-      setFiles(files);
+      try {
+        const dirPath = `scripts/BB_Py_Automation/Logs/${dir}`;
+        const loadedFiles = await window.MainIPC.readDirectory(dirPath);
+        setFiles(loadedFiles);
+      } catch (error) {
+        console.error("Error loading files:", error);
+      }
     };
     loadFiles();
-  }, []);
+  }, [dir]);
 
+  // Formats a single line with highlights and styles
+  const formatLogLine = useCallback(
+    (line, filter) => {
+      let styledLine = line.replace(
+        /^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\]/,
+        (match, dateTime) =>
+          `<span class="${styles.dateTime}">[${dateTime}]</span>`
+      );
+
+      styledLine = styledLine.replace(
+        /(Execution Start|Logged in successfully!|Start loop|Execution End|Execution time|seconds|Run:|\s\w+\.json|(?<=ID of ).+)/gi,
+        (match) => `<span class="${styles.logLevel}">${match}</span>`
+      );
+
+      styledLine = styledLine.replace(
+        /\b(wrong|Exception occurred|Call log|error)\b/gi,
+        (match) => `<span class="${styles.keyword}">${match}</span>`
+      );
+
+      if (filter) {
+        styledLine = styledLine.replace(
+          new RegExp(`(${filter})`, "gi"),
+          `<span class="${styles.highlight}">$1</span>`
+        );
+      }
+
+      return styledLine;
+    },
+    [styles]
+  );
+
+  // Reads and formats log file content
   const handleFileClick = async (fileName) => {
-    const filePath = `scripts/BB_Py_Automation/Logs/${dir}/${fileName}`;
-    const content = await window.MainIPC.readLogFile(filePath);
-    setSelectedFile(fileName);
-    setLogContent(content);
-    setFilteredContent(content);
+    try {
+      const filePath = `scripts/BB_Py_Automation/Logs/${dir}/${fileName}`;
+      const content = await window.MainIPC.readLogFile(filePath);
+      setSelectedFile(fileName);
+      setLogContent(content);
+
+      const formattedContent = content
+        .split("\n")
+        .map((line) => formatLogLine(line, ""))
+        .join("\n");
+
+      setFilteredContent(formattedContent);
+    } catch (error) {
+      console.error("Error reading file:", error);
+    }
   };
 
+  // Filters log content based on user input
   const handleFilterChange = (event) => {
     const text = event.target.value;
     setFilterText(text);
-    setFilteredContent(
-      logContent
-        .split("\n")
-        .filter((line) => line.includes(text))
-        .join("\n")
-    );
+
+    const highlightedContent = logContent
+      .split("\n")
+      .filter((line) => !text || line.includes(text))
+      .map((line) => formatLogLine(line, filter))
+      .join("\n");
+
+    setFilteredContent(highlightedContent);
   };
 
   return (
@@ -66,9 +115,10 @@ const LogViewer = ({ dir }) => {
               onChange={handleFilterChange}
               className={styles.filterInput}
             />
-            <pre className={styles.logDisplay}>
-              {filteredContent}
-            </pre>
+            <pre
+              className={styles.logDisplay}
+              dangerouslySetInnerHTML={{ __html: filteredContent }}
+            ></pre>
           </>
         )}
       </div>
