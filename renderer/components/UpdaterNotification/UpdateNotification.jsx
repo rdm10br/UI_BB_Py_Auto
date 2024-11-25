@@ -28,12 +28,8 @@ function UpdateNotification() {
     window.MainIPC.onUpdateAvailable(onUpdateAvailable);
     window.MainIPC.onUpdateDownloaded(onUpdateDownloaded);
     window.MainIPC.onDownloadProgress(onDownloadProgress);
-
-    // Cleanup listeners on unmount
+    
     return () => {
-      // window.MainIPC.removeListener('update_available', onUpdateAvailable);
-      // window.MainIPC.removeListener('update_downloaded', onUpdateDownloaded);
-      // window.MainIPC.removeListener('download-progress', onDownloadProgress);
     };
   }, []);
 
