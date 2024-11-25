@@ -28,7 +28,7 @@ jobs:
 
       - name: Get the last pull request
         id: last_pr
-        uses: octokit/request-action@v2
+        uses: octokit/request-action@v3
         with:
           route: GET /repos/${{ github.repository }}/pulls
           headers: |
