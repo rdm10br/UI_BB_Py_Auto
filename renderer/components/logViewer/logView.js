@@ -41,6 +41,17 @@ const LogViewer = ({ dir }) => {
         (match) => `<span class="${styles.keyword}">${match}</span>`
       );
 
+      styledLine = styledLine.replace(
+        /(http[^\s<>"]+)/gi,
+        (match) => `<span class="${styles.logLevelLink}">${match}</span>`
+      );
+
+      styledLine = styledLine.replace(
+        /\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\] (.+?):/g,
+        (match) => `<span class="${styles.logLevel}">${match}:</span>`
+      );
+      
+
       if (filter) {
         styledLine = styledLine.replace(
           new RegExp(`(${filter})`, "gi"),
@@ -80,7 +91,7 @@ const LogViewer = ({ dir }) => {
     const highlightedContent = logContent
       .split("\n")
       .filter((line) => !text || line.includes(text))
-      .map((line) => formatLogLine(line, filter))
+      .map((line) => formatLogLine(line, text))
       .join("\n");
 
     setFilteredContent(highlightedContent);

@@ -95,11 +95,16 @@
   color: #a3b0bf;
 }
 .logLevel {
-  color: rgb(123, 255, 0);
+  color: hsl(169, 90%, 65%);
   font-style: italic;
 }
 
 .keyword {
   color: rgb(169, 75, 224);
   font-weight: bold;
+}
+.logLevelLink{
+  color: hsl(202, 86%, 60%);
+  text-decoration: underline;
+  /* cursor: pointer; */
 }
