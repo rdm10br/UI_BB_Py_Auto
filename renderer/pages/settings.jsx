@@ -305,7 +305,7 @@ export default function NextPage() {
     const envData = {
       BASE_URL: baseUrl,
       ID_REPOSITORIO_BQ: repoId,
-      OWNER_GIT_REPO: ownerRepo,
+      GIT_REPO: ownerRepo,
       GIT_BRANCH: gitBranch,
     };
     if (!baseUrl || !repoId || !ownerRepo || !gitBranch) {
