@@ -50,11 +50,16 @@ jobs:
         run: |
           LAST_PR_SHA=${{ steps.last_pr.outputs.merge_commit_sha }}
           echo "Last PR SHA: $LAST_PR_SHA"
-          if [ "$LAST_PR_SHA" = "null" ]; then
-            echo "No previous PR found; including all commits."
-            COMMITS=$(git log --oneline)
+          git fetch --all
+          if git rev-parse "$LAST_PR_SHA" >/dev/null 2>&1; then
+            COMMITS=$(git log --oneline "$LAST_PR_SHA"..HEAD)
           else
-            COMMITS=$(git log --oneline $LAST_PR_SHA..HEAD)
+            echo "Invalid SHA or no previous PR found; including all commits."
+            COMMITS=$(git log --oneline)
+          fi
+          if [ -z "$COMMITS" ]; then
+            echo "No commits found since the last PR."
+            exit 0
           fi
           echo "commits_body=$COMMITS" >> $GITHUB_ENV
           echo "Formatted commits: $COMMITS"
