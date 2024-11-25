@@ -26,22 +26,29 @@ jobs:
             exit 0
           fi
 
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
       - name: Get the last pull request
         id: last_pr
-        uses: octokit/request-action@v3
+        uses: actions/github-script@v6
         with:
-          route: GET /repos/${{ github.repository }}/pulls
-          headers: |
-            accept: application/vnd.github+json
-          query: |
-            state=closed&sort=updated&direction=desc&per_page=1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: pulls } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "closed",
+              sort: "updated",
+              direction: "desc",
+              per_page: 1,
+            });
+            const lastPr = pulls[0] || {};
+            core.setOutput("merge_commit_sha", lastPr.merge_commit_sha || "null");
 
       - name: Get commits since the last PR
         id: commits_since
         run: |
-          LAST_PR_SHA=$(echo '${{ steps.last_pr.outputs.data }}' | jq -r '.[0].merge_commit_sha')
+          LAST_PR_SHA=${{ steps.last_pr.outputs.merge_commit_sha }}
           echo "Last PR SHA: $LAST_PR_SHA"
           if [ "$LAST_PR_SHA" = "null" ]; then
             echo "No previous PR found; including all commits."
