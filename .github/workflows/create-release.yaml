@@ -25,6 +25,7 @@ jobs:
           else
             echo "skip=false" >> $GITHUB_ENV
           fi
+        shell: bash
       
       - name: Get Version from package.json
         if: env.skip == 'false'
