@@ -50,24 +50,23 @@ jobs:
         run: |
           LAST_PR_SHA=${{ steps.last_pr.outputs.merge_commit_sha }}
           echo "Last PR SHA: $LAST_PR_SHA"
-          git fetch --all
+          git fetch --all --tags
 
           # Ensure the SHA exists
           if ! git rev-parse "$LAST_PR_SHA" >/dev/null 2>&1; then
-            echo "Invalid SHA: $LAST_PR_SHA. Defaulting to all commits."
+            echo "Invalid or missing SHA: $LAST_PR_SHA. Including all commits."
             COMMITS=$(git log --oneline)
+          elif [ "$(git rev-parse HEAD)" = "$LAST_PR_SHA" ]; then
+            echo "No new commits since $LAST_PR_SHA."
+            COMMITS=""
           else
-            # Check if HEAD is the same as the last PR SHA
-            if [ "$(git rev-parse HEAD)" = "$LAST_PR_SHA" ]; then
-              echo "No new commits since $LAST_PR_SHA"
-              COMMITS=""
-            else
-              COMMITS=$(git log --oneline "$LAST_PR_SHA"..HEAD)
-            fi
+            echo "Fetching commits since $LAST_PR_SHA."
+            COMMITS=$(git log --oneline "$LAST_PR_SHA"..HEAD)
           fi
 
+          # Exit if no commits are found
           if [ -z "$COMMITS" ]; then
-            echo "No commits to include."
+            echo "No commits to include. Exiting."
             exit 0
           fi
 
