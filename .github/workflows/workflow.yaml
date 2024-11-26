@@ -22,6 +22,7 @@ jobs:
             echo "skip=true" >> $GITHUB_ENV
           else
             echo "skip=false" >> $GITHUB_ENV
+          fi
 
       - name: Get current version from package.json
         if: env.skip == 'false'
