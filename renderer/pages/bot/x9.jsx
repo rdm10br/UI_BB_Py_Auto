@@ -10,9 +10,6 @@ export default function NextPage() {
         <title>X9</title>
       </Head>
       <div>
-        {/* <p>
-          X9 - <Link href="/home">Go to home page</Link>
-        </p> */}
         <h2>X9</h2>
         <div className="card-tutorial">
           <h3>Tutorial</h3>
