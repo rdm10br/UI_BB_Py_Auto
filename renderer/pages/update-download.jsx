@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { style } from './updatePage.module.css'
+// import { style } from './updatePage.module.css'
 
 const UpdateDownload = () => {
   const [downloadProgress, setDownloadProgress] = useState(null);
