@@ -13,7 +13,7 @@ const UpdateDownload = () => {
     window.MainIPC.onDownloadProgress(onDownloadProgress);
 
     return () => {
-      // Clean up listener when the page unmounts.
+      // Clean up listener when the page unmounts
       // window.MainIPC.onDownloadProgress(null);
     };
   }, []);
