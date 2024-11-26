@@ -27,7 +27,7 @@ jobs:
           fi
 
       - name: Gather commit messages
-        if: env.skip == 'false'
+        if: env.skip == true'
         id: commits
         run: |
           git fetch origin main dev
@@ -35,7 +35,7 @@ jobs:
           echo "commits_body=$COMMITS" >> $GITHUB_ENV
 
       - name: Determine PR title
-        if: env.skip == 'false'
+        if: env.skip == true'
         id: determine_pr_title
         run: |
           PR_TITLE="Automated PR from ${{ github.ref_name }}"
@@ -47,14 +47,14 @@ jobs:
           echo "pr_title=$PR_TITLE" >> $GITHUB_ENV
 
       - name: Format commit body for PR
-        if: env.skip == 'false'
+        if: env.skip == true'
         id: format_commits
         run: |
           FORMATTED_COMMITS=$(echo "${{ env.commits_body }}" | tr '|' '\n')
           echo "formatted_commits=$FORMATTED_COMMITS" >> $GITHUB_ENV
 
       - name: Create Pull Request
-        if: env.skip == 'false'
+        if: env.skip == true'
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
