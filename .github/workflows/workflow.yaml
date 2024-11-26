@@ -15,6 +15,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Check for [test] in commit message
+        id: check_test_commit
+        run: |
+          if git log -1 --pretty=%B | grep -q '\[test\]'; then
+            echo "Commit contains [test]. Exiting workflow."
+            exit 0
+          fi
+
       - name: Get current version from package.json
         id: get_version
         run: |

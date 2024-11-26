@@ -51,16 +51,26 @@ jobs:
           LAST_PR_SHA=${{ steps.last_pr.outputs.merge_commit_sha }}
           echo "Last PR SHA: $LAST_PR_SHA"
           git fetch --all
-          if git rev-parse "$LAST_PR_SHA" >/dev/null 2>&1; then
-            COMMITS=$(git log --oneline "$LAST_PR_SHA"..HEAD)
-          else
-            echo "Invalid SHA or no previous PR found; including all commits."
+
+          # Ensure the SHA exists
+          if ! git rev-parse "$LAST_PR_SHA" >/dev/null 2>&1; then
+            echo "Invalid SHA: $LAST_PR_SHA. Defaulting to all commits."
             COMMITS=$(git log --oneline)
+          else
+            # Check if HEAD is the same as the last PR SHA
+            if [ "$(git rev-parse HEAD)" = "$LAST_PR_SHA" ]; then
+              echo "No new commits since $LAST_PR_SHA"
+              COMMITS=""
+            else
+              COMMITS=$(git log --oneline "$LAST_PR_SHA"..HEAD)
+            fi
           fi
+
           if [ -z "$COMMITS" ]; then
-            echo "No commits found since the last PR."
+            echo "No commits to include."
             exit 0
           fi
+
           echo "commits_body=$COMMITS" >> $GITHUB_ENV
           echo "Formatted commits: $COMMITS"
 
