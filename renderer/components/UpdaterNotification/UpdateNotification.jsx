@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { style } from "./UpdateNotification.module.css";
+import { useRouter } from "next/router";
 
 function UpdateNotification() {
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(null);
   const [updateDownloaded, setUpdateDownloaded] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const onUpdateAvailable = () => {
       setUpdateAvailable(true);
       setUpdateDownloaded(false);
       console.log('An update is available!');
+      
+      // Redirect to the download page
+       router.push("/update-download");
     };
 
     const onUpdateDownloaded = () => {
@@ -31,7 +36,7 @@ function UpdateNotification() {
     
     return () => {
     };
-  }, []);
+  }, [router]);
 
   const handleRestart = () => {
     window.MainIPC.restartApp();
