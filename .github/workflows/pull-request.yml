@@ -24,7 +24,6 @@ jobs:
             echo "skip=true" >> $GITHUB_ENV
           else
             echo "skip=false" >> $GITHUB_ENV
-          fi
 
       - name: Gather commit messages
         if: env.skip == 'false'
@@ -46,6 +45,13 @@ jobs:
           fi
           echo "pr_title=$PR_TITLE" >> $GITHUB_ENV
 
+      - name: Format commit body for PR
+        if: env.skip == 'false'
+        id: format_commits
+        run: |
+          FORMATTED_COMMITS=$(echo "${{ env.commits_body }}" | tr '|' '\n')
+          echo "formatted_commits=$FORMATTED_COMMITS" >> $GITHUB_ENV
+
       - name: Create Pull Request
         if: env.skip == 'false'
         uses: peter-evans/create-pull-request@v4
@@ -56,4 +62,4 @@ jobs:
           title: ${{ env.pr_title }}
           body: |
             ### Commits included in this PR:
-            ${{ env.commits_body | replace('|', '\n') }}
+            ${{ env.formatted_commits }}
