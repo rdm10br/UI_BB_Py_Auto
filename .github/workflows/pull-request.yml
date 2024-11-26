@@ -18,60 +18,17 @@ jobs:
       - name: Get commit message
         id: extract_commit
         run: |
-          COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-          echo "Commit message: $COMMIT_MESSAGE"
-          echo "commit_message=$COMMIT_MESSAGE" >> $GITHUB_ENV
-          if [[ "$COMMIT_MESSAGE" != *"[pull-request]"* ]]; then
+          echo "commit_message=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
+          if [[ "${{ env.commit_message }}" != *"[pull-request]"* ]]; then
             echo "No '[pull-request]' in commit message, skipping PR creation."
             exit 0
           fi
 
-      - name: Install jq
-        run: sudo apt-get install -y jq
-
-      - name: Get the last pull request
-        id: last_pr
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const { data: pulls } = await github.rest.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: "closed",
-              sort: "updated",
-              direction: "desc",
-              per_page: 1,
-            });
-            const lastPr = pulls[0] || {};
-            core.setOutput("merge_commit_sha", lastPr.merge_commit_sha || "null");
-
-      - name: Get commits since the last PR
-        id: commits_since
+      - name: Gather commit messages
+        id: commits
         run: |
-          LAST_PR_SHA=${{ steps.last_pr.outputs.merge_commit_sha }}
-          echo "Last PR SHA: $LAST_PR_SHA"
-          git fetch --all --tags
-
-          # Ensure the SHA exists in the repository
-          if ! git rev-parse --verify "$LAST_PR_SHA" >/dev/null 2>&1; then
-            echo "Invalid or missing SHA: $LAST_PR_SHA. Including all commits."
-            COMMITS=$(git log --oneline)
-          elif [ "$(git rev-parse HEAD)" = "$LAST_PR_SHA" ]; then
-            echo "No new commits since $LAST_PR_SHA."
-            COMMITS=""
-          else
-            echo "Fetching commits since $LAST_PR_SHA."
-            COMMITS=$(git log --oneline "$LAST_PR_SHA"..HEAD)
-          fi
-
-          # Exit if no commits are found
-          if [ -z "$COMMITS" ]; then
-            echo "No commits to include. Exiting."
-            exit 0
-          fi
-
+          COMMITS=$(git log origin/main..HEAD --oneline)
           echo "commits_body=$COMMITS" >> $GITHUB_ENV
-          echo "Formatted commits: $COMMITS"
 
       - name: Determine PR title
         id: determine_pr_title
@@ -85,7 +42,6 @@ jobs:
           echo "pr_title=$PR_TITLE" >> $GITHUB_ENV
 
       - name: Create Pull Request
-        if: success()
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
