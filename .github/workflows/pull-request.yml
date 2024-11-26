@@ -20,20 +20,22 @@ jobs:
       - name: Get commit message
         id: extract_commit
         run: |
-          echo "commit_message=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
-          if [[ "${{ env.commit_message }}" != *"[pull-request]"* ]]; then
-            echo "No '[pull-request]' in commit message, skipping PR creation."
-            exit 0
+          if git log -1 --pretty=%B | grep -q '\[pull-request\]'; then
+            echo "skip=true" >> $GITHUB_ENV
+          else
+            echo "skip=false" >> $GITHUB_ENV
           fi
 
       - name: Gather commit messages
+        if: env.skip == 'false'
         id: commits
         run: |
-          git fetch origin dev
-          COMMITS=$(git log origin/main..HEAD --oneline)
+          git fetch origin main dev
+          COMMITS=$(git log origin/main..HEAD --oneline | tr '\n' '|' | sed 's/|$//')
           echo "commits_body=$COMMITS" >> $GITHUB_ENV
 
       - name: Determine PR title
+        if: env.skip == 'false'
         id: determine_pr_title
         run: |
           PR_TITLE="Automated PR from ${{ github.ref_name }}"
@@ -45,6 +47,7 @@ jobs:
           echo "pr_title=$PR_TITLE" >> $GITHUB_ENV
 
       - name: Create Pull Request
+        if: env.skip == 'false'
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -53,4 +56,4 @@ jobs:
           title: ${{ env.pr_title }}
           body: |
             ### Commits included in this PR:
-            ${{ env.commits_body }}
+            ${{ env.commits_body | replace('|', '\n') }}
