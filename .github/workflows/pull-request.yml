@@ -52,8 +52,8 @@ jobs:
           echo "Last PR SHA: $LAST_PR_SHA"
           git fetch --all --tags
 
-          # Ensure the SHA exists
-          if ! git rev-parse "$LAST_PR_SHA" >/dev/null 2>&1; then
+          # Ensure the SHA exists in the repository
+          if ! git rev-parse --verify "$LAST_PR_SHA" >/dev/null 2>&1; then
             echo "Invalid or missing SHA: $LAST_PR_SHA. Including all commits."
             COMMITS=$(git log --oneline)
           elif [ "$(git rev-parse HEAD)" = "$LAST_PR_SHA" ]; then
