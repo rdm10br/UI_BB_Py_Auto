@@ -24,6 +24,7 @@ jobs:
             echo "skip=true" >> $GITHUB_ENV
           else
             echo "skip=false" >> $GITHUB_ENV
+          fi
 
       - name: Gather commit messages
         if: env.skip == 'false'
