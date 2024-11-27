@@ -20,51 +20,29 @@ jobs:
       - name: Get commit message
         id: extract_commit
         run: |
-          COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-          echo "commit_message=$COMMIT_MESSAGE" >> $GITHUB_ENV
-          if echo "$COMMIT_MESSAGE" | grep -q '\[pull-request\]'; then
+          if git log -1 --pretty=%B | grep -q '\[pull-request\]'; then
             echo "skip=true" >> $GITHUB_ENV
           else
             echo "skip=false" >> $GITHUB_ENV
           fi
-
-      - name: Gather commit messages
-        if: env.skip == 'true'
-        id: commits
-        run: |
-          git fetch origin main dev
-          COMMITS=$(git log origin/main..HEAD --oneline | tr '\n' '|' | sed 's/|$//')
-          echo "commits_body=$COMMITS" >> $GITHUB_ENV
 
       - name: Determine PR title
         if: env.skip == 'true'
         id: determine_pr_title
         run: |
           PR_TITLE="Automated PR from ${{ github.ref_name }}"
-          if [[ "${{ steps.extract_commit.outputs.commit_message }}" == *"[major]"* ]]; then
+          if [[ "${{ env.commit_message }}" == *"[major]"* ]]; then
             PR_TITLE="$PR_TITLE [major]"
-          elif [[ "${{ steps.extract_commit.outputs.commit_message }}" == *"[minor]"* ]]; then
+          elif [[ "${{ env.commit_message }}" == *"[minor]"* ]]; then
             PR_TITLE="$PR_TITLE [minor]"
           fi
           echo "pr_title=$PR_TITLE" >> $GITHUB_ENV
 
-      - name: Format commit body for PR
-        if: env.skip == 'true'
-        id: format_commits
-        run: |
-          # Replace '|' with a newline and ensure that the formatted commit body is safe for JSON
-          FORMATTED_COMMITS=$(echo "${{ env.commits_body }}" | tr '|' '\n')
-          
-          # Escape the formatted commit body to make it safe for JSON
-          ESCAPED_COMMIT_BODY=$(echo "$FORMATTED_COMMITS" | jq -R -s .)
-
-          # Save the escaped commit body
-          echo "formatted_commits=$ESCAPED_COMMIT_BODY" >> $GITHUB_ENV
-
       - name: Create Pull Request
         if: env.skip == 'true'
         run: |
-          PR_BODY="### Commits included in this PR:\n${{ env.formatted_commits }}"
+          PR_BODY="### Automated PR from ${{ github.ref_name }}"
+
           curl -X POST \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
