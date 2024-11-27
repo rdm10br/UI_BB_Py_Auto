@@ -58,8 +58,8 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          base: main
-          branch: dev
+          base: dev
+          branch: main
           title: ${{ env.pr_title }}
           body: |
             ### Commits included in this PR:
