@@ -59,7 +59,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: main
-          head: ${{ github.ref_name }}
+          branch: dev
           title: ${{ env.pr_title }}
           body: |
             ### Commits included in this PR:
