@@ -51,16 +51,20 @@ jobs:
         id: format_commits
         run: |
           FORMATTED_COMMITS=$(echo "${{ env.commits_body }}" | tr '|' '\n')
-          printf "formatted_commits<<EOF\n%s\nEOF\n" "$FORMATTED_COMMITS" >> $GITHUB_ENV
+          echo "formatted_commits<<EOF" >> $GITHUB_ENV
+          echo "$FORMATTED_COMMITS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Create Pull Request
         if: env.skip == 'true'
-        uses: peter-evans/create-pull-request@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: dev
-          branch: main
-          title: ${{ env.pr_title }}
-          body: |
-            ### Commits included in this PR:
-            ${{ env.formatted_commits }}
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/pulls \
+            -d '{
+              "title": "${{ env.pr_title }}",
+              "head": "dev",
+              "base": "main",
+              "body": "### Commits included in this PR:\n${{ env.formatted_commits }}"
+            }'
