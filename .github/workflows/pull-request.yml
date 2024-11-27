@@ -51,7 +51,7 @@ jobs:
         id: format_commits
         run: |
           FORMATTED_COMMITS=$(echo "${{ env.commits_body }}" | tr '|' '\n')
-          echo "formatted_commits=$FORMATTED_COMMITS" >> $GITHUB_ENV
+          printf "formatted_commits<<EOF\n%s\nEOF\n" "$FORMATTED_COMMITS" >> $GITHUB_ENV
 
       - name: Create Pull Request
         if: env.skip == 'true'
