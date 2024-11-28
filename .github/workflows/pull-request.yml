@@ -26,6 +26,10 @@ jobs:
             echo "skip=false" >> $GITHUB_ENV
           fi
 
+      - name: Install jq
+        if: env.skip == 'true'
+        run: sudo apt-get install -y jq
+
       - name: Determine PR title
         if: env.skip == 'true'
         id: determine_pr_title
@@ -41,9 +45,11 @@ jobs:
       - name: Create Pull Request
         if: env.skip == 'true'
         run: |
+          # Define the pull request body
           PR_BODY="### Automated PR from ${{ github.ref_name }}"
 
-          curl -X POST \
+          # Create the pull request and store the response
+          RESPONSE=$(curl -s -X POST \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             -d '{
@@ -52,4 +58,31 @@ jobs:
               "base": "main",
               "body": "'"$PR_BODY"'"
             }' \
-            https://api.github.com/repos/${{ github.repository }}/pulls
+            https://api.github.com/repos/${{ github.repository }}/pulls)
+
+          # Extract the pull request number from the response
+          PR_NUMBER=$(echo "$RESPONSE" | jq -r '.number')
+
+          # Check if the PR creation was successful
+          if [[ "$PR_NUMBER" == "null" || -z "$PR_NUMBER" ]]; then
+            echo "Failed to create pull request. Response: $RESPONSE"
+            exit 1
+          fi
+
+          # Merge the pull request
+          MERGE_RESPONSE=$(curl -s -X PUT \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d '{
+              "commit_title": "Merged PR #'$PR_NUMBER'",
+              "merge_method": "squash"
+            }' \
+            https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/merge)
+
+          # Check if the merge was successful
+          if [[ $(echo "$MERGE_RESPONSE" | jq -r '.merged') != "true" ]]; then
+            echo "Failed to merge pull request. Response: $MERGE_RESPONSE"
+            exit 1
+          fi
+
+          echo "Pull request #$PR_NUMBER created and merged successfully."
