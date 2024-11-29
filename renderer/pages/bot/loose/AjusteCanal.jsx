@@ -9,10 +9,10 @@ export default function NextPage() {
   return (
     <React.Fragment>
       <Head>
-        <title>Digital</title>
+        <title>Datas</title>
       </Head>
       <div>
-        <h2>Double Check - Digital</h2>
+        <h2>Avulso - Datas</h2>
         <div className="card-tutorial">
           <Accordion
             pageProps={
@@ -24,16 +24,16 @@ export default function NextPage() {
                   execução.
                 </p>
                 <p>
-                  Este robô fara o doublecheck dos itens [Desafio Colaborativo,
-                  Pasta de Avaliações, Nota Zero Automática], ele retornará o
-                  resultado na planilha na mesma aba.
+                  Este robô alterara as datas dos itens [Fale com o Tutor,
+                  Desafio Colaborativo] funcionando e retornará o resultado na
+                  planilha, devidamente organizado em colunas na aba "Salas".
                 </p>
                 <ObsComponent/>
               </>
             }
           />
         </div>
-        <Runner script="Main_doubleCheck_Mescla_DIG.py"></Runner>
+        <Runner script="Main_Ajuste_Canal.py"></Runner>
       </div>
     </React.Fragment>
   );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import styles from "../SideBar/AppSideBar.module.css";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import Accordion from "../../components/Accordion/accordion";
 
 const Runner = ({ script }) => {
   const [result, setResult] = useState("");
@@ -10,7 +10,6 @@ const Runner = ({ script }) => {
   const [play, setPlay] = useState(false);
   const [feedBack, setFeedBack] = useState("");
   const [feedBackType, setFeedBackType] = useState("Bug");
-  const [isAccordionOpen, setIsAccordionOpen] = useState(true);
 
   useEffect(() => {
     // window.MainIPC.on("python-start", (event, data) => {
@@ -39,7 +38,7 @@ const Runner = ({ script }) => {
       setResult((prev) => prev + `${data}`);
       scrollToBottom();
     };
-  
+
     const handlePythonClose = (data) => {
       scrollToBottom();
       setPlay(false);
@@ -99,14 +98,14 @@ const Runner = ({ script }) => {
   };
   const submitFeedback = () => {
     let title = `[${feedBackType}] - ${script} : ${feedBack}`;
-    const GITHUB_REPO = "rdm10br/BB_Py_Automation"
+    const GITHUB_REPO = "rdm10br/BB_Py_Automation";
     console.log(title);
     window.MainIPC.postGitIssue(GITHUB_REPO, title, feedBack);
     setFeedBack("");
   };
   return (
     <>
-      <div id="runner" className="card">
+      <div id="runner" className={styles.card}>
         {!play ? (
           <button onClick={runPython} className={styles.runner}>
             <Image
@@ -148,22 +147,15 @@ const Runner = ({ script }) => {
           </>
         )}
       </div>
-      <div id="feedback" className={styles.accordeon}>
-        <h3 onClick={() => setIsAccordionOpen(!isAccordionOpen)}>
-          FeedBack
-          {isAccordionOpen ? (
-            <FaChevronDown className={styles.icon} />
-          ) : (
-            <FaChevronUp className={styles.icon} />
-          )}
-        </h3>
-        {!isAccordionOpen &&
-        (
+      <Accordion
+        title="FeedBack"
+        pageProps={
           <>
             <select
-            className={styles.dropdown_feedback}
-            id="dropdown-feedback"
-            onChange={(e) => setFeedBackType(e.target.value)}>
+              className={styles.dropdown_feedback}
+              id="dropdown-feedback"
+              onChange={(e) => setFeedBackType(e.target.value)}
+            >
               <option>Bug</option>
               <option>Novo recurso</option>
               <option>Otimização</option>
@@ -181,8 +173,8 @@ const Runner = ({ script }) => {
               Submeter
             </button>
           </>
-        )}
-      </div>
+        }
+      />
     </>
   );
 };
