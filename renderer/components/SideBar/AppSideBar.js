@@ -87,12 +87,19 @@ const AppSideBar = () => {
           { label: "Sala Nova", link: "/bot/copy/sala" },
         ], "Cópia")}
         {renderDropdownItem("Avulsos", "/icon/calendar.png", [
+          { label: "Atividades P.", link: "/bot/loose/AtividadesP" },
+          { label: "A. P. Verif.", link: "/bot/loose/AtividadesPConfig" },
           { label: "Datas", link: "/bot/loose/datas" },
-          { label: "Ajuste AV1", link: "/bot/teste" },
-          { label: "Ajuste AV2", link: "/bot/teste" },
-          { label: "Remove S.M.", link: "/bot/teste" },
-          { label: "Link E-Book", link: "/bot/teste" },
-          { label: "Open Mescla", link: "/bot/teste" },
+          { label: "Ajuste AV1", link: "/bot/loose/AV1" },
+          { label: "Ajuste AV2", link: "/bot/loose/AV1AV2" },
+          { label: "Remove S.M.", link: "/bot/loose/RemoveSer" },
+          { label: "Link E-Book", link: "/bot/loose/AjusteLink" },
+          { label: "Open Mescla", link: "/bot/loose/OpenMescla" },
+          { label: "Material D.", link: "/bot/loose/MaterialDidatico" },
+          { label: "Fale com Tutor", link: "/bot/loose/FalecomTutor" },
+          { label: "DB", link: "/bot/loose/doublecheckDB" },
+          { label: "Canal", link: "/bot/loose/AjusteCanal" },
+          { label: "Link", link: "/bot/loose/AjusteLink" },
         ], "Avulso")}
         {renderMenuItem("BQ", "/icon/fill.png", "/bot/bq", "BQ")}
         {renderMenuItem("X9", "/icon/detective.png", "/bot/x9", "X9")}

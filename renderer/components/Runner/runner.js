@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import styles from "../SideBar/AppSideBar.module.css";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import Accordion from "../../components/Accordion/accordion";
 
 const Runner = ({ script }) => {
@@ -11,7 +10,6 @@ const Runner = ({ script }) => {
   const [play, setPlay] = useState(false);
   const [feedBack, setFeedBack] = useState("");
   const [feedBackType, setFeedBackType] = useState("Bug");
-  const [isAccordionOpen, setIsAccordionOpen] = useState(true);
 
   useEffect(() => {
     // window.MainIPC.on("python-start", (event, data) => {
@@ -107,7 +105,7 @@ const Runner = ({ script }) => {
   };
   return (
     <>
-      <div id="runner" className="card">
+      <div id="runner" className={styles.card}>
         {!play ? (
           <button onClick={runPython} className={styles.runner}>
             <Image

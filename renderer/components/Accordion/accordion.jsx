@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "../SideBar/AppSideBar.module.css";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
-const Accordion = ({title="Tutorial", pageProps}) => {
+const Accordion = ({ title = "Tutorial", pageProps }) => {
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
 
   return (
@@ -11,12 +11,16 @@ const Accordion = ({title="Tutorial", pageProps}) => {
         <h3 onClick={() => setIsAccordionOpen(!isAccordionOpen)}>
           {title}
           {!isAccordionOpen ? (
-            <FaChevronDown className={styles.icon} />
+            <FaChevronDown className={styles.icon_accordion} />
           ) : (
-            <FaChevronUp className={styles.icon} />
+            <FaChevronUp className={styles.icon_accordion} />
           )}
         </h3>
-        {isAccordionOpen && <>{pageProps}</>}
+        {isAccordionOpen && (
+          <div className={styles.page}>
+            {pageProps}
+          </div>
+        )}
       </div>
     </>
   );

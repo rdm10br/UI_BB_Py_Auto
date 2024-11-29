@@ -1,8 +1,9 @@
 import React from "react";
 import Head from "next/head";
-import Link from "next/link";
+// import Link from "next/link";
 import Runner from "../../components/Runner/runner";
-
+import Accordion from "../../components/Accordion/accordion";
+import ObsComponent from "../../components/obsComponent/obsComponent"
 export default function NextPage() {
   return (
     <React.Fragment>
@@ -12,16 +13,24 @@ export default function NextPage() {
       <div>
         <h2>Teste</h2>
         <div className="card-tutorial">
-          <h3>Tutorial</h3>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </p>
+          <Accordion
+            pageProps={
+              <>
+                <p>
+                  Para utilizar este robô, é necessário preencher o ID da sala
+                  desejada na aba "Salas" da planilha, na coluna "ID".
+                  Certifique-se de salvar e fechar a planilha antes de iniciar a
+                  execução.
+                </p>
+                <p>
+                  Este robô verificará todas as configurações dos robôs estão
+                  funcionando e retornará o resultado na planilha, devidamente
+                  organizado em colunas na aba "Salas".
+                </p>
+                <ObsComponent/>
+              </>
+            }
+          />
         </div>
         <Runner script="Main_Test.py"></Runner>
       </div>
