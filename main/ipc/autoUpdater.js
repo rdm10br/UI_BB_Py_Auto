@@ -15,6 +15,7 @@ export function checkForUpdates(mainWindow) {
   // Notify renderer when an update is available
   autoUpdater.on("update-available", () => {
     mainWindow.webContents.send("update_available");
+    mainWindow.webContents.send("navigate", "/update-progress");
   });
 
   // Show dialog and prompt to restart when update is downloaded
