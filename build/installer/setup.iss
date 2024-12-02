@@ -97,7 +97,9 @@ Filename: "powershell"; Parameters: "-Command Set-ExecutionPolicy -ExecutionPoli
 Filename: "cmd"; Parameters: "/c winget --version"; Flags: runhidden waituntilterminated; Check: WingetAvailable; StatusMsg: "Checking if winget is available..."
 
 ; Install Python for the current user (no admin privileges)
-Filename: "powershell"; Parameters: "-Command & {winget install Python.Python.3.12 --scope=user > '{{app}}\install_output.log' 2>&1; if ($LASTEXITCODE -ne 0) { Add-Content -Path '{{app}}\install_errors.log' -Value ('Installation failed with exit code ' + $LASTEXITCODE); exit $LASTEXITCODE }}"; Flags: runhidden waituntilterminated; Check: NeedsPython; StatusMsg: "Installing Python..."
+; Filename: "powershell"; Parameters: "-Command & {winget install Python.Python.3.12 --scope=user > '{{app}}\install_output.log' 2>&1; if ($LASTEXITCODE -ne 0) { Add-Content -Path '{{app}}\install_errors.log' -Value ('Installation failed with exit code ' + $LASTEXITCODE); exit $LASTEXITCODE }}"; Flags: runhidden waituntilterminated; Check: NeedsPython; StatusMsg: "Installing Python..."
+Filename: "{app}\install_python.bat"; Parameters: "{app}"; Flags: runhidden waituntilterminated; Check: NeedsPython; StatusMsg: "Installing Python..."
+
 
 ; Install Node.js for the current user (no admin privileges)
 ; Filename: "powershell"; Parameters: "winget install OpenJS.NodeJS --scope=user"; Flags: runhidden waituntilterminated; Check: NeedsNodeJS; StatusMsg: "Installing Node.js..."

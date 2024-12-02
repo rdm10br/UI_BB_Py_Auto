@@ -1,0 +1,2 @@
+@echo off
+powershell -Command "& {winget install Python.Python.3.12 --scope=user > %1\\install_output.log 2>&1; if ($LASTEXITCODE -ne 0) { Add-Content -Path %1\\install_errors.log -Value ('Installation failed with exit code ' + $LASTEXITCODE); exit $LASTEXITCODE }}"
