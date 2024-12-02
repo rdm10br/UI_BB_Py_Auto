@@ -3,7 +3,7 @@
 
 #define MyAppName "BlackBot"
 #define MyAppVersion "1.0.0"
-#define MyAppPublisher "My Company, Inc."
+#define MyAppPublisher "My Self, Inc."
 #define MyAppURL "https://www.example.com/"
 #define MyAppExeName "BlackBot.exe"
 #define SourcePath "D:\a\UI_BB_Py_Auto\UI_BB_Py_Auto\dist\win-unpacked"
@@ -82,6 +82,7 @@ Source: "{#SourcePath}\vulkan-1.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourcePath}\scripts\*"; DestDir: "{app}\scripts"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#SourcePath}\resources\*"; DestDir: "{app}\resources"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#SourcePath}\locales\*"; DestDir: "{app}\locales"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:\a\UI_BB_Py_Auto\UI_BB_Py_Auto\build\installer\install_python.bat"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -97,10 +98,12 @@ Filename: "powershell"; Parameters: "-Command Set-ExecutionPolicy -ExecutionPoli
 Filename: "cmd"; Parameters: "/c winget --version"; Flags: runhidden waituntilterminated; Check: WingetAvailable; StatusMsg: "Checking if winget is available..."
 
 ; Install Python for the current user (no admin privileges)
-Filename: "cmd"; Parameters: "/c winget install Python.Python.3.12 --scope=user"; Flags: runhidden waituntilterminated; Check: NeedsPython; StatusMsg: "Installing Python..."
+; Filename: "powershell"; Parameters: "-Command & {winget install Python.Python.3.12 --scope=user > '{{app}}\install_output.log' 2>&1; if ($LASTEXITCODE -ne 0) { Add-Content -Path '{{app}}\install_errors.log' -Value ('Installation failed with exit code ' + $LASTEXITCODE); exit $LASTEXITCODE }}"; Flags: runhidden waituntilterminated; Check: NeedsPython; StatusMsg: "Installing Python..."
+Filename: "{app}\install_python.bat"; Parameters: "{app}"; Flags: runhidden waituntilterminated; Check: NeedsPython; StatusMsg: "Installing Python..."
+
 
 ; Install Node.js for the current user (no admin privileges)
-; Filename: "cmd"; Parameters: "/c winget install OpenJS.NodeJS --scope=user"; Flags: runhidden waituntilterminated; Check: NeedsNodeJS; StatusMsg: "Installing Node.js..."
+; Filename: "powershell"; Parameters: "winget install OpenJS.NodeJS --scope=user"; Flags: runhidden waituntilterminated; Check: NeedsNodeJS; StatusMsg: "Installing Node.js..."
 
 ; Run the setup.bat after installation
 Filename: "{app}\scripts\BB_Py_Automation\setup.bat"; WorkingDir: "{app}\scripts\BB_Py_Automation"; Flags: runhidden waituntilterminated; StatusMsg: "Running setup script..."
