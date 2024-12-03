@@ -17,7 +17,7 @@ function UpdateNotification() {
       const timeout = setTimeout(() => {
         setFadeOut(true); // Trigger the fade-out animation
         setTimeout(() => setVisible(false), 500); // Hide after animation completes
-      }, 7*1000); // 5 seconds delay
+      }, 7*1000); // 7 seconds delay
 
       return () => clearTimeout(timeout);
     }
