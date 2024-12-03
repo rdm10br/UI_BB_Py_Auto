@@ -13,7 +13,6 @@ const UpdateDownload = () => {
     window.MainIPC.onDownloadProgress(onDownloadProgress);
 
     return () => {
-      // window.MainIPC.offDownloadProgress(onDownloadProgress);
     };
   }, []);
 
