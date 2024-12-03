@@ -1,8 +1,23 @@
 import React, { useEffect, useState } from "react";
 import styles from "../components/UpdaterNotification/UpdateNotification.module.css";
 
+
+const images = [
+  "https://media1.tenor.com/m/ZnpxgNXkVbEAAAAd/helldivers-automaton.gif",
+  "https://media1.tenor.com/m/ERV_DkcIMxwAAAAd/house-of-wisdom-age-of-empires4.gif",
+  "https://media1.tenor.com/m/IIRztzf3eLoAAAAd/among-us-upload.gif",
+];
+
 const UpdateDownload = () => {
   const [downloadProgress, setDownloadProgress] = useState(null);
+
+  const [selectedImage, setSelectedImage] = useState("");
+
+  useEffect(() => {
+    // Seleciona uma imagem aleatória ao carregar o componente
+    const randomIndex = Math.floor(Math.random() * images.length);
+    setSelectedImage(images[randomIndex]);
+  }, []);
 
   useEffect(() => {
     console.log("Update download page test")
@@ -21,7 +36,17 @@ const UpdateDownload = () => {
     <div className={styles.progressBody}>
       <h1>Downloading Update</h1>
       <p>The update is being downloaded. Please wait...</p>
-      <img src="https://media1.tenor.com/m/ZnpxgNXkVbEAAAAd/helldivers-automaton.gif"/>
+      <img
+        src={selectedImage}
+        alt="Random"
+        style={{
+          width: "50%",
+          maxWidth: "500px",
+          height: "auto",
+          borderRadius: "16px",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+        }}
+      />
       <br />
       <progress className={styles.progress} max="100" value={downloadProgress || 0}/>
       {downloadProgress !== null || 0==0 && (
