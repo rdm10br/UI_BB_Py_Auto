@@ -1,40 +1,59 @@
-import React, { useEffect, useState } from 'react';
-import { style } from "./UpdateNotification.module.css";
+import React, { useEffect, useState } from "react";
+import styles from "./UpdateNotification.module.css";
 import { useRouter } from "next/router";
 
 function UpdateNotification() {
-  const [updateAvailable, setUpdateAvailable] = useState(false);
-  const [downloadProgress, setDownloadProgress] = useState(null);
-  const [updateDownloaded, setUpdateDownloaded] = useState(false);
+  const [state, setState] = useState({
+    updateAvailable: false,
+    updateDownloaded: false,
+    downloadProgress: null,
+  });
   const router = useRouter();
 
   useEffect(() => {
     const onUpdateAvailable = () => {
-      setUpdateAvailable(true);
-      setUpdateDownloaded(false);
-      console.log('An update is available!');
-      
-      // Redirect to the download page
-       router.push("/update-download");
+      console.log("An update is available!");
+      setState({
+        updateAvailable: true,
+        updateDownloaded: false,
+        downloadProgress: null,
+      });
+
+      // Redirect to the download page if not already there
+      if (router.pathname !== "/update-download") {
+        router.push("/update-download");
+      }
     };
 
     const onUpdateDownloaded = () => {
-      setUpdateAvailable(false);
-      setUpdateDownloaded(true);
-      console.log('A new update is ready to install. Restart the app to apply it.');
-      alert('A new update is ready to install. Restart the app to apply it.');
+      console.log(
+        "A new update is ready to install. Restart the app to apply it."
+      );
+      setState({
+        updateAvailable: false,
+        updateDownloaded: true,
+        downloadProgress: null,
+      });
+      alert("A new update is ready to install. Restart the app to apply it.");
     };
 
     const onDownloadProgress = (progressObj) => {
-      setDownloadProgress(progressObj.percent.toFixed(2));
+      setState((prevState) => ({
+        ...prevState,
+        downloadProgress: progressObj.percent.toFixed(2),
+      }));
     };
 
     // Register IPC listeners
     window.MainIPC.onUpdateAvailable(onUpdateAvailable);
     window.MainIPC.onUpdateDownloaded(onUpdateDownloaded);
     window.MainIPC.onDownloadProgress(onDownloadProgress);
-    
+
     return () => {
+      // Unregister IPC listeners
+      // window.MainIPC.offUpdateAvailable(onUpdateAvailable);
+      // window.MainIPC.offUpdateDownloaded(onUpdateDownloaded);
+      // window.MainIPC.offDownloadProgress(onDownloadProgress);
     };
   }, [router]);
 
@@ -44,16 +63,16 @@ function UpdateNotification() {
 
   return (
     <>
-      {updateAvailable && !updateDownloaded && (
-        <div className={style.update-notification}>
+      {state.updateAvailable && !state.updateDownloaded && (
+        <div className={styles["update-notification"]}>
           <p>Update available! It will download in the background.</p>
-          {downloadProgress !== null && (
-            <p>Download progress: {downloadProgress}%</p>
+          {state.downloadProgress !== null && (
+            <p>Download progress: {state.downloadProgress}%</p>
           )}
         </div>
       )}
-      {updateDownloaded && (
-        <div className={style.update-notification}>
+      {state.updateDownloaded && (
+        <div className={styles["update-notification"]}>
           <p>Update downloaded! Restart to apply the update.</p>
           <button onClick={handleRestart}>Restart to Update</button>
         </div>

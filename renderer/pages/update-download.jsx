@@ -8,16 +8,14 @@ const UpdateDownload = () => {
       setDownloadProgress(progressObj.percent.toFixed(2));
     };
 
-    // Listen for download progress updates
     window.MainIPC.onDownloadProgress(onDownloadProgress);
 
     return () => {
-      // Clean up listener when the page unmounts.
-      // window.MainIPC.onDownloadProgress(null);
+      // window.MainIPC.offDownloadProgress(onDownloadProgress);
     };
   }, []);
 
-  const progressBarStyle = {
+  const progressBarStyles = {
     container: {
       width: "80%",
       height: "20px",
@@ -26,13 +24,12 @@ const UpdateDownload = () => {
       margin: "24px auto",
       overflow: "hidden",
     },
-    filler: {
+    filler: (width) => ({
       height: "100%",
+      width: `${width}%`,
       backgroundColor: "#42a0a0",
       transition: "width 0.6s ease-in-out",
-      padding: 0,
-      margin: 0
-    },
+    }),
   };
 
   return (
@@ -40,16 +37,11 @@ const UpdateDownload = () => {
       <h1>Downloading Update</h1>
       <p>The update is being downloaded. Please wait...</p>
 
-      <div style={progressBarStyle.container}>
-        <div
-          style={{
-            ...progressBarStyle.filler,
-            width: `${downloadProgress || 0}%`,
-          }}
-        />
+      <div style={progressBarStyles.container}>
+        <div style={progressBarStyles.filler(downloadProgress || 0)} />
       </div>
 
-      {downloadProgress !== null || 0==0 && (
+      {downloadProgress !== null && (
         <p>Download Progress: {downloadProgress || 0}%</p>
       )}
     </div>
