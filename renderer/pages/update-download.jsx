@@ -4,7 +4,9 @@ const UpdateDownload = () => {
   const [downloadProgress, setDownloadProgress] = useState(null);
 
   useEffect(() => {
+    console.log("Update download page test")
     const onDownloadProgress = (progressObj) => {
+      console.log(progressObj)
       setDownloadProgress(progressObj.percent.toFixed(2));
     };
 

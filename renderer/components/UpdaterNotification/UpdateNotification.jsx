@@ -38,10 +38,14 @@ function UpdateNotification() {
     };
 
     const onDownloadProgress = (progressObj) => {
-      setState((prevState) => ({
-        ...prevState,
-        downloadProgress: progressObj.percent.toFixed(2),
-      }));
+      if (progressObj && progressObj.percent !== undefined) {
+        setState((prevState) => ({
+          ...prevState,
+          downloadProgress: progressObj.percent.toFixed(2),
+        }));
+      } else {
+        console.warn("Invalid progress object received:", progressObj);
+      }
     };
 
     // Register IPC listeners
