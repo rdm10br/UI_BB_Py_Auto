@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import styles from "../components/UpdaterNotification/UpdateNotification.module.css";
 
 const UpdateDownload = () => {
   const [downloadProgress, setDownloadProgress] = useState(null);
@@ -16,33 +17,14 @@ const UpdateDownload = () => {
     };
   }, []);
 
-  const progressBarStyles = {
-    container: {
-      width: "80%",
-      height: "20px",
-      backgroundColor: "#e0e0de",
-      borderRadius: "12px",
-      margin: "24px auto",
-      overflow: "hidden",
-    },
-    filler: (width) => ({
-      height: "100%",
-      width: `${width}%`,
-      backgroundColor: "#42a0a0",
-      transition: "width 0.6s ease-in-out",
-    }),
-  };
-
   return (
-    <div style={{ textAlign: "center", padding: "32.9vh" }}>
+    <div className={styles.progressBody}>
       <h1>Downloading Update</h1>
       <p>The update is being downloaded. Please wait...</p>
-
-      <div style={progressBarStyles.container}>
-        <div style={progressBarStyles.filler(downloadProgress || 0)} />
-      </div>
-
-      {downloadProgress !== null && (
+      <img src="https://media1.tenor.com/m/ZnpxgNXkVbEAAAAd/helldivers-automaton.gif"/>
+      <br />
+      <progress className={styles.progress} max="100" value={downloadProgress || 0}/>
+      {downloadProgress !== null || 0==0 && (
         <p>Download Progress: {downloadProgress || 0}%</p>
       )}
     </div>

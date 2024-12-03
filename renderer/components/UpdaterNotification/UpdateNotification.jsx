@@ -8,7 +8,20 @@ function UpdateNotification() {
     updateDownloaded: false,
     downloadProgress: null,
   });
+  const [visible, setVisible] = useState(true);
+  const [fadeOut, setFadeOut] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (visible) {
+      const timeout = setTimeout(() => {
+        setFadeOut(true); // Trigger the fade-out animation
+        setTimeout(() => setVisible(false), 500); // Hide after animation completes
+      }, 7*1000); // 5 seconds delay
+
+      return () => clearTimeout(timeout);
+    }
+  }, [visible]);
 
   useEffect(() => {
     const onUpdateAvailable = () => {
@@ -18,8 +31,9 @@ function UpdateNotification() {
         updateDownloaded: false,
         downloadProgress: null,
       });
+      setVisible(true);
+      setFadeOut(false);
 
-      // Redirect to the download page if not already there
       if (router.pathname !== "/update-download") {
         router.push("/update-download");
       }
@@ -34,6 +48,8 @@ function UpdateNotification() {
         updateDownloaded: true,
         downloadProgress: null,
       });
+      setVisible(true);
+      setFadeOut(false);
       alert("A new update is ready to install. Restart the app to apply it.");
     };
 
@@ -66,22 +82,28 @@ function UpdateNotification() {
   };
 
   return (
-    <>
-      {state.updateAvailable && !state.updateDownloaded && (
-        <div className={styles["update-notification"]}>
-          <p>Update available! It will download in the background.</p>
-          {state.downloadProgress !== null && (
-            <p>Download progress: {state.downloadProgress}%</p>
-          )}
-        </div>
-      )}
-      {state.updateDownloaded && (
-        <div className={styles["update-notification"]}>
-          <p>Update downloaded! Restart to apply the update.</p>
-          <button onClick={handleRestart}>Restart to Update</button>
-        </div>
-      )}
-    </>
+    visible && (
+      <div
+        className={`${styles["update-notification"]} ${
+          fadeOut ? styles["fade-out"] : ""
+        }`}
+      >
+        {state.updateAvailable && !state.updateDownloaded && (
+          <>
+            <p>Update available! It will download in the background.</p>
+            {state.downloadProgress !== null && (
+              <p>Download progress: {state.downloadProgress}%</p>
+            )}
+          </>
+        )}
+        {state.updateDownloaded && (
+          <>
+            <p>Update downloaded! Restart to apply the update.</p>
+            <button onClick={handleRestart}>Restart to Update</button>
+          </>
+        )}
+      </div>
+    )
   );
 }
 
