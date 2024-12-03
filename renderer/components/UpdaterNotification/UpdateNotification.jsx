@@ -15,7 +15,7 @@ function UpdateNotification() {
       console.log('An update is available!');
       
       // Redirect to the download page
-       router.push("/update-download");
+      //  router.push("/update-download");
     };
 
     const onUpdateDownloaded = () => {
