@@ -19,18 +19,42 @@ const UpdateDownload = () => {
     setSelectedImage(images[randomIndex]);
   }, []);
 
+  // useEffect(() => {
+  //   console.log("Update download page test")
+  //   const onDownloadProgress = (progressObj) => {
+  //     console.log(progressObj)
+  //     setDownloadProgress(progressObj.percent.toFixed(2));
+  //   };
+
+  //   window.MainIPC.onDownloadProgress(onDownloadProgress);
+
+  //   return () => {
+  //   };
+  // }, []);
+
   useEffect(() => {
-    console.log("Update download page test")
-    const onDownloadProgress = (progressObj) => {
-      console.log(progressObj)
-      setDownloadProgress(progressObj.percent.toFixed(2));
+    console.log("Update download page loaded");
+  
+    const handleProgress = (percent) => {
+      console.log(`Progress received: ${percent}%`);
+      setDownloadProgress(percent);
     };
-
-    window.MainIPC.onDownloadProgress(onDownloadProgress);
-
+  
+    // Register the IPC listener
+    window.MainIPC.onDownloadProgress((event, percent) => {
+      if (typeof percent === "number") {
+        handleProgress(percent); // Call the handler with the percent value
+      } else {
+        console.warn("Invalid progress data:", percent);
+      }
+    });
+  
+    // Cleanup the listener when the component unmounts
     return () => {
+      // window.MainIPC.removeDownloadProgressListener(handleProgress);
     };
   }, []);
+
 
   return (
     <div className={styles.progressBody}>
