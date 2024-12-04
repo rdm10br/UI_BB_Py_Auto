@@ -10,7 +10,6 @@ const images = [
 
 const UpdateDownload = () => {
   const [downloadProgress, setDownloadProgress] = useState(null);
-
   const [selectedImage, setSelectedImage] = useState("");
 
   useEffect(() => {
