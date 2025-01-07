@@ -9,10 +9,10 @@ export default function NextPage() {
   return (
     <React.Fragment>
       <Head>
-        <title>Datas</title>
+        <title>Criar Boletim</title>
       </Head>
       <div>
-        <h2>Avulso - Datas</h2>
+        <h2>Avulso - Criar Boletim</h2>
         <div className="card-tutorial">
           <Accordion
             pageProps={
@@ -23,11 +23,11 @@ export default function NextPage() {
                   Certifique-se de salvar e fechar a planilha antes de iniciar a
                   execução.
                 </p>
-                <p>
+                {/* <p>
                   Este robô alterara as datas dos itens [Fale com o Tutor,
                   Desafio Colaborativo] funcionando e retornará o resultado na
                   planilha, devidamente organizado em colunas na aba "Salas".
-                </p>
+                </p> */}
                 <ObsComponent/>
               </>
             }
