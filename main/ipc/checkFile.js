@@ -62,4 +62,14 @@ export function initializeFileAPIHandlers(ipcMain) {
       }
     });
   });
+
+  ipcMain.handle("delete-json-file", async (event, filePath) => {
+    try {
+      fs.unlinkSync(filePath);
+      console.log("Queue json file deleted");
+    } catch (error) {
+      console.error("Error deleting Queue json file:", error);
+      throw error;
+    }
+  });
 }
