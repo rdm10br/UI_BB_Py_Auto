@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 import { app } from "electron";
-import App from "next/app";
 
 const isProd = process.env.NODE_ENV === "production";
 
