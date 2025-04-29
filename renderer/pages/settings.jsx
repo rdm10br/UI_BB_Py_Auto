@@ -304,7 +304,7 @@ export default function NextPage() {
   const handleGenerateEnv = async () => {
     const envData = {
       BASE_URL: baseUrl,
-      ID_REPOSITORIO_BQ: repoId,
+      BQ_ID_REPOSITORY: repoId,
       GIT_REPO: ownerRepo,
       GIT_BRANCH: gitBranch,
     };
@@ -439,7 +439,7 @@ export default function NextPage() {
               />
               <input
                 type="text"
-                placeholder="ID_REPOSITORIO_BQ"
+                placeholder="BQ_ID_REPOSITORY"
                 value={repoId}
                 onChange={(e) => setRepoId(e.target.value)}
               />

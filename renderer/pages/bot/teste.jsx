@@ -4,6 +4,8 @@ import Head from "next/head";
 import Runner from "../../components/Runner/runner";
 import Accordion from "../../components/Accordion/accordion";
 import ObsComponent from "../../components/obsComponent/obsComponent"
+
+
 export default function NextPage() {
   return (
     <React.Fragment>

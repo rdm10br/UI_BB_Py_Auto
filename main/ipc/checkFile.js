@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 import { app } from "electron";
-import App from "next/app";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -61,5 +60,15 @@ export function initializeFileAPIHandlers(ipcMain) {
         });
       }
     });
+  });
+
+  ipcMain.handle("delete-json-file", async (event, filePath) => {
+    try {
+      fs.unlinkSync(filePath);
+      console.log("Queue json file deleted");
+    } catch (error) {
+      console.error("Error deleting Queue json file:", error);
+      throw error;
+    }
   });
 }

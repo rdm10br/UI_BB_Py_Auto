@@ -1,8 +1,8 @@
 {
   "private": true,
-  "name": "BlackBot",
+  "name": "blackbot",
   "description": "My application description",
-  "version": "1.0.35",
+  "version": "1.2.4",
   "author": "Rafael Dias <rafadm230@gmail.com>",
   "license": "MIT",
   "homepage": "https://github.com/rdm10br/UI_BB_Py_Auto#readme",

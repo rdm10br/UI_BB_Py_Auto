@@ -89,6 +89,8 @@ const AppSideBar = () => {
         {renderDropdownItem("Avulsos", "/icon/calendar.png", [
           { label: "Atividades P.", link: "/bot/loose/AtividadesP" },
           { label: "A. P. Verif.", link: "/bot/loose/AtividadesPConfig" },
+          { label: "Prof Acesso", link: "/bot/loose/Prof_acesso" },
+          { label: "Ocultar Boletim", link: "/bot/loose/ocultar_boletim" },
           { label: "Datas", link: "/bot/loose/datas" },
           { label: "Ajuste AV1", link: "/bot/loose/AV1" },
           { label: "Ajuste AV2", link: "/bot/loose/AV1AV2" },

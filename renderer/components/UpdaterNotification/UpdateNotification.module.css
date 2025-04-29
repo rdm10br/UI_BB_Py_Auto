@@ -1,42 +1,65 @@
 .update-notification {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background-color: #f44336; /* Red background for alert */
-    color: white;
-    padding: 20px;
-    font-size: 18px;
-    font-weight: bold;
-    text-align: center;
-    z-index: 9999; /* Ensure it’s on top of everything else */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    animation: slideDown 0.5s ease-out;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #ff4234;
+  padding: 0px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  margin-left: 10.3rem;
+  /* z-index: 9999; */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.6s ease-out;
+}
+.update-notification.fade-out {
+  animation: slideDown 0.6s ease-in;
+}
+.update-notification button {
+  background-color: #fff;
+  color: #f44336;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  border-radius: 6px;
+}
+
+.update-notification button:hover {
+  background-color: #f44336;
+  color: white;
+}
+
+@keyframes slideUp {
+  from {
+    bottom: -100px;
+    opacity: 0;
   }
-  
-  .update-notification button {
-    background-color: #fff;
-    color: #f44336;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 10px;
-    border-radius: 5px;
+  to {
+    bottom: 0;
+    opacity: 1;
   }
-  
-  .update-notification button:hover {
-    background-color: #f44336;
-    color: white;
+}
+@keyframes slideDown {
+  from {
+    bottom: 0px;
+    opacity: 0;
   }
-  
-  @keyframes slideDown {
-    from {
-      top: -100px;
-      opacity: 0;
-    }
-    to {
-      top: 0;
-      opacity: 1;
-    }
+  to {
+    bottom: -100px;
+    opacity: 1;
   }
+}
+
+.progress {
+  block-size: 3rem;
+  width: 34rem;
+  transition: width 0.6s ease-in-out,
+}
+
+.progressBody {
+  text-align: center;
+  /* padding: 32.9vh; */
+}

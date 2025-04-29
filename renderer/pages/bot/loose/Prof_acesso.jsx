@@ -9,10 +9,10 @@ export default function NextPage() {
   return (
     <React.Fragment>
       <Head>
-        <title>Remover *</title>
+        <title>Professor, Acesso</title>
       </Head>
       <div>
-        <h2>Avulso - Remover *</h2>
+        <h2>Avulso - Professor, Acesso</h2>
         <div className="card-tutorial">
           <Accordion
             pageProps={
@@ -33,7 +33,7 @@ export default function NextPage() {
             }
           />
         </div>
-        <Runner script="Main_AV1_AV2.py"></Runner>
+        <Runner script="Main_Prof.py"></Runner>
       </div>
     </React.Fragment>
   );

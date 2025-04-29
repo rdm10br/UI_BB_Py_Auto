@@ -9,10 +9,10 @@ export default function NextPage() {
   return (
     <React.Fragment>
       <Head>
-        <title>Datas</title>
+        <title>Open Mescla</title>
       </Head>
       <div>
-        <h2>Avulso - Datas</h2>
+        <h2>Avulso - Open Mescla</h2>
         <div className="card-tutorial">
           <Accordion
             pageProps={

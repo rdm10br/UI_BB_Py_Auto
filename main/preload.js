@@ -30,6 +30,7 @@ contextBridge.exposeInMainWorld('MainIPC', {
   // File handling methods
   checkFilesExist: (filePaths) => ipcRenderer.invoke("check-files-exist", filePaths),
   getJsonData: (filePath) => ipcRenderer.invoke('get-json-data', filePath),
+  deleteQueueFile: (filePath) => ipcRenderer.invoke('delete-json-file', filePath),
   readDirectory: (dirPath) => ipcRenderer.invoke("read-directory", dirPath),
   readLogFile: (filePath) => ipcRenderer.invoke("read-log-file", filePath),
 
