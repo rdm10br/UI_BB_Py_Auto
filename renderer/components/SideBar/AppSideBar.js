@@ -91,6 +91,7 @@ const AppSideBar = () => {
           { label: "A. P. Verif.", link: "/bot/loose/AtividadesPConfig" },
           { label: "Prof Acesso", link: "/bot/loose/Prof_acesso" },
           { label: "Ocultar Boletim", link: "/bot/loose/ocultar_boletim" },
+          { label: "Fael", link: "/bot/loose/fael" },
           { label: "Datas", link: "/bot/loose/datas" },
           { label: "Ajuste AV1", link: "/bot/loose/AV1" },
           { label: "Ajuste AV2", link: "/bot/loose/AV1AV2" },
