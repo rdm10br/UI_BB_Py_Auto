@@ -103,7 +103,7 @@ button.destructive:hover{
 }
 
 div.card{
-    position: relative;
+    /* position: relative; */
     background-color: var(--muted);
     padding: 2%;
     /* border: none; */

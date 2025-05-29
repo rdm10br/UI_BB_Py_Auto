@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./AppSideBar.module.css";
@@ -10,6 +10,8 @@ const AppSideBar = () => {
     Cópia: false,
     Avulso: false,
   });
+
+  const dropdownRef = useRef(null);
 
   const [collapsed, setCollapsed] = useState(false);
 
@@ -50,7 +52,8 @@ const AppSideBar = () => {
         {collapsed && <span className={styles.tooltiptext}>{label}</span>}
         {dropdown[dropdownKey] ? <FaChevronUp className={styles.icon} /> : <FaChevronDown className={styles.icon} />}
       </li>
-      {dropdown[dropdownKey] && !collapsed && (
+      {dropdown[dropdownKey] && (
+      !collapsed ? (
         <ul className={styles.dropdown}>
           {items.map(({ label, link }, index) => (
             <li key={index}>
@@ -60,9 +63,36 @@ const AppSideBar = () => {
             </li>
           ))}
         </ul>
-      )}
+      ) : (
+        <div className={styles.dropdownBubble}>
+          <ul>
+            <h2>
+              {label}
+              <Image className={styles.icon_menus_bubble} src={icon} height={20} width={20} alt={label} />
+            </h2>
+            {items.map(({ label, link }, index) => (
+              <li key={index}>
+                <Link href={link} className={styles.links}>
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    )}
     </>
   );
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <div className={`${styles.sideMenu} ${collapsed ? styles.collapsed : ""}`}>
