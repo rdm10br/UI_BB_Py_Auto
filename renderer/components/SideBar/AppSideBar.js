@@ -67,7 +67,7 @@ const AppSideBar = () => {
         <div className={styles.dropdownBubble}>
           <ul>
             <h2>
-              {label}
+              <a>{label}</a>
               <Image className={styles.icon_menus_bubble} src={icon} height={20} width={20} alt={label} />
             </h2>
             {items.map(({ label, link }, index) => (
