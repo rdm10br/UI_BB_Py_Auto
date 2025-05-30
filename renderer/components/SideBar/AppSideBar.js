@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
-import styles from "./AppSideBar.module.css";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
+import styles from "./AppSideBar.module.css";
+
 const AppSideBar = () => {
+  const router = useRouter();
   const [dropdown, setDropdown] = useState({
     DoubleCheck: false,
     Cópia: false,
@@ -19,12 +22,28 @@ const AppSideBar = () => {
     window.MainIPC.openExcel("scripts/BB_Py_Automation/Planilhas/SALAS.xlsx");
   };
 
-  // Toggle dropdown menus
+  // Toggle dropdown menus (sempre aberto)
+  // const toggleDropdown = (menu) => {
+  //   setDropdown((prevState) => ({
+  //     ...prevState,
+  //     [menu]: !prevState[menu],
+  //   }));
+  // };
+
+  // Toggle dropdown menus (só um aberto por vez)
   const toggleDropdown = (menu) => {
-    setDropdown((prevState) => ({
-      ...prevState,
-      [menu]: !prevState[menu],
-    }));
+    setDropdown((prevState) => {
+      const isCurrentlyOpen = prevState[menu];
+      // Fecha todos os menus e abre apenas o selecionado (se ainda não estiver aberto)
+      const newState = Object.keys(prevState).reduce((acc, key) => {
+        acc[key] = false;
+        return acc;
+      }, {});
+      return {
+        ...newState,
+        [menu]: !isCurrentlyOpen,
+      };
+    });
   };
 
   // Toggle sidebar
@@ -66,10 +85,12 @@ const AppSideBar = () => {
       ) : (
         <div className={styles.dropdownBubble}>
           <ul>
-            <h2>
-              <a>{label}</a>
-              <Image className={styles.icon_menus_bubble} src={icon} height={20} width={20} alt={label} />
-            </h2>
+            <li>
+              <h2 className={styles.bubbleTitle}>
+                <a>{label}</a>
+                <Image className={styles.icon_menus_bubble} src={icon} height={20} width={20} alt={label} />
+              </h2>
+            </li>
             {items.map(({ label, link }, index) => (
               <li key={index}>
                 <Link href={link} className={styles.links}>
@@ -83,6 +104,19 @@ const AppSideBar = () => {
     )}
     </>
   );
+  // close dropdown menu on router change
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setDropdown((prevState) =>
+        Object.fromEntries(Object.keys(prevState).map((key) => [key, false]))
+      );
+    };
+
+    router.events.on('routeChangeStart', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange);
+    };
+  }, [router]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
