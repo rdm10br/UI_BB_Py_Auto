@@ -5,6 +5,7 @@ import Image from "next/image";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 import styles from "./AppSideBar.module.css";
+import Tooltip from '../tooltip/Tooltip';
 
 const AppSideBar = () => {
   const router = useRouter();
@@ -13,6 +14,11 @@ const AppSideBar = () => {
     Cópia: false,
     Avulso: false,
   });
+
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [tooltipText, setTooltipText] = useState('');
+  const [hoveredLabel, setHoveredLabel] = useState(null);
+
 
   const dropdownRef = useRef(null);
 
@@ -56,19 +62,36 @@ const AppSideBar = () => {
   const renderMenuItem = (label, icon, link, tooltip) => (
     <li className={styles.menus}>
       <Link href={link} className={styles.links}>
-        <Image className={styles.icon_menus} src={icon} height={20} width={20} alt={label} />
-        {!collapsed && <span>{label}</span>}
-        {collapsed && <span className={styles.tooltiptext}>{tooltip}</span>}
+        <x
+          className="tooltipContainer"
+          // onMouseEnter={() => setShowTooltip(true)}
+          // onMouseLeave={() => setShowTooltip(false)}
+          onMouseEnter={() => setHoveredLabel(label)}
+          onMouseLeave={() => setHoveredLabel(null)}
+          >
+          <Image className={styles.icon_menus} src={icon} height={20} width={20} alt={label} />
+          {!collapsed && <span>{label}</span>}
+          {/* {collapsed && <span className="tooltiptext">{tooltip}</span>} */}
+          {collapsed && <Tooltip text={label} visible={hoveredLabel === label}/>}
+        </x>
       </Link>
     </li>
   );
 
   const renderDropdownItem = (label, icon, items, dropdownKey) => (
     <>
-      <li onClick={() => toggleDropdown(dropdownKey)}>
+      <li
+        className="tooltipContainer"
+        onClick={() => toggleDropdown(dropdownKey)}
+        // onMouseEnter={() => setShowTooltip(true)}
+        // onMouseLeave={() => setShowTooltip(false)}
+        onMouseEnter={() => setHoveredLabel(label)}
+        onMouseLeave={() => setHoveredLabel(null)}
+        >
         <Image className={styles.icon_menus} src={icon} height={20} width={20} alt={label} />
         {!collapsed && <span>{label}</span>}
-        {collapsed && <span className={styles.tooltiptext}>{label}</span>}
+        {/* {collapsed && <span className="tooltiptext">{label}</span>} */}
+        {collapsed && <Tooltip text={label} visible={hoveredLabel === label}/>}
         {dropdown[dropdownKey] ? <FaChevronUp className={styles.icon} /> : <FaChevronDown className={styles.icon} />}
       </li>
       {dropdown[dropdownKey] && (
@@ -171,11 +194,18 @@ const AppSideBar = () => {
         {renderMenuItem("BQ", "/icon/fill.png", "/bot/bq", "BQ")}
         {renderMenuItem("X9", "/icon/detective.png", "/bot/x9", "X9")}
         {renderMenuItem("Teste", "/icon/experiment.png", "/bot/teste", "Teste")}
-        <li className={styles.plan}>
+        <li
+          className={styles.plan}
+          // onMouseEnter={() => setShowTooltip(true)}
+          // onMouseLeave={() => setShowTooltip(false)}
+          onMouseEnter={() => setHoveredLabel("Planilha")}
+          onMouseLeave={() => setHoveredLabel(null)}
+          >
           <Link href="#" className={styles.links} onClick={openExcelFile}>
             <Image className={styles.icon_menus} src="/icon/spreadsheet.png" height={20} width={20} alt="Planilha" />
             {!collapsed && <span>Planilha</span>}
-            {collapsed && <span className={styles.tooltiptext}>Planilha</span>}
+            {/* {collapsed && <span className={styles.tooltiptext}>Planilha</span>} */}
+            {collapsed && <Tooltip text="Planilha" visible={hoveredLabel === "Planilha"}/>}
           </Link>
         </li>
       </ul>

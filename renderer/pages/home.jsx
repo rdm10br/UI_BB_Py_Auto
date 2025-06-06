@@ -2,7 +2,11 @@ import Head from "next/head";
 import React from "react";
 import Link from "next/link";
 
+// import { useState} from "react";
+// import Tooltip from "../components/tooltip/Tooltip";
+
 export default function HomePage() {
+  // const [showTooltip, setShowTooltip] = useState(false);
   return (
     <React.Fragment>
       <Head>
@@ -64,6 +68,15 @@ export default function HomePage() {
                 a coluna "STATUS" deve ser preenchida pelos robôs após a
                 execução informando o resultado da execução
               </li>
+              {/* <li>
+                <button
+                  onMouseEnter={() => setShowTooltip(true)}
+                  onMouseLeave={() => setShowTooltip(false)}
+                >
+                  qweifuhqweoifghef
+                <Tooltip text="I'm a tooltip!" visible={showTooltip} />
+                </button>
+              </li> */}
             </ul>
           </li>
         </ul>

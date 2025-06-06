@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import styles from "./UpdateNotification.module.css";
 import { useRouter } from "next/router";
 
+const isProd = process.env.NODE_ENV === "production";
+
 function UpdateNotification() {
   const [state, setState] = useState({
     updateAvailable: false,
@@ -65,10 +67,12 @@ function UpdateNotification() {
     };
 
     // Register IPC listeners
-    window.MainIPC.onUpdateAvailable(onUpdateAvailable);
-    window.MainIPC.onUpdateDownloaded(onUpdateDownloaded);
-    window.MainIPC.onDownloadProgress(onDownloadProgress);
-
+    if (isProd) {
+      window.MainIPC.onUpdateAvailable(onUpdateAvailable);
+      window.MainIPC.onUpdateDownloaded(onUpdateDownloaded);
+      window.MainIPC.onDownloadProgress(onDownloadProgress);
+    }
+    
     return () => {
       // Unregister IPC listeners
       // window.MainIPC.offUpdateAvailable(onUpdateAvailable);

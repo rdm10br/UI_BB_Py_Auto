@@ -188,3 +188,39 @@ input{
     background-color: var(--muted-foreground);
     color: var(--background);
 }
+
+.tooltipContainer {
+  position: relative;
+  /* display: inline-block; */
+}
+.tooltiptext {
+  visibility: hidden;
+  position: fixed;
+  position: absolute;
+  top: 0vh;
+  left: 4rem;
+  /* top: 0%; */
+  /* left: 100%; */
+  background-color: hsla(240, 21%, 15%, 0.8);
+  border: 1px solid #444;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  padding: 0.5rem 1rem;
+  overflow: visible;
+  /* animation: fadeIn 0.5s ease-in-out !important; */
+  /* display: none; */
+  flex-direction: column;
+}
+/* .sideMenu.collapsed ul li:hover .tooltiptext{
+  display: flex !important;
+  float: right;
+  opacity: 1 !important;
+} */
+.tooltipContainer:hover .tooltiptext {
+  visibility: visible !important;
+  opacity: 1 !important;
+  /* transition: opacity 0.3s ease-out, transform 0.3s ease-out !important; */
+  overflow: visible !important;
+  /* animation: fadeIn 0.5s ease-in-out !important; */
+  z-index: auto !important;
+}
