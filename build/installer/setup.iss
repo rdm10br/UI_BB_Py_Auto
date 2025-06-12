@@ -6,7 +6,9 @@
 #define MyAppPublisher "My Self, Inc."
 #define MyAppURL "https://www.example.com/"
 #define MyAppExeName "BlackBot.exe"
-#define SourcePath "..\..\dist\win-unpacked"
+#define basePath "..\..\"
+#define InstallerPath basePath + "\build\installer"
+#define SourcePath basePath + "\dist\win-unpacked"
 
 
 [Setup]
@@ -82,7 +84,7 @@ Source: "{#SourcePath}\vulkan-1.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourcePath}\scripts\*"; DestDir: "{app}\scripts"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#SourcePath}\resources\*"; DestDir: "{app}\resources"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#SourcePath}\locales\*"; DestDir: "{app}\locales"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "D:\a\UI_BB_Py_Auto\UI_BB_Py_Auto\build\installer\install_python.bat"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#InstallerPath}\install_python.bat"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
