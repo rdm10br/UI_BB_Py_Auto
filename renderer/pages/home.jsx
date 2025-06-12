@@ -77,6 +77,11 @@ export default function HomePage() {
                 <Tooltip text="I'm a tooltip!" visible={showTooltip} />
                 </button>
               </li> */}
+              <li>
+                <Link href='/update-download'>
+                  teste update
+                </Link>
+              </li>
             </ul>
           </li>
         </ul>
