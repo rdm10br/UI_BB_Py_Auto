@@ -6,7 +6,7 @@
 #define MyAppPublisher "My Self, Inc."
 #define MyAppURL "https://www.example.com/"
 #define MyAppExeName "BlackBot.exe"
-#define SourcePath "a\UI_BB_Py_Auto\UI_BB_Py_Auto\dist\win-unpacked"
+#define SourcePath "..\..\dist\win-unpacked"
 
 
 [Setup]
