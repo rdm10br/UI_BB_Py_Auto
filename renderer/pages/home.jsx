@@ -77,11 +77,11 @@ export default function HomePage() {
                 <Tooltip text="I'm a tooltip!" visible={showTooltip} />
                 </button>
               </li> */}
-              <li>
+              {/* <li>
                 <Link href='/update-download'>
                   teste update
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </li>
         </ul>
