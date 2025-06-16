@@ -31,6 +31,10 @@ const UpdateDownload = () => {
         const percent = Number(progress.percent.toFixed(2));
         console.log(`Progress: ${percent}%`);
         setDownloadProgress(percent);
+      } else if (typeof progress === "number") {
+        // fallback: support raw number value
+        console.log(`Progress (raw): ${progress}%`);
+        setDownloadProgress(progress);
       } else {
         console.warn("Invalid progress object:", progress);
       }

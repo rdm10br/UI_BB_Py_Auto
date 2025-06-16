@@ -39,7 +39,8 @@ export function checkForUpdates(mainWindow) {
   // Send download progress to renderer
   autoUpdater.on("download-progress", (progressObj) => {
     let percent = Math.floor(progressObj.percent);
-    mainWindow.webContents.send("download_progress", percent);
+    console.log('[Main] Download progress:', percent);
+    mainWindow.webContents.send("download_progress", {percent});
   });
 
   // Optional: Error handling
