@@ -26,7 +26,7 @@ const UpdateDownload = () => {
   }, []);
 
   useEffect(() => {
-    const handler = (event, progress) => {
+    const handler = (progress) => {
       if (progress && typeof progress.percent === "number") {
         const percent = Number(progress.percent.toFixed(2));
         console.log(`Progress: ${percent}%`);
