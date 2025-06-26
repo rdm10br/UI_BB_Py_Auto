@@ -49,7 +49,7 @@ const UpdateDownload = () => {
   return (
     <div className={styles.progressBody}>
       <h1>Downloading Update</h1>
-      <p>The update is being downloaded. Please wait...</p>
+      <p>The update is being downloaded; Please wait...</p>
       <img
         src={selectedImage}
         alt="Update download animation"
